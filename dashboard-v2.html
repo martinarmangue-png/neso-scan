@@ -1,0 +1,1329 @@
+
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NESO · Dashboard V2</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --blue: #0f4c81;
+      --blue-dark: #143f6b;
+      --green: #0f6b57;
+      --green-soft: #e6f3ee;
+      --orange: #e8843a;
+      --orange-soft: #fff0e4;
+      --cream: #f5f2ed;
+      --card: #fffdf8;
+      --line: #e7dfd4;
+      --text: #1f2a2e;
+      --muted: #9b968e;
+      --soft: #f9f6f0;
+      --danger: #c46a3a;
+      --shadow: 0 18px 45px rgba(33, 31, 27, 0.06);
+      --radius: 24px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--cream);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    .topbar {
+      height: 86px;
+      background: var(--blue);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+    }
+
+    .brand {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .brand-title {
+      font-family: "Playfair Display", serif;
+      font-size: 24px;
+      letter-spacing: 0.04em;
+    }
+
+    .brand-subtitle {
+      color: rgba(255, 255, 255, 0.72);
+      font-size: 13px;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .top-pill {
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      border-radius: 14px;
+      padding: 12px 16px;
+      font-size: 14px;
+    }
+
+    .mobile-back {
+      display: none;
+    }
+
+    .page {
+      max-width: 1520px;
+      margin: 0 auto;
+      padding: 34px 34px 56px;
+    }
+
+    .kpis {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+      margin-bottom: 28px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .kpi {
+      padding: 24px;
+      min-height: 150px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .label {
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+    }
+
+    .kpi-value {
+      font-family: "Playfair Display", serif;
+      color: var(--green);
+      font-size: 44px;
+      line-height: 1;
+      margin-top: 18px;
+    }
+
+    .kpi-caption {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .main-grid {
+      display: grid;
+      grid-template-columns: 410px 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .panel-head {
+      padding: 24px 24px 18px;
+      border-bottom: 1px solid #eee7dc;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    h2 {
+      font-family: "Playfair Display", serif;
+      font-size: 25px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .small-muted {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .search {
+      width: 100%;
+      margin: 0 24px 18px;
+      width: calc(100% - 48px);
+      border: 1px solid var(--line);
+      background: var(--soft);
+      border-radius: 14px;
+      padding: 13px 14px;
+      outline: none;
+      color: var(--text);
+      font-size: 14px;
+    }
+
+    .filters {
+      display: flex;
+      gap: 8px;
+      padding: 0 24px 18px;
+      flex-wrap: wrap;
+    }
+
+    .filter-chip {
+      border: 1px solid var(--line);
+      background: white;
+      color: var(--green);
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .filter-chip {
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .filter-chip:hover,
+    .filter-chip.active-filter {
+      background: var(--green);
+      color: white;
+      border-color: var(--green);
+    }
+
+    .scan-list {
+      max-height: 720px;
+      overflow: auto;
+      border-top: 1px solid #f0e9df;
+    }
+
+    .scan-row {
+      display: grid;
+      grid-template-columns: 46px 1fr auto;
+      gap: 14px;
+      padding: 18px 22px;
+      border-bottom: 1px solid #f0e9df;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .scan-row:hover,
+    .scan-row.active {
+      background: #e9f3fb;
+    }
+
+    .avatar {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--blue), var(--green));
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+    }
+
+    .scan-name {
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .scan-meta {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .scan-side {
+      text-align: right;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 8px;
+    }
+
+    .scan-actions {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 8px;
+    }
+
+    .delete-btn {
+      width: 24px;
+      height: 24px;
+      border: 1px solid rgba(196, 106, 58, 0.22);
+      background: rgba(255, 240, 228, 0.72);
+      color: var(--danger);
+      border-radius: 999px;
+      padding: 0;
+      font-size: 16px;
+      line-height: 1;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0.62;
+    }
+
+    .delete-btn:hover {
+      background: var(--danger);
+      color: white;
+      opacity: 1;
+      transform: scale(1.04);
+    }
+
+    .pain {
+      font-family: "Playfair Display", serif;
+      font-size: 28px;
+      color: var(--orange);
+      line-height: 1;
+    }
+
+    .status {
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .completed {
+      background: var(--green-soft);
+      color: var(--green);
+    }
+
+    .abandoned {
+      background: var(--orange-soft);
+      color: var(--danger);
+    }
+
+    .detail {
+      padding: 32px;
+    }
+
+    .detail-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 28px;
+      align-items: flex-start;
+      padding-bottom: 28px;
+      border-bottom: 1px solid #f0e9df;
+    }
+
+    .patient-title {
+      font-family: "Playfair Display", serif;
+      font-size: 42px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .score-box {
+      text-align: right;
+    }
+
+    .score {
+      font-family: "Playfair Display", serif;
+      font-size: 70px;
+      color: var(--orange);
+      line-height: 0.9;
+    }
+
+    .score-sub {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .bar {
+      height: 8px;
+      background: #e9e3d9;
+      border-radius: 999px;
+      overflow: hidden;
+      margin: 24px 0 30px;
+    }
+
+    .bar-fill {
+      height: 100%;
+      width: 50%;
+      background: linear-gradient(90deg, var(--blue), var(--green));
+      border-radius: 999px;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .info {
+      background: var(--soft);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 18px;
+    }
+
+    .info-value {
+      display: inline-flex;
+      margin-top: 12px;
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 9px 13px;
+      font-size: 14px;
+      color: var(--green);
+      font-weight: 600;
+    }
+
+    .analytics {
+      margin-top: 24px;
+      padding: 28px;
+    }
+
+    .analytics-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 18px;
+      margin-bottom: 22px;
+    }
+
+    .period {
+      border: 1px solid var(--line);
+      background: var(--soft);
+      color: var(--green);
+      border-radius: 14px;
+      padding: 11px 14px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .analytics-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .analytics-block {
+      background: var(--soft);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 18px;
+    }
+
+    .analytics-title {
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 15px;
+    }
+
+    .stat-line {
+      background: white;
+      border: 1px solid #f0e9df;
+      border-radius: 14px;
+      padding: 12px;
+      margin-bottom: 10px;
+    }
+
+    .stat-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    .mini-bar {
+      height: 6px;
+      background: #eee7dc;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .mini-fill {
+      height: 100%;
+      background: var(--green);
+      border-radius: 999px;
+    }
+
+    .problem .mini-fill {
+      background: var(--orange);
+    }
+
+    .footer-note {
+      margin-top: 22px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    @media (max-width: 1100px) {
+      .kpis,
+      .analytics-grid,
+      .info-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .topbar {
+        height: auto;
+        padding: 18px;
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 14px;
+        border-bottom-left-radius: 28px;
+        border-bottom-right-radius: 28px;
+        box-shadow: 0 10px 30px rgba(15, 76, 129, 0.12);
+      }
+
+      .brand-title {
+        font-size: 22px;
+        line-height: 1.1;
+      }
+
+      .brand-subtitle {
+        font-size: 12px;
+        line-height: 1.4;
+        opacity: 0.82;
+      }
+
+      .top-actions {
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .top-pill {
+        width: 100%;
+        min-height: 52px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        white-space: normal;
+        line-height: 1.2;
+        padding: 11px 12px;
+      }
+
+      .page {
+        padding: 18px;
+      }
+
+      /* Premium mobile UI refinements */
+      .kpi {
+        min-height: auto;
+        padding: 20px;
+      }
+
+      .kpi-value {
+        font-size: 38px;
+      }
+
+      .scan-row {
+        grid-template-columns: 42px 1fr auto;
+        padding: 16px 18px;
+        align-items: center;
+      }
+
+      .avatar {
+        width: 42px;
+        height: 42px;
+        font-size: 15px;
+      }
+
+      .scan-name {
+        font-size: 15px;
+      }
+
+      .scan-meta {
+        font-size: 12px;
+        line-height: 1.35;
+      }
+
+      .pain {
+        font-size: 22px;
+      }
+
+      .status {
+        font-size: 10px;
+        padding: 5px 8px;
+      }
+
+      .detail {
+        padding: 24px 20px;
+      }
+
+      .patient-title {
+        font-size: 34px;
+        line-height: 1;
+      }
+
+      .score {
+        font-size: 54px;
+      }
+
+      .info {
+        padding: 16px;
+        border-radius: 18px;
+      }
+
+      .info-value {
+        width: 100%;
+        justify-content: center;
+        text-align: center;
+      }
+
+      .analytics {
+        margin-top: 18px;
+        padding: 22px 18px;
+      }
+
+      .analytics-head {
+        margin-bottom: 18px;
+      }
+
+      .analytics-title {
+        font-size: 15px;
+      }
+
+      .kpis,
+      .analytics-grid,
+      .info-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .detail-top {
+        flex-direction: column;
+      }
+
+      .score-box {
+        text-align: left;
+      }
+
+      .detail {
+        display: none;
+      }
+
+      body.mobile-detail-open .kpis,
+      body.mobile-detail-open aside.card,
+      body.mobile-detail-open .analytics {
+        display: none !important;
+      }
+
+      body.mobile-detail-open .main-grid {
+        display: block;
+      }
+
+      body.mobile-detail-open .detail {
+        display: block !important;
+      }
+
+      .mobile-back {
+        width: 100%;
+        margin-bottom: 16px;
+        border: 1px solid var(--line);
+        background: white;
+        color: var(--blue);
+        border-radius: 18px;
+        padding: 15px 18px;
+        font-size: 15px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      body.mobile-detail-open .mobile-back {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .analytics {
+        opacity: 0.96;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-title">NESO Santé · Dashboard</div>
+      <div class="brand-subtitle">Console kiné · Pré-bilan et analytics patient</div>
+    </div>
+
+    <div class="top-actions">
+      <a href="index.html" class="top-pill" style="text-decoration: none;">Accueil</a>
+      <div class="top-pill">14/05/2026</div>
+      <div class="top-pill">Martin Armangué</div>
+      <div class="top-pill">Se déconnecter</div>
+    </div>
+  </header>
+
+  <main class="page">
+    <section class="kpis">
+      <article class="card kpi">
+        <div>
+          <div class="label">Scans aujourd'hui</div>
+          <div class="kpi-value" id="kpiToday">0</div>
+        </div>
+        <div class="kpi-caption" id="kpiTotal">0 scan au total</div>
+      </article>
+
+      <article class="card kpi">
+        <div>
+          <div class="label">Taux de complétion</div>
+          <div class="kpi-value" id="kpiCompletion">100%</div>
+        </div>
+        <div class="kpi-caption">scans terminés / scans reçus</div>
+      </article>
+
+      <article class="card kpi">
+        <div>
+          <div class="label">Temps moyen</div>
+          <div class="kpi-value" id="kpiAverageTime">-</div>
+        </div>
+        <div class="kpi-caption">temps moyen des scans terminés</div>
+      </article>
+
+      <article class="card kpi">
+        <div>
+          <div class="label">Taux d'abandon</div>
+          <div class="kpi-value" id="kpiAbandon">0%</div>
+        </div>
+        <div class="kpi-caption">tracking avancé à venir</div>
+      </article>
+    </section>
+
+    <section class="main-grid">
+      <aside class="card">
+        <div class="panel-head">
+          <div>
+            <h2>Scans récents</h2>
+            <div class="small-muted">Tous les résultats, classés par date</div>
+          </div>
+        </div>
+
+        <input class="search" id="searchInput" placeholder="Rechercher un patient, une zone..." oninput="renderScans()" />
+
+        <div class="filters">
+          <button class="filter-chip active-filter" onclick="filterScans('all', this)">Tous</button>
+          <button class="filter-chip" onclick="filterScans('completed', this)">Complétés</button>
+          <button class="filter-chip" onclick="filterScans('abandoned', this)">Abandons</button>
+          <button class="filter-chip" onclick="filterScans('today', this)">Aujourd'hui</button>
+        </div>
+
+        <div class="scan-list" id="scanList">
+          <div style="padding:24px;color:var(--muted);font-size:14px;">Chargement des scans Supabase...</div>
+        </div>
+      </aside>
+
+      <section>
+        <article class="card detail">
+          <button class="mobile-back" onclick="closeMobileDetail()">← Retour à la liste patients</button>
+          <div class="detail-top">
+            <div>
+              <h1 class="patient-title" id="patientName">Vianney</h1>
+              <div class="small-muted" id="patientDate">Scan reçu le 14 mai à 18:42 · durée 1m42</div>
+            </div>
+
+            <div class="score-box">
+              <div class="score" id="patientPain">5</div>
+              <div class="score-sub">/10</div>
+            </div>
+          </div>
+
+          <div class="bar"><div class="bar-fill" id="painBar"></div></div>
+
+          <div class="info-grid">
+            <div class="info">
+              <div class="label">Zones concernées</div>
+              <div class="info-value" id="patientZone">Haut du dos</div>
+            </div>
+
+            <div class="info">
+              <div class="label">Depuis quand</div>
+              <div class="info-value" id="patientSince">Plusieurs mois</div>
+            </div>
+
+            <div class="info">
+              <div class="label">Évolution</div>
+              <div class="info-value" id="patientEvolution">Variable selon les jours</div>
+            </div>
+
+            <div class="info">
+              <div class="label">Ce qui gêne le plus</div>
+              <div class="info-value" id="patientProblem">Rester assis</div>
+            </div>
+
+            <div class="info">
+              <div class="label">Type de douleur</div>
+              <div class="info-value" id="patientType">Gêne diffuse</div>
+            </div>
+
+            <div class="info">
+              <div class="label">Objectif patient</div>
+              <div class="info-value" id="patientGoal">Reprendre une vie normale</div>
+            </div>
+          </div>
+        </article>
+
+        <article class="card analytics">
+          <div class="analytics-head">
+            <div>
+              <h2>Analytics NESO</h2>
+              <div class="small-muted">Analyse des réponses et du parcours patient</div>
+            </div>
+            <div class="period">30 derniers jours</div>
+          </div>
+
+          <div class="analytics-grid">
+            <div class="analytics-block">
+              <div class="analytics-title">Réponses · zones douloureuses</div>
+              <div class="stat-line">
+                <div class="stat-top"><span>Bas du dos</span><strong>34%</strong></div>
+                <div class="mini-bar"><div class="mini-fill" style="width: 34%"></div></div>
+              </div>
+              <div class="stat-line">
+                <div class="stat-top"><span>Épaule</span><strong>25%</strong></div>
+                <div class="mini-bar"><div class="mini-fill" style="width: 25%"></div></div>
+              </div>
+              <div class="stat-line">
+                <div class="stat-top"><span>Genou</span><strong>18%</strong></div>
+                <div class="mini-bar"><div class="mini-fill" style="width: 18%"></div></div>
+              </div>
+            </div>
+
+            <div class="analytics-block">
+              <div class="analytics-title">Réponses · gêne principale</div>
+              <div class="stat-line">
+                <div class="stat-top"><span>Rester assis</span><strong>41%</strong></div>
+                <div class="mini-bar"><div class="mini-fill" style="width: 41%"></div></div>
+              </div>
+              <div class="stat-line">
+                <div class="stat-top"><span>Sport</span><strong>31%</strong></div>
+                <div class="mini-bar"><div class="mini-fill" style="width: 31%"></div></div>
+              </div>
+              <div class="stat-line">
+                <div class="stat-top"><span>Sommeil</span><strong>18%</strong></div>
+                <div class="mini-bar"><div class="mini-fill" style="width: 18%"></div></div>
+              </div>
+            </div>
+
+            <div class="analytics-block problem">
+              <div class="analytics-title">Questions problématiques</div>
+              <div class="stat-line">
+                <div class="stat-top"><span>Antécédents</span><strong>38% abandon</strong></div>
+                <div class="mini-bar"><div class="mini-fill" style="width: 38%"></div></div>
+              </div>
+              <div class="stat-line">
+                <div class="stat-top"><span>Traitements</span><strong>24% abandon</strong></div>
+                <div class="mini-bar"><div class="mini-fill" style="width: 24%"></div></div>
+              </div>
+              <div class="stat-line">
+                <div class="stat-top"><span>Objectif patient</span><strong>18% abandon</strong></div>
+                <div class="mini-bar"><div class="mini-fill" style="width: 18%"></div></div>
+              </div>
+            </div>
+          </div>
+
+          <p class="footer-note">
+            Version maquette : les statistiques sont simulées pour valider l'UX. Prochaine étape : connecter ces blocs aux vraies données Supabase et ajouter le tracking question par question.
+          </p>
+        </article>
+      </section>
+    </section>
+  </main>
+
+  <script>
+    const SUPABASE_URL = "https://infjgfupfbylzzuvywpg.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_1aS8qPPmGm76n0zN_L2uIQ_ArUVtHsF";
+    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    let scans = [];
+    let scanEvents = [];
+    let activeFilter = 'all';
+    let activeScanIndex = 0;
+
+    async function loadScans() {
+      const { data: scansData, error: scansError } = await sb
+        .from('scans')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      const { data: eventsData, error: eventsError } = await sb
+        .from('scan_events')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (scansError) {
+        document.getElementById('scanList').innerHTML = `
+          <div style="padding:24px;color:#9D3D31;font-size:14px;line-height:1.6;">
+            Impossible de charger les scans Supabase.<br>
+            ${esc(scansError.message)}
+          </div>
+        `;
+        return;
+      }
+
+      if (eventsError) {
+        console.warn('Impossible de charger les événements analytics', eventsError);
+      }
+
+      scans = scansData || [];
+      scanEvents = eventsData || [];
+      renderScans();
+      renderKpis();
+      renderAnalytics();
+
+      if (scans.length > 0) {
+        selectScan(0, false);
+      }
+    }
+
+    function filterScans(filter, button) {
+      activeFilter = filter;
+
+      document.querySelectorAll('.filter-chip').forEach(function(chip) {
+        chip.classList.remove('active-filter');
+      });
+      button.classList.add('active-filter');
+
+      renderScans();
+    }
+
+    function getFilteredScans() {
+      const query = (document.getElementById('searchInput')?.value || '').toLowerCase().trim();
+      const todayStart = new Date();
+      todayStart.setHours(0, 0, 0, 0);
+
+      return scans.filter(function(scan) {
+        const completed = isCompleted(scan);
+        const createdAt = new Date(scan.created_at);
+        const isToday = createdAt >= todayStart;
+
+        const matchesFilter =
+          activeFilter === 'all' ||
+          (activeFilter === 'completed' && completed) ||
+          (activeFilter === 'abandoned' && !completed) ||
+          (activeFilter === 'today' && isToday);
+
+        const searchable = [
+          scan.prenom,
+          scan.objectif,
+          scan.douleur_depuis || scan.duree,
+          scan.evolution,
+          arrayText(scan.zones),
+          arrayText(scan.type_douleur),
+          arrayText(scan.gene)
+        ].join(' ').toLowerCase();
+
+        const matchesSearch = !query || searchable.includes(query);
+        return matchesFilter && matchesSearch;
+      });
+    }
+
+    function renderScans() {
+      const list = document.getElementById('scanList');
+      const filtered = getFilteredScans();
+
+      if (!filtered.length) {
+        list.innerHTML = `<div style="padding:24px;color:var(--muted);font-size:14px;">Aucun scan à afficher avec ce filtre.</div>`;
+        return;
+      }
+
+      list.innerHTML = filtered.map(function(scan) {
+        const realIndex = scans.indexOf(scan);
+        const name = scan.prenom || 'Patient';
+        const zone = firstValue(scan.zones, 'Zone non renseignée');
+        const pain = scan.score_douleur ?? '-';
+        const completed = isCompleted(scan);
+
+        return `
+          <div class="scan-row ${realIndex === activeScanIndex ? 'active' : ''}" onclick="selectScan(${realIndex})">
+            <div class="avatar">${esc(name.charAt(0).toUpperCase())}</div>
+            <div>
+              <div class="scan-name">${esc(name)}</div>
+              <div class="scan-meta">${esc(zone)} · ${fmtDate(scan.created_at)}<br />${completed ? 'Scan complété' : 'Scan incomplet'}</div>
+            </div>
+            <div class="scan-actions">
+              <div class="scan-side">
+                <div class="pain">${esc(pain)}</div>
+                <div class="status ${completed ? 'completed' : 'abandoned'}">${completed ? 'Complété' : 'Abandon'}</div>
+              </div>
+
+              <button class="delete-btn" title="Supprimer ce scan" aria-label="Supprimer ce scan" onclick="deleteScan(event, '${scan.id || scan.identifiant}')">
+                ×
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function selectScan(index, openOnMobile = true) {
+      activeScanIndex = index;
+      const scan = scans[index];
+      if (!scan) return;
+
+      renderScans();
+
+      const pain = Number(scan.score_douleur);
+      const safePain = Number.isFinite(pain) ? pain : 0;
+
+      document.getElementById('patientName').textContent = scan.prenom || 'Patient';
+      document.getElementById('patientDate').textContent = `Scan reçu le ${fmtFullDate(scan.created_at)}`;
+      document.getElementById('patientPain').textContent = scan.score_douleur ?? '-';
+      document.getElementById('patientZone').textContent = arrayText(scan.zones) || '-';
+      document.getElementById('patientSince').textContent = scan.douleur_depuis || scan.duree || '-';
+      document.getElementById('patientEvolution').textContent = scan.evolution || '-';
+      document.getElementById('patientProblem').textContent = arrayText(scan.gene) || '-';
+      document.getElementById('patientType').textContent = arrayText(scan.type_douleur) || '-';
+      document.getElementById('patientGoal').textContent = scan.objectif || '-';
+      document.getElementById('painBar').style.width = Math.min(Math.max(safePain * 10, 0), 100) + '%';
+
+      if (openOnMobile && window.matchMedia('(max-width: 720px)').matches) {
+        document.body.classList.add('mobile-detail-open');
+        setTimeout(function() {
+          document.querySelector('.detail')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 80);
+      }
+    }
+
+    function closeMobileDetail() {
+      document.body.classList.remove('mobile-detail-open');
+      setTimeout(function() {
+        document.querySelector('aside.card')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 80);
+    }
+
+    async function deleteScan(event, scanId) {
+      event.stopPropagation();
+
+      if (!scanId) {
+        alert('Impossible de supprimer ce scan.');
+        return;
+      }
+
+      const confirmed = confirm('Voulez-vous vraiment supprimer ce scan ? Cette action est définitive.');
+
+      if (!confirmed) return;
+
+      const { error } = await sb
+        .from('scans')
+        .delete()
+        .eq('id', scanId);
+
+      if (error) {
+        console.error(error);
+        alert('Erreur lors de la suppression : ' + (error.message || 'suppression impossible'));
+        return;
+      }
+
+      scans = scans.filter(function(scan) {
+        return (scan.id || scan.identifiant) !== scanId;
+      });
+
+      if (activeScanIndex >= scans.length) {
+        activeScanIndex = Math.max(0, scans.length - 1);
+      }
+
+      renderScans();
+      renderKpis();
+      renderAnalytics();
+
+      if (scans.length > 0) {
+        selectScan(activeScanIndex);
+      } else {
+        document.getElementById('patientName').textContent = 'Aucun scan';
+      }
+    }
+
+    function renderKpis() {
+      const now = new Date();
+      const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const todayCount = scans.filter(scan => new Date(scan.created_at) >= todayStart).length;
+
+      const completedSessions = scans.length;
+      const abandonedSessions = uniqueSessionCount(scanEvents.filter(event => isEvent(event, ['scan_abandoned', 'scan_abandonné'])));
+      const totalJourneys = completedSessions + abandonedSessions;
+
+      const completionRate = totalJourneys ? Math.round((completedSessions / totalJourneys) * 100) : 0;
+      const abandonRate = totalJourneys ? Math.round((abandonedSessions / totalJourneys) * 100) : 0;
+
+      const avgDurationMs = averageCompletedJourneyDuration();
+
+      document.getElementById('kpiToday').textContent = todayCount;
+      document.getElementById('kpiTotal').textContent = scans.length + ' scans au total';
+      document.getElementById('kpiCompletion').textContent = completionRate + '%';
+      document.getElementById('kpiAbandon').textContent = abandonRate + '%';
+      document.getElementById('kpiAverageTime').textContent = avgDurationMs ? formatDuration(avgDurationMs) : 'à tester';
+    }
+
+    function renderAnalytics() {
+      renderStatBlock(0, 'Réponses · zones douloureuses', countArrayAnswers('zones'));
+      renderStatBlock(1, 'Temps moyen par question', averageTimeByQuestion());
+      renderStatBlock(2, 'Abandons par question', abandonByQuestion(), true);
+
+      const footer = document.querySelector('.footer-note');
+      if (footer) {
+        footer.textContent = 'Analytics en direct : réponses issues de la table scans, temps et abandons issus de la table scan_events.';
+      }
+    }
+    function renderStatBlock(blockIndex, title, stats, isProblemBlock = false) {
+      const blocks = document.querySelectorAll('.analytics-block');
+      const block = blocks[blockIndex];
+      if (!block) return;
+
+      const topStats = stats.slice(0, 4);
+      const max = topStats[0]?.count || topStats[0]?.value || 1;
+
+      block.classList.toggle('problem', Boolean(isProblemBlock));
+      block.innerHTML = `
+        <div class="analytics-title">${esc(title)}</div>
+        ${topStats.length ? topStats.map(function(item) {
+          const rawValue = item.count ?? item.value ?? 0;
+          const percent = item.percent !== undefined ? item.percent : (scans.length ? Math.round((rawValue / scans.length) * 100) : 0);
+          const width = Math.max(Math.round((rawValue / max) * 100), 8);
+          const displayValue = item.display || (percent + '%');
+          return `
+            <div class="stat-line">
+              <div class="stat-top"><span>${esc(item.label)}</span><strong>${esc(displayValue)}</strong></div>
+              <div class="mini-bar"><div class="mini-fill" style="width: ${width}%"></div></div>
+            </div>
+          `;
+        }).join('') : '<div style="color:var(--muted);font-size:14px;">Pas encore assez de données.</div>'}
+      `;
+    }
+
+    function countArrayAnswers(field) {
+      const counts = {};
+      scans.forEach(function(scan) {
+        const values = Array.isArray(scan[field]) ? scan[field] : [];
+        values.forEach(function(value) {
+          if (!value) return;
+          counts[value] = (counts[value] || 0) + 1;
+        });
+      });
+      return sortCounts(counts);
+    }
+
+    function countTextAnswers(field) {
+      const fields = Array.isArray(field) ? field : [field];
+      const counts = {};
+      scans.forEach(function(scan) {
+        const value = fields.map(function(key) { return scan[key]; }).find(Boolean);
+        if (!value) return;
+        counts[value] = (counts[value] || 0) + 1;
+      });
+      return sortCounts(counts);
+    }
+
+    function averageTimeByQuestion() {
+      const grouped = {};
+
+      scanEvents
+        .filter(event => isEvent(event, ['question_left', 'question_gauche']) && Number.isFinite(Number(event.duration_ms ?? event.durée_ms ?? event.duree_ms)))
+        .forEach(function(event) {
+          const label = event.question_label || event.question_key || event.page_id || 'Question inconnue';
+          if (!grouped[label]) grouped[label] = [];
+          grouped[label].push(Number((event.duration_ms ?? event.durée_ms ?? event.duree_ms)));
+        });
+
+      return Object.entries(grouped)
+        .map(function([label, durations]) {
+          const avg = Math.round(durations.reduce((sum, value) => sum + value, 0) / durations.length);
+          return {
+            label,
+            value: avg,
+            count: avg,
+            display: formatDuration(avg)
+          };
+        })
+        .sort((a, b) => b.value - a.value);
+    }
+
+    function abandonByQuestion() {
+      const abandonedEvents = scanEvents.filter(event => isEvent(event, ['scan_abandoned', 'scan_abandonné']));
+      const abandonedSessions = uniqueSessionCount(abandonedEvents);
+      const totalJourneys = Math.max(scans.length + abandonedSessions, 1);
+      const sessionsByQuestion = {};
+
+      abandonedEvents.forEach(function(event) {
+        const label = event.question_label || event.question_key || event.page_id || 'Question inconnue';
+        const sessionId = event.session_id || event.id;
+        if (!sessionsByQuestion[label]) sessionsByQuestion[label] = new Set();
+        sessionsByQuestion[label].add(sessionId);
+      });
+
+      return Object.entries(sessionsByQuestion)
+        .map(function([label, sessions]) {
+          const count = sessions.size;
+          const percent = Math.min(100, Math.round((count / totalJourneys) * 100));
+          return {
+            label,
+            count,
+            percent,
+            display: percent + '% abandon'
+          };
+        })
+        .sort((a, b) => b.count - a.count);
+    }
+
+    function uniqueSessionCount(events) {
+      return new Set(events.map(event => event.session_id).filter(Boolean)).size;
+    }
+
+    function eventType(event) {
+      return event.event_type || event.type_evenement || event.type_événement || event['type_événement'] || '';
+    }
+
+    function eventDuration(event) {
+      const value = event.duration_ms ?? event.durée_ms ?? event.duree_ms ?? event['durée_ms'];
+      const number = Number(value);
+      return Number.isFinite(number) ? number : 0;
+    }
+
+    function eventCreatedAt(event) {
+      return event.created_at || event.créé_à || event.cree_a || event.createdAt || null;
+    }
+
+    function isEvent(event, names) {
+      return names.includes(eventType(event));
+    }
+
+    function averageCompletedJourneyDuration() {
+      const completedEvents = scanEvents.filter(function(event) {
+        return isEvent(event, ['scan_completed', 'scan_terminé', 'scan_termine']);
+      });
+
+      if (!completedEvents.length) {
+        return 0;
+      }
+
+      const durations = completedEvents
+        .map(function(event) {
+          const directDuration = eventDuration(event);
+          if (directDuration > 0) return directDuration;
+
+          const sessionId = event.session_id;
+          const completedAt = eventCreatedAt(event);
+          if (!sessionId || !completedAt) return 0;
+
+          const startedEvent = scanEvents.find(function(candidate) {
+            return candidate.session_id === sessionId
+              && isEvent(candidate, ['scan_started', 'scan_démarré'])
+              && eventCreatedAt(candidate);
+          });
+
+          if (!startedEvent) return 0;
+
+          const startMs = new Date(eventCreatedAt(startedEvent)).getTime();
+          const endMs = new Date(completedAt).getTime();
+          const duration = endMs - startMs;
+
+          return Number.isFinite(duration) && duration > 0 ? duration : 0;
+        })
+        .filter(duration => duration > 0);
+
+      if (!durations.length) return 0;
+
+      return Math.round(
+        durations.reduce((sum, duration) => sum + duration, 0) / durations.length
+      );
+    }
+
+    function formatDuration(ms) {
+      const seconds = Math.round(ms / 1000);
+      if (seconds < 60) return seconds + 's';
+      const minutes = Math.floor(seconds / 60);
+      const rest = seconds % 60;
+      return minutes + 'm' + String(rest).padStart(2, '0');
+    }
+
+    function sortCounts(counts) {
+      return Object.entries(counts)
+        .map(([label, count]) => ({ label, count }))
+        .sort((a, b) => b.count - a.count);
+    }
+
+    function isCompleted(scan) {
+      return Boolean(scan.objectif || scan.score_douleur || scan.zones?.length);
+    }
+
+    function firstValue(value, fallback) {
+      if (Array.isArray(value) && value.length) return value[0];
+      if (value) return value;
+      return fallback;
+    }
+
+    function arrayText(value) {
+      if (Array.isArray(value)) return value.join(', ');
+      return value || '';
+    }
+
+    function fmtDate(date) {
+      if (!date) return '-';
+      return new Date(date).toLocaleString('fr-FR', {
+        day: '2-digit',
+        month: 'short',
+        hour: '2-digit',
+        minute: '2-digit'
+      }).replace('.', '');
+    }
+
+    function fmtFullDate(date) {
+      if (!date) return '-';
+      return new Date(date).toLocaleString('fr-FR', {
+        day: '2-digit',
+        month: 'long',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    }
+
+    function esc(value) {
+      return String(value ?? '').replace(/[&<>"']/g, function(char) {
+        return {
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          '"': '&quot;',
+          "'": '&#039;'
+        }[char];
+      });
+    }
+
+    window.addEventListener('resize', function() {
+      if (!window.matchMedia('(max-width: 720px)').matches) {
+        document.body.classList.remove('mobile-detail-open');
+      }
+    });
+    loadScans();
+  </script>
+</body>
+</html>
