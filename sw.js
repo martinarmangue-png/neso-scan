@@ -1,4 +1,4 @@
-const CACHE_NAME = 'neso-app-v2-20260606';
+const CACHE_NAME = 'neso-app-v2-20260606-2';
 const APP_SHELL = [
   './',
   './index.html',

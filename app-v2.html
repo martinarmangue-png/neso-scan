@@ -343,6 +343,7 @@
       align-items: center;
       padding: 17px 0;
       border-bottom: 1px solid var(--line);
+      transition: transform 0.18s ease, opacity 0.18s ease;
     }
 
     .exercise-row:last-child {
@@ -352,6 +353,16 @@
 
     .exercise-row:first-child {
       padding-top: 0;
+    }
+
+    .exercise-row[data-exercise-id],
+    .exercise-card[data-exercise-id] {
+      cursor: pointer;
+    }
+
+    .exercise-row[data-exercise-id]:active,
+    .exercise-card[data-exercise-id]:active {
+      transform: scale(0.99);
     }
 
     .exercise-icon,
@@ -392,12 +403,21 @@
       font-size: 24px;
       font-weight: 800;
       flex: 0 0 auto;
+      transition: background 0.18s ease, border 0.18s ease, color 0.18s ease, transform 0.18s ease;
     }
 
     .status-dot.todo {
       background: #fff;
       color: #ced9ec;
       border: 4px solid #d9e3f6;
+    }
+
+    .is-completed .status-dot {
+      transform: scale(1);
+    }
+
+    .is-incomplete {
+      opacity: 0.96;
     }
 
     .pain-summary {
@@ -643,6 +663,11 @@
       margin-bottom: 16px;
       min-height: 102px;
       padding: 20px;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+    }
+
+    .exercise-card.is-completed {
+      border-color: rgba(6, 154, 111, 0.16);
     }
 
     .exercise-card .exercise-icon {
@@ -865,6 +890,32 @@
       filter: saturate(1.15);
     }
 
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: calc(var(--tabbar-height) + 18px + env(safe-area-inset-bottom));
+      z-index: 30;
+      width: min(calc(100% - 36px), 420px);
+      min-height: 48px;
+      padding: 13px 18px;
+      border-radius: 18px;
+      background: rgba(23, 32, 51, 0.92);
+      color: #fff;
+      text-align: center;
+      font-size: 14px;
+      font-weight: 800;
+      box-shadow: 0 18px 44px rgba(23, 32, 51, 0.24);
+      transform: translate(-50%, 14px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+
     @media (max-width: 370px) {
       .hero {
         padding-left: 20px;
@@ -919,6 +970,152 @@
         border-radius: 0 0 34px 34px;
       }
     }
+
+    @media (min-width: 900px) {
+      body {
+        min-height: 100svh;
+        padding: 24px;
+        background: linear-gradient(135deg, #dce8f6 0%, #f3f7fd 55%, #dcefe8 100%);
+      }
+
+      .app-shell {
+        width: min(100%, 1180px);
+        min-height: calc(100svh - 48px);
+        display: grid;
+        grid-template-columns: 112px minmax(0, 1fr);
+        border-radius: 32px;
+      }
+
+      .screens {
+        grid-column: 2;
+        grid-row: 1;
+        min-height: calc(100svh - 48px);
+        max-height: calc(100svh - 48px);
+        overflow-y: auto;
+        padding: 0;
+      }
+
+      .screens::-webkit-scrollbar {
+        width: 10px;
+      }
+
+      .screens::-webkit-scrollbar-thumb {
+        background: #d8e3f1;
+        border-radius: 999px;
+        border: 3px solid var(--bg);
+      }
+
+      .screen {
+        min-height: calc(100svh - 48px);
+        padding: 24px;
+      }
+
+      .screen.active {
+        display: grid;
+        grid-template-columns: minmax(280px, 0.82fr) minmax(0, 1.35fr);
+        gap: 24px;
+        align-items: start;
+      }
+
+      .hero,
+      .hero.compact,
+      .explore-hero {
+        min-height: 0;
+        border-radius: 28px;
+        padding: 32px;
+        position: sticky;
+        top: 24px;
+      }
+
+      .hero-title {
+        font-size: clamp(42px, 4.2vw, 60px);
+      }
+
+      .hero-subtitle {
+        font-size: 18px;
+      }
+
+      .appointment-card {
+        grid-template-columns: 1fr;
+      }
+
+      .pill-button {
+        width: fit-content;
+      }
+
+      .content {
+        padding: 0;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 20px;
+        align-items: start;
+        width: 100%;
+        max-width: 720px;
+      }
+
+      .screen[data-screen="exercices"] .content {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        max-width: none;
+      }
+
+      .section-title {
+        grid-column: 1 / -1;
+        margin: 0 4px -4px;
+      }
+
+      .card + .section-title,
+      .card + .card,
+      .list-card + .section-title {
+        margin-top: 0;
+      }
+
+      .chart-card,
+      .message-card,
+      .profile-card,
+      .share-card,
+      .content > .primary-button {
+        grid-column: 1 / -1;
+      }
+
+      .exercise-card {
+        min-height: 132px;
+        margin-bottom: 0;
+      }
+
+      .tabbar {
+        position: static;
+        grid-column: 1;
+        grid-row: 1;
+        width: auto;
+        min-height: 100%;
+        height: 100%;
+        padding: 22px 12px;
+        transform: none;
+        border-top: 0;
+        border-right: 1px solid #dfe6f1;
+        border-radius: 0;
+        grid-template-columns: 1fr;
+        grid-auto-rows: min-content;
+        align-content: start;
+        gap: 8px;
+        box-shadow: none;
+      }
+
+      .tab {
+        height: 82px;
+        border-radius: 22px;
+        font-size: 12px;
+      }
+
+      .tab.active {
+        background: #edf4ff;
+      }
+
+      .toast {
+        bottom: 34px;
+        width: min(420px, calc(100% - 180px));
+      }
+    }
   </style>
 </head>
 <body>
@@ -940,7 +1137,7 @@
               <div class="appointment-title">Kiné Martin</div>
               <div class="appointment-meta">Demain · 10h00 · Cabinet Centre</div>
             </div>
-            <button class="pill-button" type="button">Voir →</button>
+            <button class="pill-button" type="button" data-open-tab="dossier">Voir →</button>
           </article>
         </header>
 
@@ -969,29 +1166,29 @@
 
           <div class="section-title">💪 Exercices du jour</div>
           <article class="card list-card">
-            <div class="exercise-row">
+            <div class="exercise-row" data-exercise-id="hamstrings" role="button" tabindex="0" aria-pressed="true">
               <div class="exercise-icon">🦵</div>
               <div>
                 <div class="row-title">Étirement ischio-jambiers</div>
                 <div class="row-meta">3 séries · 30 secondes</div>
               </div>
-              <div class="status-dot">✓</div>
+              <div class="status-dot" data-status-dot>✓</div>
             </div>
-            <div class="exercise-row">
+            <div class="exercise-row" data-exercise-id="backStrength" role="button" tabindex="0" aria-pressed="true">
               <div class="exercise-icon">🏋️</div>
               <div>
                 <div class="row-title">Renforcement lombaire</div>
                 <div class="row-meta">3 séries · 15 répétitions</div>
               </div>
-              <div class="status-dot">✓</div>
+              <div class="status-dot" data-status-dot>✓</div>
             </div>
-            <div class="exercise-row">
+            <div class="exercise-row" data-exercise-id="core" role="button" tabindex="0" aria-pressed="false">
               <div class="exercise-icon">🧘</div>
               <div>
                 <div class="row-title">Gainage abdominal</div>
                 <div class="row-meta">3 séries · 45 secondes</div>
               </div>
-              <div class="status-dot todo">→</div>
+              <div class="status-dot todo" data-status-dot></div>
             </div>
           </article>
 
@@ -1111,50 +1308,50 @@
           <h1 class="hero-title" id="exercices-title">Mes exercices</h1>
           <div class="hero-subtitle">Prescrit par Dr. Martin · Aujourd'hui</div>
           <div style="display:grid;grid-template-columns:1fr auto;gap:18px;align-items:center;margin-top:34px;">
-            <div class="progress-line" style="--value:50%;background:rgba(255,255,255,0.25);margin:0;"><span style="background:#fff;"></span></div>
-            <div style="font-size:22px;font-weight:800;">2 / 4</div>
+            <div class="progress-line" data-exercise-progress-bar style="--value:50%;background:rgba(255,255,255,0.25);margin:0;"><span style="background:#fff;"></span></div>
+            <div data-exercise-progress style="font-size:22px;font-weight:800;">2 / 4</div>
           </div>
         </header>
 
         <div class="content">
-          <article class="card exercise-card">
+          <article class="card exercise-card" data-exercise-id="hamstrings" role="button" tabindex="0" aria-pressed="true">
             <div class="exercise-icon">🦵</div>
             <div>
               <div class="row-title">Étirement ischio-jambiers</div>
               <div class="row-meta">3 séries · 30 secondes</div>
               <div class="tag">Dos / Lombaires</div>
             </div>
-            <div class="status-dot">✓</div>
+            <div class="status-dot" data-status-dot>✓</div>
           </article>
 
-          <article class="card exercise-card">
+          <article class="card exercise-card" data-exercise-id="backStrength" role="button" tabindex="0" aria-pressed="true">
             <div class="exercise-icon">🏋️</div>
             <div>
               <div class="row-title">Renforcement lombaire</div>
               <div class="row-meta">3 séries · 15 répétitions</div>
               <div class="tag">Dos / Lombaires</div>
             </div>
-            <div class="status-dot">✓</div>
+            <div class="status-dot" data-status-dot>✓</div>
           </article>
 
-          <article class="card exercise-card">
+          <article class="card exercise-card" data-exercise-id="core" role="button" tabindex="0" aria-pressed="false">
             <div class="exercise-icon">🧘</div>
             <div>
               <div class="row-title">Gainage abdominal</div>
               <div class="row-meta">3 séries · 45 secondes</div>
               <div class="tag">Core</div>
             </div>
-            <div class="status-dot todo"></div>
+            <div class="status-dot todo" data-status-dot></div>
           </article>
 
-          <article class="card exercise-card">
+          <article class="card exercise-card" data-exercise-id="rotation" role="button" tabindex="0" aria-pressed="false">
             <div class="exercise-icon">🔄</div>
             <div>
               <div class="row-title">Rotation du tronc</div>
               <div class="row-meta">2 séries · 10 répétitions</div>
               <div class="tag">Dos / Lombaires</div>
             </div>
-            <div class="status-dot todo"></div>
+            <div class="status-dot todo" data-status-dot></div>
           </article>
 
           <article class="card message-card">
@@ -1187,7 +1384,7 @@
               <h2 class="card-title">Partager mon dossier</h2>
               <div class="row-meta">QR code sécurisé · Révocable à tout moment</div>
             </div>
-            <button class="qr-button" type="button">QR →</button>
+            <button class="qr-button" type="button" data-toast="QR sécurisé prêt à partager bientôt.">QR →</button>
           </article>
 
           <div class="section-title">
@@ -1246,7 +1443,7 @@
             <div class="active-badge">Actif</div>
           </article>
 
-          <button class="primary-button" type="button" style="margin-top:24px;">⬇️ Exporter mon dossier PDF</button>
+          <button class="primary-button" type="button" data-toast="Export PDF prévu dans la prochaine connexion dossier." style="margin-top:24px;">⬇️ Exporter mon dossier PDF</button>
         </div>
       </section>
 
@@ -1317,6 +1514,7 @@
         <span>explore</span>
       </button>
     </nav>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
   </div>
 
   <script>
@@ -1326,17 +1524,28 @@
     const painScoreNodes = document.querySelectorAll('.pain-score-inline');
     const painScoreNow = document.querySelector('.pain-score-now');
     const historyList = document.getElementById('historyList');
+    const toast = document.getElementById('toast');
     const storedPain = Number(localStorage.getItem('neso-v2-pain') || 3);
     const validTabs = ['home', 'suivi', 'exercices', 'dossier', 'explore'];
     let currentPain = Number.isFinite(storedPain) ? storedPain : 3;
 
-    const history = [
+    const painHistory = [
       { label: "Auj.", score: currentPain },
       { label: "S9", score: 3 },
       { label: "S8", score: 4 },
       { label: "S7", score: 4 },
       { label: "S6", score: 5 }
     ];
+
+    const exerciseDefaults = {
+      hamstrings: true,
+      backStrength: true,
+      core: false,
+      rotation: false
+    };
+
+    let exerciseState = loadExerciseState();
+    let toastTimeout;
 
     function setTab(name) {
       if (!validTabs.includes(name)) {
@@ -1352,11 +1561,90 @@
       });
 
       document.querySelector('.app-shell').scrollTo({ top: 0, behavior: 'smooth' });
+      document.querySelector('.screens')?.scrollTo({ top: 0, behavior: 'smooth' });
       window.scrollTo({ top: 0, behavior: 'smooth' });
 
       if (location.hash !== '#' + name) {
-        history.replaceState(null, '', '#' + name);
+        window.history.replaceState(null, '', '#' + name);
       }
+    }
+
+    function loadExerciseState() {
+      try {
+        return {
+          ...exerciseDefaults,
+          ...JSON.parse(localStorage.getItem('neso-v2-exercises') || '{}')
+        };
+      } catch (error) {
+        return { ...exerciseDefaults };
+      }
+    }
+
+    function saveExerciseState() {
+      localStorage.setItem('neso-v2-exercises', JSON.stringify(exerciseState));
+    }
+
+    function showToast(message) {
+      if (!toast) return;
+      clearTimeout(toastTimeout);
+      toast.textContent = message;
+      toast.classList.add('show');
+      toastTimeout = setTimeout(function() {
+        toast.classList.remove('show');
+      }, 1900);
+    }
+
+    function renderExerciseState() {
+      const ids = Object.keys(exerciseDefaults);
+      const completedCount = ids.filter(function(id) {
+        return Boolean(exerciseState[id]);
+      }).length;
+      const completion = Math.round((completedCount / ids.length) * 100);
+
+      document.querySelectorAll('[data-exercise-id]').forEach(function(item) {
+        const id = item.dataset.exerciseId;
+        const completed = Boolean(exerciseState[id]);
+        const status = item.querySelector('[data-status-dot]');
+
+        item.classList.toggle('is-completed', completed);
+        item.classList.toggle('is-incomplete', !completed);
+        item.setAttribute('aria-pressed', completed ? 'true' : 'false');
+
+        if (status) {
+          status.textContent = completed ? '✓' : '';
+          status.classList.toggle('todo', !completed);
+        }
+      });
+
+      document.querySelectorAll('[data-exercise-progress]').forEach(function(node) {
+        node.textContent = completedCount + ' / ' + ids.length;
+      });
+
+      document.querySelectorAll('[data-exercise-progress-bar]').forEach(function(node) {
+        node.style.setProperty('--value', completion + '%');
+      });
+    }
+
+    function toggleExercise(id) {
+      if (!Object.prototype.hasOwnProperty.call(exerciseDefaults, id)) return;
+      exerciseState[id] = !exerciseState[id];
+      saveExerciseState();
+      renderExerciseState();
+      showToast(exerciseState[id] ? 'Exercice validé.' : 'Exercice remis à faire.');
+    }
+
+    function attachExerciseHandlers() {
+      document.querySelectorAll('[data-exercise-id]').forEach(function(item) {
+        item.addEventListener('click', function() {
+          toggleExercise(item.dataset.exerciseId);
+        });
+
+        item.addEventListener('keydown', function(event) {
+          if (event.key !== 'Enter' && event.key !== ' ') return;
+          event.preventDefault();
+          toggleExercise(item.dataset.exerciseId);
+        });
+      });
     }
 
     function setPain(score) {
@@ -1371,7 +1659,7 @@
       if (painScoreNow) {
         painScoreNow.textContent = score;
       }
-      history[0].score = score;
+      painHistory[0].score = score;
       renderHistory();
     }
 
@@ -1390,7 +1678,7 @@
 
     function renderHistory() {
       if (!historyList) return;
-      historyList.innerHTML = history.map(function(item) {
+      historyList.innerHTML = painHistory.map(function(item) {
         const warning = item.score >= 4;
         return (
           '<div class="history-row">' +
@@ -1408,12 +1696,27 @@
       });
     });
 
-    document.getElementById('savePain')?.addEventListener('click', function() {
-      setPain(currentPain);
+    document.querySelectorAll('[data-open-tab]').forEach(function(button) {
+      button.addEventListener('click', function() {
+        setTab(button.dataset.openTab);
+      });
     });
 
+    document.querySelectorAll('[data-toast]').forEach(function(button) {
+      button.addEventListener('click', function() {
+        showToast(button.dataset.toast);
+      });
+    });
+
+    document.getElementById('savePain')?.addEventListener('click', function() {
+      setPain(currentPain);
+      showToast('Douleur enregistrée.');
+    });
+
+    attachExerciseHandlers();
     renderPainPicker();
     setPain(currentPain);
+    renderExerciseState();
     renderHistory();
     setTab(location.hash.replace('#', '') || 'home');
 
