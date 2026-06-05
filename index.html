@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#15558a" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="neso-icon.svg" />
   <title>NESO Santé</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
@@ -122,9 +125,14 @@
 
         <div class="mt-8 sm:mt-10 flex flex-col sm:flex-row gap-3 sm:gap-4 flex-wrap">
 
-          <a href="scan.html"
+          <a href="app-v2.html"
              class="neso-gradient-button text-white px-7 py-4 rounded-full font-semibold transition inline-flex items-center justify-center w-full sm:w-auto">
-            Commencer mon scan
+            Ouvrir l'app mobile V2
+          </a>
+
+          <a href="scan.html"
+             class="glass-button border border-[var(--neso-border)] px-7 py-4 rounded-full font-semibold transition hover:border-[var(--neso-blue)] hover:text-[var(--neso-blue)] text-center w-full sm:w-auto">
+            Commencer mon scan V1
           </a>
 
           <a href="#fonctionnement"

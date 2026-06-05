@@ -1,0 +1,19 @@
+{
+  "name": "NESO Santé",
+  "short_name": "NESO",
+  "description": "Web app mobile NESO pour le suivi, les exercices et le dossier patient.",
+  "start_url": "app-v2.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f2f6fc",
+  "theme_color": "#21498f",
+  "icons": [
+    {
+      "src": "neso-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

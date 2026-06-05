@@ -1,0 +1,1431 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#21498f" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="NESO" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="neso-icon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <title>NESO Santé · App V2</title>
+  <style>
+    :root {
+      --blue: #21498f;
+      --blue-bright: #2d67ee;
+      --teal: #079b72;
+      --green: #069a6f;
+      --ink: #172033;
+      --muted: #70809a;
+      --soft-muted: #98a6ba;
+      --line: #e5ebf4;
+      --bg: #f2f6fc;
+      --card: #ffffff;
+      --danger: #f23f4b;
+      --warning: #f59b00;
+      --shadow: 0 18px 50px rgba(28, 56, 96, 0.09);
+      --radius: 28px;
+      --tabbar-height: 82px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      background: #dfe8f5;
+      color: var(--ink);
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      min-height: 100svh;
+      background: #dfe8f5;
+    }
+
+    button,
+    a {
+      font: inherit;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    button {
+      border: 0;
+      cursor: pointer;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .app-shell {
+      width: min(100%, 520px);
+      min-height: 100svh;
+      margin: 0 auto;
+      background: var(--bg);
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 24px 80px rgba(21, 48, 83, 0.18);
+    }
+
+    .screens {
+      min-height: 100svh;
+      padding-bottom: calc(var(--tabbar-height) + env(safe-area-inset-bottom));
+    }
+
+    .screen {
+      display: none;
+      min-height: 100svh;
+      padding-bottom: 28px;
+    }
+
+    .screen.active {
+      display: block;
+      animation: screenIn 0.24s ease-out;
+    }
+
+    @keyframes screenIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .hero {
+      min-height: 232px;
+      padding: calc(32px + env(safe-area-inset-top)) 28px 32px;
+      color: #fff;
+      background: linear-gradient(135deg, #203f82 0%, #2f66f3 48%, #079a72 100%);
+    }
+
+    .hero.compact {
+      min-height: 190px;
+    }
+
+    .hero-eyebrow {
+      color: rgba(255, 255, 255, 0.74);
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+
+    .hero-title {
+      font-size: clamp(38px, 10vw, 50px);
+      line-height: 1.02;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .hero-subtitle {
+      margin-top: 10px;
+      color: rgba(255, 255, 255, 0.72);
+      font-size: 20px;
+      line-height: 1.35;
+      font-weight: 600;
+    }
+
+    .hero-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .avatar {
+      width: 62px;
+      height: 62px;
+      border-radius: 999px;
+      border: 4px solid rgba(255, 255, 255, 0.38);
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-size: 22px;
+      font-weight: 800;
+      flex: 0 0 auto;
+      background: rgba(255, 255, 255, 0.13);
+    }
+
+    .appointment-card {
+      margin-top: 30px;
+      padding: 20px 18px;
+      border-radius: 24px;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      background: rgba(255, 255, 255, 0.14);
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+    }
+
+    .appointment-label {
+      color: rgba(255, 255, 255, 0.7);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      font-size: 11px;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+
+    .appointment-title {
+      font-size: 21px;
+      font-weight: 800;
+    }
+
+    .appointment-meta {
+      margin-top: 6px;
+      color: rgba(255, 255, 255, 0.78);
+      font-size: 15px;
+      line-height: 1.35;
+      font-weight: 600;
+    }
+
+    .pill-button {
+      min-height: 52px;
+      padding: 0 18px;
+      border-radius: 999px;
+      background: #fff;
+      color: #17315a;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      white-space: nowrap;
+    }
+
+    .content {
+      padding: 24px 22px 0;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin: 8px 4px 18px;
+      color: #69778e;
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+    }
+
+    .section-link {
+      color: #2f66f3;
+      letter-spacing: 0;
+      text-transform: none;
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(229, 235, 244, 0.72);
+      padding: 22px;
+    }
+
+    .card + .section-title,
+    .card + .card,
+    .list-card + .section-title {
+      margin-top: 26px;
+    }
+
+    .streak-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 22px;
+    }
+
+    .card-title {
+      color: var(--ink);
+      font-size: 22px;
+      line-height: 1.18;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .record-pill {
+      min-height: 36px;
+      padding: 0 16px;
+      border-radius: 999px;
+      background: #fa454d;
+      color: #fff;
+      font-size: 15px;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      white-space: nowrap;
+    }
+
+    .week {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .day {
+      height: 46px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background: #edf2f8;
+      color: #6e7e95;
+      font-weight: 800;
+    }
+
+    .day.done {
+      background: var(--blue-bright);
+      color: #fff;
+    }
+
+    .day.today {
+      background: #edf2f8;
+      color: #687890;
+      outline: 3px solid var(--blue-bright);
+      outline-offset: -3px;
+    }
+
+    .inline-metric {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+      color: var(--muted);
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .inline-metric strong {
+      color: var(--blue-bright);
+      font-weight: 800;
+    }
+
+    .progress-line {
+      height: 8px;
+      background: #edf2f8;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 14px;
+    }
+
+    .progress-line span {
+      display: block;
+      height: 100%;
+      width: var(--value);
+      background: var(--blue-bright);
+      border-radius: inherit;
+    }
+
+    .exercise-row {
+      display: grid;
+      grid-template-columns: 58px 1fr auto;
+      gap: 14px;
+      align-items: center;
+      padding: 17px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .exercise-row:last-child {
+      border-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .exercise-row:first-child {
+      padding-top: 0;
+    }
+
+    .exercise-icon,
+    .file-icon {
+      width: 58px;
+      height: 58px;
+      border-radius: 18px;
+      display: grid;
+      place-items: center;
+      background: #eef3fb;
+      font-size: 28px;
+      flex: 0 0 auto;
+    }
+
+    .row-title {
+      color: var(--ink);
+      font-size: 19px;
+      line-height: 1.18;
+      font-weight: 800;
+    }
+
+    .row-meta {
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.35;
+      font-weight: 600;
+    }
+
+    .status-dot {
+      width: 46px;
+      height: 46px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      background: var(--green);
+      font-size: 24px;
+      font-weight: 800;
+      flex: 0 0 auto;
+    }
+
+    .status-dot.todo {
+      background: #fff;
+      color: #ced9ec;
+      border: 4px solid #d9e3f6;
+    }
+
+    .pain-summary {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 18px;
+      align-items: end;
+      margin-top: 34px;
+    }
+
+    .pain-score {
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+    }
+
+    .pain-score strong {
+      color: #fff;
+      font-size: 78px;
+      line-height: 0.8;
+      font-weight: 800;
+    }
+
+    .pain-score span {
+      color: rgba(255, 255, 255, 0.68);
+      font-size: 27px;
+      font-weight: 800;
+    }
+
+    .pain-change {
+      margin-top: 18px;
+      color: #66f2d5;
+      font-size: 19px;
+      font-weight: 800;
+    }
+
+    .previous-score {
+      color: rgba(255, 255, 255, 0.5);
+      text-align: right;
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 9px;
+    }
+
+    .previous-score strong {
+      display: block;
+      color: rgba(102, 242, 213, 0.64);
+      font-size: 34px;
+      margin-top: 7px;
+    }
+
+    .chart-card {
+      padding: 24px 18px 20px;
+    }
+
+    .chart-title {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      margin: 0 4px 14px;
+      font-size: 20px;
+      font-weight: 800;
+    }
+
+    .chart-wrap {
+      width: 100%;
+      overflow: hidden;
+    }
+
+    .pain-chart {
+      width: 100%;
+      min-height: 188px;
+      display: block;
+    }
+
+    .chart-label {
+      fill: #96a5ba;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .chart-grid {
+      stroke: #e9eef7;
+      stroke-width: 2;
+      stroke-dasharray: 7 8;
+    }
+
+    .chart-line {
+      fill: none;
+      stroke: #2f66f3;
+      stroke-width: 5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .chart-point {
+      fill: #2f66f3;
+      stroke: #fff;
+      stroke-width: 4;
+    }
+
+    .chart-point.current {
+      fill: var(--green);
+      stroke: var(--green);
+    }
+
+    .chart-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      border-top: 1px solid var(--line);
+      margin-top: 10px;
+      padding-top: 18px;
+    }
+
+    .chart-stat {
+      text-align: center;
+      color: #97a5bb;
+      font-size: 15px;
+      font-weight: 700;
+      min-width: 0;
+    }
+
+    .chart-stat strong {
+      display: block;
+      margin-top: 7px;
+      font-size: 22px;
+      color: var(--green);
+      font-weight: 800;
+    }
+
+    .chart-stat:first-child strong {
+      color: var(--danger);
+    }
+
+    .chart-stat:last-child strong {
+      color: var(--blue-bright);
+    }
+
+    .pain-picker {
+      display: grid;
+      grid-template-columns: repeat(11, 1fr);
+      gap: 6px;
+      margin: 22px 0 12px;
+    }
+
+    .pain-choice {
+      aspect-ratio: 1;
+      min-width: 0;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      background: #edf2f8;
+      color: #6d7d94;
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .pain-choice.active {
+      background: var(--blue-bright);
+      color: #fff;
+      transform: scale(1.06);
+    }
+
+    .scale-labels {
+      display: flex;
+      justify-content: space-between;
+      color: #99a8bd;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 22px;
+    }
+
+    .primary-button {
+      min-height: 62px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, #1f3f79 0%, #088f6a 100%);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      font-size: 18px;
+      font-weight: 800;
+      box-shadow: 0 16px 35px rgba(7, 143, 106, 0.2);
+    }
+
+    .history-row,
+    .file-row {
+      display: grid;
+      grid-template-columns: 70px 1fr auto;
+      align-items: center;
+      gap: 14px;
+      padding: 15px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .history-row:last-child,
+    .file-row:last-child {
+      border-bottom: 0;
+    }
+
+    .history-label {
+      color: var(--muted);
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .history-track {
+      height: 9px;
+      border-radius: 999px;
+      background: #edf2f8;
+      overflow: hidden;
+    }
+
+    .history-track span {
+      display: block;
+      height: 100%;
+      width: var(--value);
+      background: var(--green);
+      border-radius: inherit;
+    }
+
+    .history-track.warning span {
+      background: var(--warning);
+    }
+
+    .history-score {
+      color: var(--green);
+      font-weight: 800;
+      font-size: 17px;
+    }
+
+    .history-score.warning {
+      color: var(--warning);
+    }
+
+    .exercise-card {
+      display: grid;
+      grid-template-columns: 50px minmax(0, 1fr) 46px;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 16px;
+      min-height: 102px;
+      padding: 20px;
+    }
+
+    .exercise-card .exercise-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 17px;
+      font-size: 24px;
+    }
+
+    .exercise-card .row-title {
+      font-size: 18px;
+    }
+
+    .exercise-card .row-meta {
+      font-size: 15px;
+    }
+
+    .tag {
+      display: inline-flex;
+      margin-top: 9px;
+      min-height: 26px;
+      align-items: center;
+      padding: 0 12px;
+      border-radius: 999px;
+      background: #edf2ff;
+      color: var(--blue-bright);
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .message-card {
+      color: #536176;
+      font-size: 19px;
+      line-height: 1.55;
+      font-weight: 600;
+    }
+
+    .message-card .signature {
+      margin-top: 18px;
+      color: #9aa8bc;
+      font-style: italic;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .profile-card {
+      background: linear-gradient(135deg, #1d386d 0%, #358960 100%);
+      color: #fff;
+      border-radius: var(--radius);
+      padding: 26px 22px;
+      box-shadow: var(--shadow);
+    }
+
+    .profile-card h2 {
+      font-size: 30px;
+      line-height: 1.1;
+      margin-bottom: 10px;
+    }
+
+    .profile-meta {
+      color: rgba(255, 255, 255, 0.68);
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 1.45;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 22px;
+    }
+
+    .chip {
+      min-height: 34px;
+      padding: 0 14px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.15);
+      color: #fff;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .chip.warning {
+      background: rgba(255, 217, 85, 0.2);
+      color: #ffdf61;
+    }
+
+    .share-card {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 18px;
+      align-items: center;
+      margin-top: 22px;
+    }
+
+    .qr-button {
+      min-height: 58px;
+      padding: 0 20px;
+      border-radius: 20px;
+      color: #fff;
+      background: linear-gradient(135deg, #1f3f79, #348b64);
+      font-size: 18px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .share-card .card-title {
+      font-size: 18px;
+    }
+
+    .share-card .row-meta {
+      font-size: 15px;
+    }
+
+    .file-row {
+      grid-template-columns: 58px 1fr 22px;
+    }
+
+    .chevron {
+      color: #cad4e2;
+      font-size: 32px;
+      line-height: 1;
+    }
+
+    .active-badge {
+      min-height: 34px;
+      padding: 0 14px;
+      border-radius: 999px;
+      background: #ebf8f2;
+      color: #42956d;
+      display: inline-flex;
+      align-items: center;
+      font-weight: 800;
+    }
+
+    .explore-hero {
+      min-height: 190px;
+      background: #d7d7d7;
+      color: #7f7f7f;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .code-mark {
+      position: absolute;
+      inset: auto auto -44px -34px;
+      font-size: 220px;
+      line-height: 0.7;
+      letter-spacing: -0.12em;
+      opacity: 0.74;
+      font-weight: 800;
+      transform: rotate(-8deg);
+      user-select: none;
+    }
+
+    .explore-card {
+      display: grid;
+      grid-template-columns: 54px 1fr auto;
+      gap: 14px;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .explore-icon {
+      width: 54px;
+      height: 54px;
+      border-radius: 17px;
+      background: #eef3fb;
+      display: grid;
+      place-items: center;
+      font-size: 25px;
+    }
+
+    .tabbar {
+      position: fixed;
+      left: 50%;
+      bottom: 0;
+      z-index: 20;
+      width: min(100%, 520px);
+      min-height: calc(var(--tabbar-height) + env(safe-area-inset-bottom));
+      padding: 8px 10px calc(8px + env(safe-area-inset-bottom));
+      background: rgba(255, 255, 255, 0.96);
+      border-top: 1px solid #dfe6f1;
+      transform: translateX(-50%);
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 3px;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 -10px 28px rgba(29, 45, 70, 0.06);
+    }
+
+    .tab {
+      min-width: 0;
+      height: 66px;
+      border-radius: 16px;
+      background: transparent;
+      color: #95a2b6;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .tab .tab-icon {
+      font-size: 23px;
+      line-height: 1;
+      filter: saturate(0.85);
+    }
+
+    .tab.active {
+      color: var(--blue-bright);
+    }
+
+    .tab.active .tab-icon {
+      filter: saturate(1.15);
+    }
+
+    @media (max-width: 370px) {
+      .hero {
+        padding-left: 20px;
+        padding-right: 20px;
+      }
+
+      .content {
+        padding-left: 14px;
+        padding-right: 14px;
+      }
+
+      .card,
+      .profile-card {
+        padding-left: 18px;
+        padding-right: 18px;
+      }
+
+      .row-title {
+        font-size: 17px;
+      }
+
+      .row-meta,
+      .history-label {
+        font-size: 14px;
+      }
+
+      .pain-picker {
+        gap: 4px;
+      }
+
+      .tab {
+        font-size: 11px;
+      }
+    }
+
+    @media (min-width: 760px) {
+      body {
+        padding: 28px 0;
+      }
+
+      .app-shell {
+        min-height: calc(100svh - 56px);
+        border-radius: 34px;
+      }
+
+      .screen {
+        min-height: calc(100svh - 56px);
+      }
+
+      .tabbar {
+        bottom: 28px;
+        border-radius: 0 0 34px 34px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <main class="screens" id="screens">
+      <section class="screen active" data-screen="home" aria-labelledby="home-title">
+        <header class="hero">
+          <div class="hero-row">
+            <div>
+              <div class="hero-eyebrow">Bonjour 👋</div>
+              <h1 class="hero-title" id="home-title">Thomas</h1>
+            </div>
+            <div class="avatar">TM</div>
+          </div>
+
+          <article class="appointment-card">
+            <div>
+              <div class="appointment-label">📅 Prochain rendez-vous</div>
+              <div class="appointment-title">Kiné Martin</div>
+              <div class="appointment-meta">Demain · 10h00 · Cabinet Centre</div>
+            </div>
+            <button class="pill-button" type="button">Voir →</button>
+          </article>
+        </header>
+
+        <div class="content">
+          <div class="section-title">🔥 Streak exercices</div>
+          <article class="card">
+            <div class="streak-head">
+              <h2 class="card-title">12 jours consécutifs !</h2>
+              <div class="record-pill">🔥 Record</div>
+            </div>
+            <div class="week" aria-label="Semaine d'exercices">
+              <div class="day done">L</div>
+              <div class="day done">M</div>
+              <div class="day done">M</div>
+              <div class="day done">J</div>
+              <div class="day done">V</div>
+              <div class="day today">S</div>
+              <div class="day">D</div>
+            </div>
+            <div class="inline-metric">
+              <span>Douleur cette semaine</span>
+              <strong>3/10 ↓</strong>
+            </div>
+            <div class="progress-line" style="--value: 32%"><span></span></div>
+          </article>
+
+          <div class="section-title">💪 Exercices du jour</div>
+          <article class="card list-card">
+            <div class="exercise-row">
+              <div class="exercise-icon">🦵</div>
+              <div>
+                <div class="row-title">Étirement ischio-jambiers</div>
+                <div class="row-meta">3 séries · 30 secondes</div>
+              </div>
+              <div class="status-dot">✓</div>
+            </div>
+            <div class="exercise-row">
+              <div class="exercise-icon">🏋️</div>
+              <div>
+                <div class="row-title">Renforcement lombaire</div>
+                <div class="row-meta">3 séries · 15 répétitions</div>
+              </div>
+              <div class="status-dot">✓</div>
+            </div>
+            <div class="exercise-row">
+              <div class="exercise-icon">🧘</div>
+              <div>
+                <div class="row-title">Gainage abdominal</div>
+                <div class="row-meta">3 séries · 45 secondes</div>
+              </div>
+              <div class="status-dot todo">→</div>
+            </div>
+          </article>
+
+          <div class="section-title">📈 Courbe de douleur</div>
+          <article class="card chart-card">
+            <div class="chart-title">Semaine 4 de rééducation <span style="margin-left:auto;color:var(--green);font-size:28px;">3/10</span></div>
+            <div class="chart-wrap">
+              <svg class="pain-chart" viewBox="0 0 360 210" role="img" aria-label="Courbe de douleur descendante">
+                <line class="chart-grid" x1="48" y1="32" x2="336" y2="32" />
+                <line class="chart-grid" x1="48" y1="74" x2="336" y2="74" />
+                <line class="chart-grid" x1="48" y1="116" x2="336" y2="116" />
+                <line class="chart-grid" x1="48" y1="158" x2="336" y2="158" />
+                <text class="chart-label" x="18" y="36">10</text>
+                <text class="chart-label" x="26" y="78">8</text>
+                <text class="chart-label" x="26" y="120">6</text>
+                <text class="chart-label" x="26" y="162">4</text>
+                <polyline class="chart-line" points="52,32 86,63 120,63 154,96 188,96 222,128 256,145 290,172 326,172" />
+                <circle class="chart-point" cx="52" cy="32" r="6" />
+                <circle class="chart-point" cx="86" cy="63" r="6" />
+                <circle class="chart-point" cx="120" cy="63" r="6" />
+                <circle class="chart-point" cx="154" cy="96" r="6" />
+                <circle class="chart-point" cx="188" cy="96" r="6" />
+                <circle class="chart-point" cx="222" cy="128" r="6" />
+                <circle class="chart-point" cx="256" cy="145" r="6" />
+                <circle class="chart-point" cx="290" cy="172" r="6" />
+                <circle class="chart-point current" cx="326" cy="172" r="9" />
+                <text class="chart-label" x="45" y="202">S1</text>
+                <text class="chart-label" x="82" y="202">S2</text>
+                <text class="chart-label" x="118" y="202">S3</text>
+                <text class="chart-label" x="152" y="202">S4</text>
+                <text class="chart-label" x="220" y="202">S6</text>
+                <text class="chart-label" x="285" y="202">S8</text>
+                <text class="chart-label" x="313" y="202">Auj.</text>
+              </svg>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="screen" data-screen="suivi" aria-labelledby="suivi-title">
+        <header class="hero">
+          <h1 class="hero-title" id="suivi-title">Mon suivi</h1>
+          <div class="hero-subtitle">Semaine 4 · Lombalgie</div>
+          <div class="pain-summary">
+            <div>
+              <div class="pain-score"><strong class="pain-score-now">3</strong><span>/10</span></div>
+              <div class="pain-change">↓ En baisse de 62%</div>
+            </div>
+            <div class="previous-score">
+              Il y a 4 semaines
+              <strong>8/10</strong>
+            </div>
+          </div>
+        </header>
+
+        <div class="content">
+          <article class="card chart-card">
+            <div class="chart-title">📈 Courbe de douleur</div>
+            <div class="chart-wrap">
+              <svg class="pain-chart" viewBox="0 0 360 210" aria-hidden="true">
+                <line class="chart-grid" x1="48" y1="32" x2="336" y2="32" />
+                <line class="chart-grid" x1="48" y1="74" x2="336" y2="74" />
+                <line class="chart-grid" x1="48" y1="116" x2="336" y2="116" />
+                <line class="chart-grid" x1="48" y1="158" x2="336" y2="158" />
+                <text class="chart-label" x="18" y="36">10</text>
+                <text class="chart-label" x="26" y="78">8</text>
+                <text class="chart-label" x="26" y="120">6</text>
+                <text class="chart-label" x="26" y="162">4</text>
+                <polyline class="chart-line" points="52,32 86,63 120,63 154,96 188,96 222,128 256,145 290,172 326,172" />
+                <circle class="chart-point" cx="52" cy="32" r="6" />
+                <circle class="chart-point" cx="86" cy="63" r="6" />
+                <circle class="chart-point" cx="120" cy="63" r="6" />
+                <circle class="chart-point" cx="154" cy="96" r="6" />
+                <circle class="chart-point" cx="188" cy="96" r="6" />
+                <circle class="chart-point" cx="222" cy="128" r="6" />
+                <circle class="chart-point" cx="256" cy="145" r="6" />
+                <circle class="chart-point" cx="290" cy="172" r="6" />
+                <circle class="chart-point current" cx="326" cy="172" r="9" />
+                <text class="chart-label" x="45" y="202">S1</text>
+                <text class="chart-label" x="82" y="202">S2</text>
+                <text class="chart-label" x="118" y="202">S3</text>
+                <text class="chart-label" x="152" y="202">S4</text>
+                <text class="chart-label" x="186" y="202">S5</text>
+                <text class="chart-label" x="220" y="202">S6</text>
+                <text class="chart-label" x="254" y="202">S7</text>
+                <text class="chart-label" x="288" y="202">S8</text>
+                <text class="chart-label" x="313" y="202">Auj.</text>
+              </svg>
+            </div>
+            <div class="chart-stats">
+              <div class="chart-stat">Au départ<strong>8/10</strong></div>
+              <div class="chart-stat">Aujourd'hui<strong class="pain-score-inline">3/10</strong></div>
+              <div class="chart-stat">Objectif<strong>&lt;2/10</strong></div>
+            </div>
+          </article>
+
+          <article class="card">
+            <h2 class="card-title">📝 Saisir ma douleur aujourd'hui</h2>
+            <div class="row-meta" style="margin-top:18px;">Niveau : <strong class="pain-score-inline" style="color:var(--ink);">3/10</strong></div>
+            <div class="pain-picker" id="painPicker" aria-label="Choisir le niveau de douleur"></div>
+            <div class="scale-labels">
+              <span>Pas de douleur</span>
+              <span>Douleur max</span>
+            </div>
+            <button class="primary-button" type="button" id="savePain">Enregistrer · <span class="pain-score-inline">3/10</span></button>
+          </article>
+
+          <article class="card">
+            <h2 class="card-title">📋 Historique</h2>
+            <div id="historyList" style="margin-top:18px;"></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="screen" data-screen="exercices" aria-labelledby="exercices-title">
+        <header class="hero compact">
+          <h1 class="hero-title" id="exercices-title">Mes exercices</h1>
+          <div class="hero-subtitle">Prescrit par Dr. Martin · Aujourd'hui</div>
+          <div style="display:grid;grid-template-columns:1fr auto;gap:18px;align-items:center;margin-top:34px;">
+            <div class="progress-line" style="--value:50%;background:rgba(255,255,255,0.25);margin:0;"><span style="background:#fff;"></span></div>
+            <div style="font-size:22px;font-weight:800;">2 / 4</div>
+          </div>
+        </header>
+
+        <div class="content">
+          <article class="card exercise-card">
+            <div class="exercise-icon">🦵</div>
+            <div>
+              <div class="row-title">Étirement ischio-jambiers</div>
+              <div class="row-meta">3 séries · 30 secondes</div>
+              <div class="tag">Dos / Lombaires</div>
+            </div>
+            <div class="status-dot">✓</div>
+          </article>
+
+          <article class="card exercise-card">
+            <div class="exercise-icon">🏋️</div>
+            <div>
+              <div class="row-title">Renforcement lombaire</div>
+              <div class="row-meta">3 séries · 15 répétitions</div>
+              <div class="tag">Dos / Lombaires</div>
+            </div>
+            <div class="status-dot">✓</div>
+          </article>
+
+          <article class="card exercise-card">
+            <div class="exercise-icon">🧘</div>
+            <div>
+              <div class="row-title">Gainage abdominal</div>
+              <div class="row-meta">3 séries · 45 secondes</div>
+              <div class="tag">Core</div>
+            </div>
+            <div class="status-dot todo"></div>
+          </article>
+
+          <article class="card exercise-card">
+            <div class="exercise-icon">🔄</div>
+            <div>
+              <div class="row-title">Rotation du tronc</div>
+              <div class="row-meta">2 séries · 10 répétitions</div>
+              <div class="tag">Dos / Lombaires</div>
+            </div>
+            <div class="status-dot todo"></div>
+          </article>
+
+          <article class="card message-card">
+            <h2 class="card-title" style="margin-bottom:14px;">💬 Message du kiné</h2>
+            Bonne semaine Thomas ! Continue sur cette lancée. La régularité est la clé de ta récupération. Pense à bien t'hydrater avant les séances.
+            <div class="signature">— Dr. Martin · 9 mai 2026</div>
+          </article>
+        </div>
+      </section>
+
+      <section class="screen" data-screen="dossier" aria-labelledby="dossier-title">
+        <header class="hero compact">
+          <h1 class="hero-title" id="dossier-title">Mon dossier</h1>
+          <div class="hero-subtitle">Mes données · Accès sécurisé</div>
+        </header>
+
+        <div class="content">
+          <article class="profile-card">
+            <h2>Thomas Martin</h2>
+            <div class="profile-meta">Né le 12/03/1986 · Groupe sanguin A+</div>
+            <div class="chips">
+              <span class="chip">Lombalgie</span>
+              <span class="chip">Pas de traitement</span>
+              <span class="chip warning">⚠️ Allergie pénicilline</span>
+            </div>
+          </article>
+
+          <article class="card share-card">
+            <div>
+              <h2 class="card-title">Partager mon dossier</h2>
+              <div class="row-meta">QR code sécurisé · Révocable à tout moment</div>
+            </div>
+            <button class="qr-button" type="button">QR →</button>
+          </article>
+
+          <div class="section-title">
+            <span>🩻 Imageries médicales</span>
+            <a class="section-link" href="#">Tout voir</a>
+          </div>
+          <article class="card">
+            <div class="file-row">
+              <div class="file-icon">🫁</div>
+              <div>
+                <div class="row-title">IRM lombaire L4-L5</div>
+                <div class="row-meta">15 mars 2026 · Dr. Dupont</div>
+              </div>
+              <div class="chevron">›</div>
+            </div>
+            <div class="file-row">
+              <div class="file-icon">📷</div>
+              <div>
+                <div class="row-title">Radio colonne lombaire</div>
+                <div class="row-meta">02 janvier 2026 · Dr. Blanc</div>
+              </div>
+              <div class="chevron">›</div>
+            </div>
+          </article>
+
+          <div class="section-title">
+            <span>📋 Ordonnances</span>
+            <a class="section-link" href="#">Tout voir</a>
+          </div>
+          <article class="card">
+            <div class="file-row">
+              <div class="file-icon">📄</div>
+              <div>
+                <div class="row-title">Ordonnance kiné · 20 séances</div>
+                <div class="row-meta">18 mars 2026 · Dr. Lefebvre</div>
+              </div>
+              <div class="chevron">›</div>
+            </div>
+            <div class="file-row">
+              <div class="file-icon">💊</div>
+              <div>
+                <div class="row-title">Anti-inflammatoires</div>
+                <div class="row-meta">18 mars 2026 · Dr. Lefebvre</div>
+              </div>
+              <div class="chevron">›</div>
+            </div>
+          </article>
+
+          <div class="section-title">🔗 Partages actifs</div>
+          <article class="card file-row" style="grid-template-columns:58px 1fr auto;">
+            <div class="file-icon">👨‍⚕️</div>
+            <div>
+              <div class="row-title">Dr. Martin — Kiné du sport</div>
+              <div class="row-meta">Accès complet · Depuis le 20 mars 2026</div>
+            </div>
+            <div class="active-badge">Actif</div>
+          </article>
+
+          <button class="primary-button" type="button" style="margin-top:24px;">⬇️ Exporter mon dossier PDF</button>
+        </div>
+      </section>
+
+      <section class="screen" data-screen="explore" aria-labelledby="explore-title">
+        <header class="hero explore-hero">
+          <div class="code-mark">&lt;/&gt;</div>
+        </header>
+        <div class="content" style="padding-top:30px;">
+          <h1 class="hero-title" id="explore-title" style="color:var(--ink);font-size:38px;">Explore</h1>
+          <p class="row-meta" style="margin-top:16px;margin-bottom:24px;font-size:19px;line-height:1.55;">
+            Accès rapide aux expériences NESO existantes et à la nouvelle V2 mobile.
+          </p>
+
+          <a class="card explore-card" href="scan.html">
+            <div class="explore-icon">🩺</div>
+            <div>
+              <div class="row-title">Scan patient V1</div>
+              <div class="row-meta">Questionnaire pré-rendez-vous</div>
+            </div>
+            <div class="chevron">›</div>
+          </a>
+
+          <a class="card explore-card" href="dashboard-v2.html">
+            <div class="explore-icon">📊</div>
+            <div>
+              <div class="row-title">Dashboard praticien</div>
+              <div class="row-meta">Vue Supabase actuelle</div>
+            </div>
+            <div class="chevron">›</div>
+          </a>
+
+          <a class="card explore-card" href="index.html">
+            <div class="explore-icon">🏠</div>
+            <div>
+              <div class="row-title">Accueil public</div>
+              <div class="row-meta">Page d'entrée NESO Santé</div>
+            </div>
+            <div class="chevron">›</div>
+          </a>
+
+          <article class="card message-card" style="margin-top:20px;">
+            <h2 class="card-title" style="margin-bottom:12px;">V2 mobile</h2>
+            Cette page garde les bases actuelles et pose la direction produit: suivi, exercices, dossier et navigation façon app.
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <nav class="tabbar" aria-label="Navigation principale">
+      <button class="tab active" type="button" data-tab="home" aria-label="Accueil">
+        <span class="tab-icon">🏠</span>
+        <span>Accueil</span>
+      </button>
+      <button class="tab" type="button" data-tab="suivi" aria-label="Suivi">
+        <span class="tab-icon">📈</span>
+        <span>Suivi</span>
+      </button>
+      <button class="tab" type="button" data-tab="exercices" aria-label="Exercices">
+        <span class="tab-icon">💪</span>
+        <span>Exercices</span>
+      </button>
+      <button class="tab" type="button" data-tab="dossier" aria-label="Dossier">
+        <span class="tab-icon">📁</span>
+        <span>Dossier</span>
+      </button>
+      <button class="tab" type="button" data-tab="explore" aria-label="Explore">
+        <span class="tab-icon">▼</span>
+        <span>explore</span>
+      </button>
+    </nav>
+  </div>
+
+  <script>
+    const tabs = document.querySelectorAll('[data-tab]');
+    const screens = document.querySelectorAll('[data-screen]');
+    const painPicker = document.getElementById('painPicker');
+    const painScoreNodes = document.querySelectorAll('.pain-score-inline');
+    const painScoreNow = document.querySelector('.pain-score-now');
+    const historyList = document.getElementById('historyList');
+    const storedPain = Number(localStorage.getItem('neso-v2-pain') || 3);
+    const validTabs = ['home', 'suivi', 'exercices', 'dossier', 'explore'];
+    let currentPain = Number.isFinite(storedPain) ? storedPain : 3;
+
+    const history = [
+      { label: "Auj.", score: currentPain },
+      { label: "S9", score: 3 },
+      { label: "S8", score: 4 },
+      { label: "S7", score: 4 },
+      { label: "S6", score: 5 }
+    ];
+
+    function setTab(name) {
+      if (!validTabs.includes(name)) {
+        name = 'home';
+      }
+
+      tabs.forEach(function(tab) {
+        tab.classList.toggle('active', tab.dataset.tab === name);
+      });
+
+      screens.forEach(function(screen) {
+        screen.classList.toggle('active', screen.dataset.screen === name);
+      });
+
+      document.querySelector('.app-shell').scrollTo({ top: 0, behavior: 'smooth' });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      if (location.hash !== '#' + name) {
+        history.replaceState(null, '', '#' + name);
+      }
+    }
+
+    function setPain(score) {
+      currentPain = score;
+      localStorage.setItem('neso-v2-pain', String(score));
+      document.querySelectorAll('.pain-choice').forEach(function(choice) {
+        choice.classList.toggle('active', Number(choice.dataset.score) === score);
+      });
+      painScoreNodes.forEach(function(node) {
+        node.textContent = score + '/10';
+      });
+      if (painScoreNow) {
+        painScoreNow.textContent = score;
+      }
+      history[0].score = score;
+      renderHistory();
+    }
+
+    function renderPainPicker() {
+      if (!painPicker) return;
+      painPicker.innerHTML = Array.from({ length: 11 }, function(_, score) {
+        return '<button class="pain-choice" type="button" data-score="' + score + '">' + score + '</button>';
+      }).join('');
+
+      painPicker.querySelectorAll('.pain-choice').forEach(function(choice) {
+        choice.addEventListener('click', function() {
+          setPain(Number(choice.dataset.score));
+        });
+      });
+    }
+
+    function renderHistory() {
+      if (!historyList) return;
+      historyList.innerHTML = history.map(function(item) {
+        const warning = item.score >= 4;
+        return (
+          '<div class="history-row">' +
+            '<div class="history-label">' + item.label + '</div>' +
+            '<div class="history-track ' + (warning ? 'warning' : '') + '" style="--value:' + (item.score * 10) + '%"><span></span></div>' +
+            '<div class="history-score ' + (warning ? 'warning' : '') + '">' + item.score + '/10</div>' +
+          '</div>'
+        );
+      }).join('');
+    }
+
+    tabs.forEach(function(tab) {
+      tab.addEventListener('click', function() {
+        setTab(tab.dataset.tab);
+      });
+    });
+
+    document.getElementById('savePain')?.addEventListener('click', function() {
+      setPain(currentPain);
+    });
+
+    renderPainPicker();
+    setPain(currentPain);
+    renderHistory();
+    setTab(location.hash.replace('#', '') || 'home');
+
+    window.addEventListener('hashchange', function() {
+      setTab(location.hash.replace('#', '') || 'home');
+    });
+
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('sw.js').catch(function() {});
+      });
+    }
+  </script>
+</body>
+</html>

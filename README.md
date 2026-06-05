@@ -3,6 +3,9 @@
 ## Fichiers
 - `scan.html` : lien patient NESO Scan avec enregistrement Supabase.
 - `dashboard.html` : mini dashboard praticien protégé par connexion Supabase.
+- `dashboard-v2.html` : dashboard praticien connecté à l'API admin sécurisée.
+- `app-v2.html` : prototype web app mobile patient avec Accueil, Suivi, Exercices, Dossier et Explore.
+- `manifest.webmanifest`, `neso-icon.svg`, `sw.js` : base PWA pour une installation mobile.
 - `schema.sql` : table + règles de sécurité Supabase.
 
 ## Installation rapide
