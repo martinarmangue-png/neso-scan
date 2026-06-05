@@ -1,8 +1,9 @@
 {
   "name": "NESO Santé",
   "short_name": "NESO",
-  "description": "Web app mobile NESO pour le suivi, les exercices et le dossier patient.",
-  "start_url": "app-v2.html",
+  "description": "Web app NESO Santé pour préparer une séance et accéder aux espaces patient et praticien.",
+  "id": "./",
+  "start_url": "index.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
