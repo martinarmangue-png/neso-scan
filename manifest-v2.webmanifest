@@ -1,0 +1,20 @@
+{
+  "name": "NESO Santé V2",
+  "short_name": "NESO V2",
+  "description": "Prototype mobile NESO Santé V2 avec suivi, exercices et dossier patient.",
+  "id": "./app-v2.html",
+  "start_url": "app-v2.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f2f6fc",
+  "theme_color": "#21498f",
+  "icons": [
+    {
+      "src": "neso-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'neso-app-20260606-3';
+const CACHE_NAME = 'neso-app-20260606-4';
 const APP_SHELL = [
   './',
   './index.html',
@@ -6,8 +6,17 @@ const APP_SHELL = [
   './dashboard-v2.html',
   './app-v2.html',
   './manifest.webmanifest',
+  './manifest-v2.webmanifest',
   './neso-icon.svg'
 ];
+
+const NAVIGATION_FALLBACKS = new Map([
+  ['/app-v2.html', './app-v2.html'],
+  ['/scan.html', './scan.html'],
+  ['/dashboard-v2.html', './dashboard-v2.html'],
+  ['/index.html', './index.html'],
+  ['/', './index.html']
+]);
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
@@ -29,6 +38,18 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
+
+  const requestUrl = new URL(event.request.url);
+
+  if (event.request.mode === 'navigate' && requestUrl.origin === self.location.origin) {
+    event.respondWith(
+      fetch(event.request).catch(() => {
+        const fallback = NAVIGATION_FALLBACKS.get(requestUrl.pathname) || './index.html';
+        return caches.match(fallback);
+      })
+    );
+    return;
+  }
 
   event.respondWith(
     fetch(event.request)
