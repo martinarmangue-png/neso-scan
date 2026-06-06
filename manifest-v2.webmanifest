@@ -1,7 +1,7 @@
 {
-  "name": "NESO Santé V2",
-  "short_name": "NESO V2",
-  "description": "Prototype mobile NESO Santé V2 avec suivi, exercices et dossier patient.",
+  "name": "Neso Santé",
+  "short_name": "Neso",
+  "description": "Web app patient Neso Santé avec suivi, exercices et dossier sécurisé.",
   "id": "./app-v2.html",
   "start_url": "app-v2.html",
   "scope": "./",

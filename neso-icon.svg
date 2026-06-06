@@ -1,12 +1,18 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Neso">
   <defs>
-    <linearGradient id="g" x1="72" x2="440" y1="72" y2="440" gradientUnits="userSpaceOnUse">
+    <linearGradient id="bg" x1="70" x2="442" y1="68" y2="444" gradientUnits="userSpaceOnUse">
       <stop stop-color="#21498f"/>
-      <stop offset="0.54" stop-color="#2d67ee"/>
+      <stop offset="0.52" stop-color="#2d67ee"/>
       <stop offset="1" stop-color="#079b72"/>
     </linearGradient>
+    <linearGradient id="shine" x1="124" x2="388" y1="102" y2="414" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ffffff" stop-opacity="0.28"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
   </defs>
-  <rect width="512" height="512" rx="112" fill="url(#g)"/>
-  <path fill="#fff" d="M129 330V174h39l93 96v-96h48v156h-39l-93-96v96h-48Zm216 0V174h46v156h-46Z"/>
-  <circle cx="256" cy="382" r="20" fill="#66f2d5"/>
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  <path d="M116 118h280c38.66 0 70 31.34 70 70v136c0 38.66-31.34 70-70 70H116c-38.66 0-70-31.34-70-70V188c0-38.66 31.34-70 70-70Z" fill="url(#shine)"/>
+  <text x="256" y="268" fill="#fff" font-family="Inter, Arial, Helvetica, sans-serif" font-size="142" font-weight="900" text-anchor="middle" letter-spacing="-4">NS</text>
+  <text x="256" y="344" fill="#dffaf3" font-family="Inter, Arial, Helvetica, sans-serif" font-size="54" font-weight="800" text-anchor="middle">Neso</text>
+  <circle cx="390" cy="142" r="18" fill="#6ef2d4"/>
 </svg>
