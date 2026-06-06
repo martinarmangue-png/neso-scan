@@ -1,7 +1,8 @@
-# NESO Scan V1 — Pack Supabase
+# Physio Scan — Suite patient et praticien
 
 ## Fichiers
-- `scan.html` : lien patient NESO Scan avec enregistrement Supabase.
+- `index.html` : hub public Physio Scan avec accès au pré-scan, à l'espace patient et au dashboard praticien.
+- `scan.html` : lien patient Physio Scan avec enregistrement Supabase.
 - `dashboard.html` : mini dashboard praticien protégé par connexion Supabase.
 - `dashboard-v2.html` : dashboard praticien connecté à l'API admin sécurisée.
 - `app-v2.html` : web app mobile patient avec compte Supabase Auth, Accueil, Suivi, Exercices, Dossier et documents.
@@ -33,4 +34,4 @@
 - Les policies RLS limitent chaque patient à ses propres lignes et à son propre dossier Storage.
 
 ## Déploiement Vercel
-Tu peux mettre `scan.html` en page publique et `dashboard.html` en page dashboard privée.
+La page racine `index.html` sert de porte d'entrée. Les patients peuvent aller vers `scan.html` ou `app-v2.html`, et les praticiens vers `dashboard-v2.html`.

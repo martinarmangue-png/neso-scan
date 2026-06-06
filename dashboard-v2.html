@@ -5,7 +5,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>NESO · Dashboard V2</title>
+  <title>Physio Scan · Dashboard</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -672,12 +672,14 @@
 <body>
   <header class="topbar">
     <div class="brand">
-      <div class="brand-title">NESO Santé · Dashboard</div>
+      <div class="brand-title">Physio Scan · Dashboard</div>
       <div class="brand-subtitle">Console kiné · Pré-bilan et analytics patient</div>
     </div>
 
     <div class="top-actions">
       <a href="index.html" class="top-pill" style="text-decoration: none;">Accueil</a>
+      <a href="app-v2.html" class="top-pill" style="text-decoration: none;">Espace patient</a>
+      <a href="scan.html" class="top-pill" style="text-decoration: none;">Pré-scan</a>
       <div class="top-pill">14/05/2026</div>
       <div class="top-pill">Martin Armangué</div>
       <button class="top-pill" type="button" onclick="clearAdminPassword(); location.reload();" style="cursor:pointer;">Se déconnecter</button>
@@ -795,7 +797,7 @@
         <article class="card analytics">
           <div class="analytics-head">
             <div>
-              <h2>Analytics NESO</h2>
+              <h2>Analytics Physio Scan</h2>
               <div class="small-muted">Analyse des réponses et du parcours patient</div>
             </div>
             <div class="period">30 derniers jours</div>
@@ -861,16 +863,19 @@
 
   <script>
     const ADMIN_API_BASE = '/api/admin';
-    const ADMIN_PASSWORD_STORAGE_KEY = 'neso_admin_password';
+    const ADMIN_PASSWORD_STORAGE_KEY = 'physio_scan_admin_password';
+    const LEGACY_ADMIN_PASSWORD_STORAGE_KEY = 'neso_admin_password';
 
     function getAdminPassword() {
-      let password = sessionStorage.getItem(ADMIN_PASSWORD_STORAGE_KEY);
+      let password = sessionStorage.getItem(ADMIN_PASSWORD_STORAGE_KEY)
+        || sessionStorage.getItem(LEGACY_ADMIN_PASSWORD_STORAGE_KEY);
 
       if (!password) {
-        password = prompt('Mot de passe dashboard NESO');
+        password = prompt('Mot de passe dashboard Physio Scan');
 
         if (password) {
           sessionStorage.setItem(ADMIN_PASSWORD_STORAGE_KEY, password);
+          sessionStorage.removeItem(LEGACY_ADMIN_PASSWORD_STORAGE_KEY);
         }
       }
 
@@ -879,6 +884,7 @@
 
     function clearAdminPassword() {
       sessionStorage.removeItem(ADMIN_PASSWORD_STORAGE_KEY);
+      sessionStorage.removeItem(LEGACY_ADMIN_PASSWORD_STORAGE_KEY);
     }
 
     let scans = [];

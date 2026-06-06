@@ -1,7 +1,7 @@
 {
-  "name": "Neso Santé",
-  "short_name": "Neso",
-  "description": "Web app patient Neso Santé avec suivi, exercices et dossier sécurisé.",
+  "name": "Physio Scan",
+  "short_name": "Physio",
+  "description": "Web app patient Physio Scan avec suivi, exercices, pré-scan et dossier sécurisé.",
   "id": "./app-v2.html",
   "start_url": "app-v2.html",
   "scope": "./",

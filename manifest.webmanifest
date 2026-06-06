@@ -1,7 +1,7 @@
 {
-  "name": "NESO Santé",
-  "short_name": "NESO",
-  "description": "Web app NESO Santé pour préparer une séance et accéder aux espaces patient et praticien.",
+  "name": "Physio Scan",
+  "short_name": "Physio",
+  "description": "Web app Physio Scan pour préparer une séance et accéder aux espaces patient et praticien.",
   "id": "./",
   "start_url": "index.html",
   "scope": "./",

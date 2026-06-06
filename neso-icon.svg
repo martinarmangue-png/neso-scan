@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Neso">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Physio Scan">
   <defs>
     <linearGradient id="bg" x1="70" x2="442" y1="68" y2="444" gradientUnits="userSpaceOnUse">
       <stop stop-color="#21498f"/>
@@ -12,7 +12,7 @@
   </defs>
   <rect width="512" height="512" rx="112" fill="url(#bg)"/>
   <path d="M116 118h280c38.66 0 70 31.34 70 70v136c0 38.66-31.34 70-70 70H116c-38.66 0-70-31.34-70-70V188c0-38.66 31.34-70 70-70Z" fill="url(#shine)"/>
-  <text x="256" y="268" fill="#fff" font-family="Inter, Arial, Helvetica, sans-serif" font-size="142" font-weight="900" text-anchor="middle" letter-spacing="-4">NS</text>
-  <text x="256" y="344" fill="#dffaf3" font-family="Inter, Arial, Helvetica, sans-serif" font-size="54" font-weight="800" text-anchor="middle">Neso</text>
+  <text x="256" y="268" fill="#fff" font-family="Inter, Arial, Helvetica, sans-serif" font-size="142" font-weight="900" text-anchor="middle" letter-spacing="-4">PS</text>
+  <text x="256" y="344" fill="#dffaf3" font-family="Inter, Arial, Helvetica, sans-serif" font-size="48" font-weight="800" text-anchor="middle">Physio</text>
   <circle cx="390" cy="142" r="18" fill="#6ef2d4"/>
 </svg>

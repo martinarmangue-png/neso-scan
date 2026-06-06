@@ -6,14 +6,14 @@
   <meta name="theme-color" content="#21498f" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="Neso" />
+  <meta name="apple-mobile-web-app-title" content="Physio Scan" />
   <link rel="manifest" href="manifest-v2.webmanifest" />
   <link rel="apple-touch-icon" href="neso-icon.svg" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&display=swap" rel="stylesheet" />
-  <title>NESO Santé · App V2</title>
+  <title>Physio Scan · App patient</title>
   <style>
     :root {
       --blue: #21498f;
@@ -279,6 +279,66 @@
     .auth-link-row button {
       background: transparent;
       color: var(--blue-bright);
+      font-weight: 800;
+    }
+
+    .suite-card {
+      display: grid;
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .suite-card h2 {
+      font-size: 22px;
+    }
+
+    .suite-links {
+      display: grid;
+      gap: 10px;
+      margin-top: 6px;
+    }
+
+    .suite-link {
+      min-height: 70px;
+      display: grid;
+      grid-template-columns: 44px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      border-radius: 18px;
+      background: #f6f9fd;
+      border: 1px solid #e4ebf5;
+      color: var(--ink);
+    }
+
+    .suite-link strong {
+      display: block;
+      font-size: 15px;
+      line-height: 1.2;
+    }
+
+    .suite-link-copy span {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+      font-weight: 700;
+    }
+
+    .suite-link-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 15px;
+      display: grid;
+      place-items: center;
+      background: #edf4ff;
+      font-size: 22px;
+    }
+
+    .suite-link-arrow {
+      color: #a6b3c7;
+      font-size: 24px;
       font-weight: 800;
     }
 
@@ -1149,21 +1209,21 @@
 
     .explore-hero {
       min-height: 190px;
-      background: #d7d7d7;
-      color: #7f7f7f;
+      background: linear-gradient(135deg, #203f82 0%, #2f66f3 50%, #079a72 100%);
+      color: rgba(255, 255, 255, 0.46);
       position: relative;
       overflow: hidden;
     }
 
     .code-mark {
       position: absolute;
-      inset: auto auto -44px -34px;
-      font-size: 220px;
-      line-height: 0.7;
-      letter-spacing: -0.12em;
+      inset: auto auto -28px -18px;
+      font-size: 184px;
+      line-height: 0.75;
+      letter-spacing: 0;
       opacity: 0.74;
-      font-weight: 800;
-      transform: rotate(-8deg);
+      font-weight: 900;
+      transform: rotate(-6deg);
       user-select: none;
     }
 
@@ -1497,11 +1557,11 @@
       <header class="auth-hero">
         <div>
           <div class="auth-brand">
-            <div class="auth-logo" aria-label="Neso Santé">
-              <div class="auth-logo-mark" aria-hidden="true">NS</div>
+            <div class="auth-logo" aria-label="Physio Scan">
+              <div class="auth-logo-mark" aria-hidden="true">PS</div>
               <div class="auth-logo-copy" aria-hidden="true">
-                <div class="auth-logo-name">Neso</div>
-                <div class="auth-logo-subtitle">Santé</div>
+                <div class="auth-logo-name">Physio</div>
+                <div class="auth-logo-subtitle">Scan</div>
               </div>
             </div>
             <div class="auth-badge">Espace patient</div>
@@ -1520,7 +1580,7 @@
 
       <article class="auth-card">
         <h2>Accéder à mon espace</h2>
-        <p id="authCopy">Connectez-vous avec l'e-mail utilisé pour votre parcours NESO.</p>
+        <p id="authCopy">Connectez-vous avec l'e-mail utilisé pour votre parcours Physio Scan.</p>
         <div class="auth-switch" role="tablist" aria-label="Choisir le mode d'accès">
           <button class="active" type="button" data-auth-mode="signin" role="tab" aria-selected="true">Connexion</button>
           <button type="button" data-auth-mode="signup" role="tab" aria-selected="false">Créer un compte</button>
@@ -1545,6 +1605,30 @@
             <button type="button" id="resetPassword">Mot de passe oublié</button>
           </div>
         </form>
+      </article>
+
+      <article class="auth-card suite-card" aria-labelledby="suite-title">
+        <div>
+          <h2 id="suite-title">Suite Physio Scan</h2>
+          <p>Retrouvez aussi les briques existantes : pré-scan patient, dashboard praticien et accueil public.</p>
+        </div>
+        <div class="suite-links">
+          <a class="suite-link" href="scan.html">
+            <span class="suite-link-icon">🩺</span>
+            <div class="suite-link-copy"><strong>Pré-scan patient</strong><span>Questionnaire avant rendez-vous</span></div>
+            <span class="suite-link-arrow">›</span>
+          </a>
+          <a class="suite-link" href="dashboard-v2.html">
+            <span class="suite-link-icon">📊</span>
+            <div class="suite-link-copy"><strong>Dashboard praticien</strong><span>Scans, priorités et analytics</span></div>
+            <span class="suite-link-arrow">›</span>
+          </a>
+          <a class="suite-link" href="index.html">
+            <span class="suite-link-icon">🏠</span>
+            <div class="suite-link-copy"><strong>Accueil produit</strong><span>Entrée générale Physio Scan</span></div>
+            <span class="suite-link-arrow">›</span>
+          </a>
+        </div>
       </article>
     </div>
   </section>
@@ -1803,8 +1887,8 @@
 
         <div class="content">
           <article class="profile-card">
-            <h2 data-user-full-name>Patient NESO</h2>
-            <div class="profile-meta"><span data-user-email>patient@nesosante.fr</span> · Dossier patient sécurisé</div>
+            <h2 data-user-full-name>Patient Physio Scan</h2>
+            <div class="profile-meta"><span data-user-email>patient@exemple.fr</span> · Dossier patient sécurisé</div>
             <div class="chips">
               <span class="chip">Suivi lombalgie</span>
               <span class="chip">Traitement à confirmer</span>
@@ -1872,20 +1956,20 @@
         </div>
       </section>
 
-      <section class="screen" data-screen="explore" aria-labelledby="explore-title">
+      <section class="screen" data-screen="explore" aria-labelledby="suite-app-title">
         <header class="hero explore-hero">
-          <div class="code-mark">&lt;/&gt;</div>
+          <div class="code-mark">PS</div>
         </header>
         <div class="content" style="padding-top:30px;">
-          <h1 class="hero-title" id="explore-title" style="color:var(--ink);font-size:38px;">Explore</h1>
+          <h1 class="hero-title" id="suite-app-title" style="color:var(--ink);font-size:38px;">Suite</h1>
           <p class="row-meta" style="margin-top:16px;margin-bottom:24px;font-size:19px;line-height:1.55;">
-            Accès rapide aux expériences NESO existantes et à la nouvelle V2 mobile.
+            Accès rapide aux expériences Physio Scan : compte patient, pré-scan et dashboard praticien.
           </p>
 
           <a class="card explore-card" href="scan.html">
             <div class="explore-icon">🩺</div>
             <div>
-              <div class="row-title">Scan patient V1</div>
+              <div class="row-title">Pré-scan patient</div>
               <div class="row-meta">Questionnaire pré-rendez-vous</div>
             </div>
             <div class="chevron">›</div>
@@ -1904,14 +1988,14 @@
             <div class="explore-icon">🏠</div>
             <div>
               <div class="row-title">Accueil public</div>
-              <div class="row-meta">Page d'entrée NESO Santé</div>
+              <div class="row-meta">Page d'entrée Physio Scan</div>
             </div>
             <div class="chevron">›</div>
           </a>
 
           <article class="card message-card" style="margin-top:20px;">
-            <h2 class="card-title" style="margin-bottom:12px;">V2 mobile</h2>
-            Cette page garde les bases actuelles et pose la direction produit: suivi, exercices, dossier et navigation façon app.
+            <h2 class="card-title" style="margin-bottom:12px;">Produit complet</h2>
+            Physio Scan rassemble maintenant le pré-scan avant rendez-vous, le suivi patient connecté et le dashboard praticien.
           </article>
         </div>
       </section>
@@ -1934,9 +2018,9 @@
         <span class="tab-icon">📁</span>
         <span>Dossier</span>
       </button>
-      <button class="tab" type="button" data-tab="explore" aria-label="Explore">
-        <span class="tab-icon">▼</span>
-        <span>explore</span>
+      <button class="tab" type="button" data-tab="explore" aria-label="Suite">
+        <span class="tab-icon">☰</span>
+        <span>Suite</span>
       </button>
     </nav>
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -2024,7 +2108,7 @@
     }
 
     function getInitials(name) {
-      const parts = titleCase(name || 'Patient NESO').split(' ').filter(Boolean);
+      const parts = titleCase(name || 'Patient Physio Scan').split(' ').filter(Boolean);
       return (parts[0]?.charAt(0) || 'N') + (parts[1]?.charAt(0) || 'S');
     }
 
@@ -2052,7 +2136,7 @@
         id: user.id,
         email: user.email || profile?.email || '',
         firstName: titleCase(profile?.first_name || metadata.first_name || fullName.split(' ')[0] || 'Patient'),
-        fullName: fullName || 'Patient NESO',
+        fullName: fullName || 'Patient Physio Scan',
         initials: getInitials(fullName)
       };
     }
@@ -2071,7 +2155,7 @@
 
       authCopy.textContent = authMode === 'signup'
         ? "Créez votre compte patient sécurisé pour retrouver vos documents et votre suivi."
-        : "Connectez-vous avec l'e-mail utilisé pour votre parcours NESO.";
+        : "Connectez-vous avec l'e-mail utilisé pour votre parcours Physio Scan.";
       authSubmit.textContent = authMode === 'signup' ? 'Créer mon compte' : 'Se connecter';
       authHint.textContent = authMode === 'signup'
         ? 'Un e-mail de confirmation peut être envoyé selon vos réglages Supabase.'

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>NESO Scan</title>
+  <title>Physio Scan</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Cormorant+Garamond:wght@300;400&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -393,7 +393,7 @@ padding:20px;
     color:#1C1C1A;
     margin-bottom:10px;
     ">
-      NESO Santé
+      Physio Scan
     </p>
 
     <p style="
@@ -448,7 +448,7 @@ padding:20px;
 </div>
 <main class="desktop-shell">
   <section class="desktop-copy" aria-hidden="true">
-    <div class="desktop-pill"><span class="desktop-dot"></span> Expérience patient NESO Santé</div>
+    <div class="desktop-pill"><span class="desktop-dot"></span> Expérience patient Physio Scan</div>
     <h1 class="desktop-title">Un scan simple pour mieux <span>préparer la séance.</span></h1>
     <p class="desktop-text">Quelques questions guidées permettent au patient de transmettre les informations importantes avant le rendez-vous, dans une expérience claire, rapide et sécurisée.</p>
     <div class="desktop-points">
@@ -466,13 +466,10 @@ padding:20px;
         <circle cx="35" cy="35" r="32" stroke="#9FE1CB" stroke-width="0.5" opacity="0.45"/>
         <line x1="35" y1="7" x2="35" y2="63" stroke="#9FE1CB" stroke-width="0.3" opacity="0.15"/>
         <line x1="7" y1="35" x2="63" y2="35" stroke="#9FE1CB" stroke-width="0.3" opacity="0.15"/>
-        <text x="35" y="19" text-anchor="middle" font-family="Cormorant Garamond,serif" font-size="10" font-weight="300" fill="#E6F1FB">N</text>
-        <text x="52" y="39" text-anchor="middle" font-family="Cormorant Garamond,serif" font-size="10" font-weight="300" fill="#E6F1FB">E</text>
-        <text x="35" y="56" text-anchor="middle" font-family="Cormorant Garamond,serif" font-size="10" font-weight="300" fill="#9FE1CB">S</text>
-        <text x="18" y="39" text-anchor="middle" font-family="Cormorant Garamond,serif" font-size="10" font-weight="300" fill="#9FE1CB">O</text>
+        <text x="35" y="40" text-anchor="middle" font-family="Cormorant Garamond,serif" font-size="16" font-weight="600" fill="#E6F1FB">PS</text>
         <circle cx="35" cy="35" r="0.9" fill="#9FE1CB" opacity="0.7"/>
       </svg>
-      <p class="logo-name">NESO Santé</p>
+      <p class="logo-name">Physio Scan</p>
     </div>
     <div class="progress" id="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
   </div>
@@ -486,7 +483,7 @@ padding:20px;
       <div class="feat"><div class="fi" style="background:#E6F1FB;"><i class="ti ti-clock" style="color:#185FA5;"></i></div><div><p style="font-size:12.5px;font-weight:500;color:#1C1C1A;margin-bottom:1px;">Rapide</p><p style="font-size:11px;color:#888780;">Environ 1 minute</p></div></div>
       <div class="feat"><div class="fi" style="background:#E1F5EE;"><i class="ti ti-lock" style="color:#0F6E56;"></i></div><div><p style="font-size:12.5px;font-weight:500;color:#1C1C1A;margin-bottom:1px;">Sécurisé</p><p style="font-size:11px;color:#888780;">Vos données sont protégées</p></div></div>
       <div class="feat" style="margin-bottom:26px;"><div class="fi" style="background:#E6F1FB;"><i class="ti ti-circle-check" style="color:#185FA5;"></i></div><div><p style="font-size:12.5px;font-weight:500;color:#1C1C1A;margin-bottom:1px;">Adapté à vous</p><p style="font-size:11px;color:#888780;">Un questionnaire personnalisé selon votre situation</p></div></div>
-      <button class="btn btn-on" onclick="go('p1')">Commencer le NESO Scan <div class="ac"><i class="ti ti-arrow-right"></i></div></button>
+      <button class="btn btn-on" onclick="go('p1')">Commencer le Physio Scan <div class="ac"><i class="ti ti-arrow-right"></i></div></button>
     </div>
 
     <div class="page" id="p1">
@@ -590,13 +587,13 @@ padding:20px;
         <div class="chip" onclick="selM(this,'q6')">Comprendre mon problème</div>
         <div class="chip" onclick="selM(this,'q6')">Reprendre une vie normale</div>
       </div>
-      <button class="btn btn-off" id="cta-p8" onclick="goRecap()">Voir mon NESO Scan <div class="ac"><i class="ti ti-arrow-right"></i></div></button>
+      <button class="btn btn-off" id="cta-p8" onclick="goRecap()">Voir mon Physio Scan <div class="ac"><i class="ti ti-arrow-right"></i></div></button>
       <p style="font-size:11px;color:#888780;margin-top:12px;text-align:center;">Vous pouvez sélectionner plusieurs objectifs</p>
     </div>
 
     <div class="page" id="p9">
       <button class="back" onclick="go('p8')">← retour</button>
-      <p style="font-family:'Playfair Display',serif;font-size:22px;font-weight:500;color:#1C1C1A;margin-bottom:22px;">Votre <span style="color:#0A5C48;">NESO Scan</span></p>
+      <p style="font-family:'Playfair Display',serif;font-size:22px;font-weight:500;color:#1C1C1A;margin-bottom:22px;">Votre <span style="color:#0A5C48;">Physio Scan</span></p>
       <div class="rb"><p class="rl">Zones concernées</p><div class="rt" id="r-zones"></div></div>
       <div class="rd"></div>
       <div class="rb"><p class="rl">Depuis quand</p><div class="rt" id="r-q1"></div></div>
@@ -630,7 +627,7 @@ padding:20px;
       <div style="text-align:center;padding:40px 0 20px;">
         <div class="si"><i class="ti ti-check" style="font-size:22px;color:#0A5C48;"></i></div>
         <p style="font-family:'Playfair Display',serif;font-size:27px;font-weight:500;color:#1C1C1A;line-height:1.25;margin-bottom:14px;">Merci, <span style="color:#0A5C48;" id="merci-nom">Martin</span>.</p>
-        <p style="font-size:14px;color:#4A4A48;line-height:1.8;margin-bottom:10px;">Votre NESO Scan est bien envoyé.</p>
+        <p style="font-size:14px;color:#4A4A48;line-height:1.8;margin-bottom:10px;">Votre Physio Scan est bien envoyé.</p>
         <p style="font-size:13px;color:#888780;line-height:1.8;margin-bottom:30px;">Votre kiné dispose maintenant des informations utiles pour mieux préparer votre séance.</p>
         <a href="index.html" class="btn btn-on" style="text-decoration:none;">Retour à l’accueil <div class="ac"><i class="ti ti-home"></i></div></a>
       </div>
@@ -648,7 +645,7 @@ padding:20px;
   const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
   const S = { prenom:'', zones:[], q1:[], q2:[], q3:'5', q4:[], q5:[], q6:[] };
-  const TRACKING_SESSION_ID = 'neso_' + Date.now() + '_' + Math.random().toString(36).slice(2);
+  const TRACKING_SESSION_ID = 'physio_' + Date.now() + '_' + Math.random().toString(36).slice(2);
   const TRACKING_PAGE_LABELS = {
     p0: { key: 'intro', label: 'Écran d’introduction' },
     p1: { key: 'prenom', label: 'Prénom' },
@@ -842,7 +839,7 @@ padding:20px;
     });
     trackingCompleted = true;
 
-    console.log('NESO scan terminé en', Math.round(completedDurationMs / 1000), 'secondes');
+    console.log('Physio Scan terminé en', Math.round(completedDurationMs / 1000), 'secondes');
 
     go('p10');
   }
@@ -906,7 +903,7 @@ padding:20px;
       duration_ms: Number.isFinite(Number(details.duration_ms)) ? Math.round(Number(details.duration_ms)) : null,
       is_completed: Boolean(details.is_completed),
       is_abandon: Boolean(details.is_abandon),
-      source: 'neso_scan_v1'
+      source: 'physio_scan_v1'
     };
 
     try {
@@ -923,12 +920,12 @@ padding:20px;
 
       if (!response.ok) {
         const message = await response.text();
-        console.warn('Tracking NESO refusé par Supabase', response.status, message, payload);
+        console.warn('Tracking Physio Scan refusé par Supabase', response.status, message, payload);
       } else {
-        console.log('Tracking NESO enregistré', eventType, payload.page_id);
+        console.log('Tracking Physio Scan enregistré', eventType, payload.page_id);
       }
     } catch (error) {
-      console.warn('Tracking NESO non envoyé', error, payload);
+      console.warn('Tracking Physio Scan non envoyé', error, payload);
     }
   }
 
@@ -946,7 +943,7 @@ padding:20px;
       duration_ms: Math.round(Date.now() - trackingPageStartedAt),
       is_completed: false,
       is_abandon: true,
-      source: 'neso_scan_v1'
+      source: 'physio_scan_v1'
     };
 
     try {
@@ -962,7 +959,7 @@ padding:20px;
         body: JSON.stringify(payload)
       });
     } catch (error) {
-      console.warn('Abandon NESO non enregistré', error);
+      console.warn('Abandon Physio Scan non enregistré', error);
     }
   }
 
@@ -1006,7 +1003,9 @@ padding:20px;
   function checkPassword() {
     const password = document.getElementById('site-password').value;
 
-    if (password === 'GUYNESOSANTE') {
+    const normalized = password.trim().toUpperCase();
+
+    if (normalized === 'GUYPHYSIOSCAN' || normalized === 'GUYNESOSANTE') {
       document.getElementById('password-screen').style.display = 'none';
     } else {
       document.getElementById('password-error').style.display = 'block';

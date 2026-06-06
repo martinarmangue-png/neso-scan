@@ -1,4 +1,4 @@
-const CACHE_NAME = 'neso-app-20260606-7';
+const CACHE_NAME = 'physio-scan-20260606-8';
 const APP_SHELL = [
   './',
   './index.html',
