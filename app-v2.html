@@ -9,6 +9,7 @@
   <meta name="apple-mobile-web-app-title" content="NESO V2" />
   <link rel="manifest" href="manifest-v2.webmanifest" />
   <link rel="apple-touch-icon" href="neso-icon.svg" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&display=swap" rel="stylesheet" />
@@ -224,6 +225,11 @@
       display: flex;
     }
 
+    .auth-error.success {
+      color: #0a7559;
+      background: #edfdf6;
+    }
+
     .auth-link-row {
       display: flex;
       align-items: center;
@@ -239,6 +245,35 @@
       background: transparent;
       color: var(--blue-bright);
       font-weight: 800;
+    }
+
+    .auth-switch {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 6px;
+      margin-top: 22px;
+      padding: 5px;
+      border-radius: 18px;
+      background: #edf2f8;
+    }
+
+    .auth-switch button {
+      min-height: 42px;
+      border-radius: 14px;
+      background: transparent;
+      color: #6e7e95;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .auth-switch button.active {
+      background: #fff;
+      color: var(--blue-bright);
+      box-shadow: 0 8px 20px rgba(23, 32, 51, 0.08);
+    }
+
+    .is-hidden {
+      display: none !important;
     }
 
     .logout-button,
@@ -807,8 +842,11 @@
       grid-template-columns: 70px 1fr auto;
       align-items: center;
       gap: 14px;
+      width: 100%;
       padding: 15px 0;
       border-bottom: 1px solid var(--line);
+      background: transparent;
+      text-align: left;
     }
 
     .history-row:last-child,
@@ -982,6 +1020,79 @@
 
     .file-row {
       grid-template-columns: 58px 1fr 22px;
+    }
+
+    .document-form {
+      display: grid;
+      gap: 16px;
+      margin-top: 18px;
+    }
+
+    .doc-type-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+
+    .doc-type {
+      min-height: 48px;
+      padding: 0 12px;
+      border-radius: 16px;
+      background: #edf2f8;
+      color: #6e7e95;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .doc-type.active {
+      background: var(--blue-bright);
+      color: #fff;
+    }
+
+    .doc-drop {
+      min-height: 106px;
+      border: 2px dashed #d8e2f1;
+      border-radius: 22px;
+      background: #f8fbff;
+      display: grid;
+      place-items: center;
+      padding: 18px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .doc-drop input {
+      display: none;
+    }
+
+    .doc-drop strong {
+      display: block;
+      color: var(--ink);
+      font-size: 16px;
+      margin-bottom: 6px;
+    }
+
+    .empty-docs {
+      color: #95a2b6;
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 1.45;
+      padding: 14px 0 2px;
+    }
+
+    .doc-status {
+      min-height: 20px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+      line-height: 1.35;
+    }
+
+    .doc-status.error {
+      color: #b32635;
     }
 
     .chevron {
@@ -1368,7 +1479,11 @@
 
       <article class="auth-card">
         <h2>Accéder à mon espace</h2>
-        <p>Connectez-vous avec l'e-mail utilisé pour votre parcours NESO.</p>
+        <p id="authCopy">Connectez-vous avec l'e-mail utilisé pour votre parcours NESO.</p>
+        <div class="auth-switch" role="tablist" aria-label="Choisir le mode d'accès">
+          <button class="active" type="button" data-auth-mode="signin" role="tab" aria-selected="true">Connexion</button>
+          <button type="button" data-auth-mode="signup" role="tab" aria-selected="false">Créer un compte</button>
+        </div>
         <form class="auth-form" id="loginForm" novalidate>
           <label class="auth-field" for="loginEmail">
             Adresse e-mail
@@ -1378,15 +1493,15 @@
             Mot de passe
             <input class="auth-input" id="loginPassword" name="password" type="password" autocomplete="current-password" placeholder="••••••••" required />
           </label>
-          <label class="auth-field" for="loginFirstName">
+          <label class="auth-field is-hidden" for="loginFirstName" data-signup-field>
             Prénom affiché
             <input class="auth-input" id="loginFirstName" name="firstName" type="text" autocomplete="given-name" placeholder="Votre prénom" />
           </label>
           <div class="auth-error" id="loginError" role="alert"></div>
-          <button class="primary-button" type="submit">Se connecter</button>
+          <button class="primary-button" type="submit" id="authSubmit">Se connecter</button>
           <div class="auth-link-row">
-            <span>Accès bêta NESO</span>
-            <button type="button" id="prefillLogin">Remplir un profil test</button>
+            <span id="authHint">Vos données sont protégées par Supabase Auth.</span>
+            <button type="button" id="resetPassword">Mot de passe oublié</button>
           </div>
         </form>
       </article>
@@ -1665,50 +1780,41 @@
             <button class="qr-button" type="button" data-toast="QR sécurisé prêt à partager bientôt.">QR →</button>
           </article>
 
+          <article class="card">
+            <h2 class="card-title">Scanner un document</h2>
+            <div class="row-meta">Photo, PDF ou fichier médical. Le document est stocké dans votre dossier sécurisé.</div>
+            <form class="document-form" id="documentForm">
+              <div class="doc-type-grid" aria-label="Type de document">
+                <button class="doc-type active" type="button" data-doc-category="irm">IRM / imagerie</button>
+                <button class="doc-type" type="button" data-doc-category="ordonnance">Ordonnance</button>
+              </div>
+              <label class="auth-field" for="docTitle">
+                Nom du document
+                <input class="auth-input" id="docTitle" type="text" placeholder="Ex : IRM lombaire L4-L5" />
+              </label>
+              <label class="doc-drop" for="docFile">
+                <input id="docFile" type="file" accept="image/*,application/pdf,.pdf" capture="environment" />
+                <span><strong id="docFileLabel">Scanner ou importer</strong><span>Appareil photo, image ou PDF</span></span>
+              </label>
+              <div class="doc-status" id="docStatus" role="status" aria-live="polite"></div>
+              <button class="primary-button" type="submit" id="uploadDocument">Ajouter au dossier</button>
+            </form>
+          </article>
+
           <div class="section-title">
             <span>🩻 Imageries médicales</span>
             <a class="section-link" href="#">Tout voir</a>
           </div>
-          <article class="card">
-            <div class="file-row">
-              <div class="file-icon">🫁</div>
-              <div>
-                <div class="row-title">IRM lombaire L4-L5</div>
-                <div class="row-meta">15 mars 2026 · Dr. Dupont</div>
-              </div>
-              <div class="chevron">›</div>
-            </div>
-            <div class="file-row">
-              <div class="file-icon">📷</div>
-              <div>
-                <div class="row-title">Radio colonne lombaire</div>
-                <div class="row-meta">02 janvier 2026 · Dr. Blanc</div>
-              </div>
-              <div class="chevron">›</div>
-            </div>
+          <article class="card" id="medicalDocumentsList">
+            <div class="empty-docs">Aucune imagerie ajoutée pour le moment.</div>
           </article>
 
           <div class="section-title">
             <span>📋 Ordonnances</span>
             <a class="section-link" href="#">Tout voir</a>
           </div>
-          <article class="card">
-            <div class="file-row">
-              <div class="file-icon">📄</div>
-              <div>
-                <div class="row-title">Ordonnance kiné · 20 séances</div>
-                <div class="row-meta">18 mars 2026 · Dr. Lefebvre</div>
-              </div>
-              <div class="chevron">›</div>
-            </div>
-            <div class="file-row">
-              <div class="file-icon">💊</div>
-              <div>
-                <div class="row-title">Anti-inflammatoires</div>
-                <div class="row-meta">18 mars 2026 · Dr. Lefebvre</div>
-              </div>
-              <div class="chevron">›</div>
-            </div>
+          <article class="card" id="prescriptionDocumentsList">
+            <div class="empty-docs">Aucune ordonnance ajoutée pour le moment.</div>
           </article>
 
           <div class="section-title">🔗 Partages actifs</div>
@@ -1796,6 +1902,11 @@
   </div>
 
   <script>
+    const SUPABASE_URL = "https://infjgfupfbylzzuvywpg.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_1aS8qPPmGm76n0zN_L2uIQ_ArUVtHsF";
+    const DOCUMENT_BUCKET = "patient-documents";
+    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
     const tabs = document.querySelectorAll('[data-tab]');
     const screens = document.querySelectorAll('[data-screen]');
     const painPicker = document.getElementById('painPicker');
@@ -1808,11 +1919,27 @@
     const loginPassword = document.getElementById('loginPassword');
     const loginFirstName = document.getElementById('loginFirstName');
     const loginError = document.getElementById('loginError');
-    const prefillLogin = document.getElementById('prefillLogin');
-    const SESSION_KEY = 'neso-v2-session';
+    const authCopy = document.getElementById('authCopy');
+    const authSubmit = document.getElementById('authSubmit');
+    const authHint = document.getElementById('authHint');
+    const resetPassword = document.getElementById('resetPassword');
+    const signupFields = document.querySelectorAll('[data-signup-field]');
+    const documentForm = document.getElementById('documentForm');
+    const docTitle = document.getElementById('docTitle');
+    const docFile = document.getElementById('docFile');
+    const docFileLabel = document.getElementById('docFileLabel');
+    const docStatus = document.getElementById('docStatus');
+    const uploadDocument = document.getElementById('uploadDocument');
+    const medicalDocumentsList = document.getElementById('medicalDocumentsList');
+    const prescriptionDocumentsList = document.getElementById('prescriptionDocumentsList');
     const storedPain = Number(localStorage.getItem('neso-v2-pain') || 3);
     const validTabs = ['home', 'suivi', 'exercices', 'dossier', 'explore'];
     let currentPain = Number.isFinite(storedPain) ? storedPain : 3;
+    let authMode = 'signin';
+    let currentSession = null;
+    let currentUser = null;
+    let currentProfile = null;
+    let selectedDocCategory = 'irm';
 
     const painHistory = [
       { label: "Auj.", score: currentPain },
@@ -1832,8 +1959,14 @@
     let exerciseState = loadExerciseState();
     let toastTimeout;
 
+    function escapeHtml(value) {
+      return String(value || '').replace(/[&<>"']/g, function(char) {
+        return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char];
+      });
+    }
+
     function titleCase(value) {
-      return value
+      return String(value || '')
         .trim()
         .replace(/[._-]+/g, ' ')
         .split(/\s+/)
@@ -1854,58 +1987,152 @@
       return (parts[0]?.charAt(0) || 'N') + (parts[1]?.charAt(0) || 'S');
     }
 
-    function buildSession(email, firstName) {
-      const cleanEmail = String(email || '').trim().toLowerCase();
-      const displayName = titleCase(firstName || '') || deriveNameFromEmail(cleanEmail);
+    function normalizeFileName(name) {
+      return String(name || 'document')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-zA-Z0-9._-]+/g, '-')
+        .replace(/-+/g, '-')
+        .replace(/^-|-$/g, '')
+        .toLowerCase();
+    }
+
+    function profileFromUser(user, profile) {
+      const metadata = user?.user_metadata || {};
+      const fullName = titleCase(
+        profile?.full_name ||
+        metadata.full_name ||
+        metadata.name ||
+        metadata.first_name ||
+        deriveNameFromEmail(user?.email)
+      );
 
       return {
-        email: cleanEmail,
-        firstName: displayName.split(' ')[0] || 'Patient',
-        fullName: displayName,
-        initials: getInitials(displayName),
-        connectedAt: new Date().toISOString()
+        id: user.id,
+        email: user.email || profile?.email || '',
+        firstName: titleCase(profile?.first_name || metadata.first_name || fullName.split(' ')[0] || 'Patient'),
+        fullName: fullName || 'Patient NESO',
+        initials: getInitials(fullName)
       };
     }
 
-    function loadSession() {
-      try {
-        const session = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null');
-        return session && session.email ? session : null;
-      } catch (error) {
-        return null;
-      }
+    function setAuthMode(mode) {
+      authMode = mode === 'signup' ? 'signup' : 'signin';
+      document.querySelectorAll('[data-auth-mode]').forEach(function(button) {
+        const active = button.dataset.authMode === authMode;
+        button.classList.toggle('active', active);
+        button.setAttribute('aria-selected', active ? 'true' : 'false');
+      });
+
+      signupFields.forEach(function(field) {
+        field.classList.toggle('is-hidden', authMode !== 'signup');
+      });
+
+      authCopy.textContent = authMode === 'signup'
+        ? "Créez votre compte patient sécurisé pour retrouver vos documents et votre suivi."
+        : "Connectez-vous avec l'e-mail utilisé pour votre parcours NESO.";
+      authSubmit.textContent = authMode === 'signup' ? 'Créer mon compte' : 'Se connecter';
+      authHint.textContent = authMode === 'signup'
+        ? 'Un e-mail de confirmation peut être envoyé selon vos réglages Supabase.'
+        : 'Vos données sont protégées par Supabase Auth.';
+      loginPassword.setAttribute('autocomplete', authMode === 'signup' ? 'new-password' : 'current-password');
+      setAuthMessage('');
     }
 
-    function saveSession(session) {
-      localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+    function setAuthMessage(message, type) {
+      if (!loginError) return;
+      loginError.textContent = message;
+      loginError.classList.toggle('show', Boolean(message));
+      loginError.classList.toggle('success', type === 'success');
     }
 
-    function applySession(session) {
+    function setDocStatus(message, type) {
+      if (!docStatus) return;
+      docStatus.textContent = message || '';
+      docStatus.classList.toggle('error', type === 'error');
+    }
+
+    function applySession(profile) {
       document.querySelectorAll('[data-user-first-name]').forEach(function(node) {
-        node.textContent = session.firstName;
+        node.textContent = profile.firstName;
       });
 
       document.querySelectorAll('[data-user-full-name]').forEach(function(node) {
-        node.textContent = session.fullName;
+        node.textContent = profile.fullName;
       });
 
       document.querySelectorAll('[data-user-email]').forEach(function(node) {
-        node.textContent = session.email;
+        node.textContent = profile.email;
       });
 
       document.querySelectorAll('[data-user-initials]').forEach(function(node) {
-        node.textContent = session.initials;
+        node.textContent = profile.initials;
       });
     }
 
-    function openAuthenticatedApp(session, restoreTab) {
-      applySession(session);
+    async function upsertProfile(user, firstName) {
+      if (!user) return null;
+      const fullName = titleCase(firstName || user.user_metadata?.full_name || user.user_metadata?.first_name || deriveNameFromEmail(user.email));
+      const payload = {
+        id: user.id,
+        email: user.email,
+        first_name: fullName.split(' ')[0] || 'Patient',
+        full_name: fullName,
+        updated_at: new Date().toISOString()
+      };
+
+      const { data, error } = await sb
+        .from('patient_profiles')
+        .upsert(payload, { onConflict: 'id' })
+        .select()
+        .single();
+
+      if (error) {
+        console.warn('Profil patient non synchronisé', error);
+        return null;
+      }
+
+      return data;
+    }
+
+    async function loadPatientProfile(user) {
+      if (!user) return null;
+
+      const { data, error } = await sb
+        .from('patient_profiles')
+        .select('*')
+        .eq('id', user.id)
+        .maybeSingle();
+
+      if (error) {
+        console.warn('Profil patient indisponible', error);
+        return profileFromUser(user);
+      }
+
+      if (!data) {
+        const created = await upsertProfile(user);
+        return profileFromUser(user, created);
+      }
+
+      return profileFromUser(user, data);
+    }
+
+    async function openAuthenticatedApp(session, restoreTab) {
+      currentSession = session;
+      currentUser = session?.user || null;
+      currentProfile = await loadPatientProfile(currentUser);
+      applySession(currentProfile);
       document.body.classList.add('is-authenticated');
       setTab(restoreTab ? location.hash.replace('#', '') || 'home' : 'home');
+      await loadDocuments();
     }
 
     function showLogin() {
+      currentSession = null;
+      currentUser = null;
+      currentProfile = null;
       document.body.classList.remove('is-authenticated');
+      renderDocuments([]);
       if (location.hash) {
         window.history.replaceState(null, '', location.pathname || 'app-v2.html');
       }
@@ -1914,32 +2141,86 @@
       }, 80);
     }
 
-    function setLoginError(message) {
-      if (!loginError) return;
-      loginError.textContent = message;
-      loginError.classList.toggle('show', Boolean(message));
-    }
-
-    function handleLogin(event) {
+    async function handleLogin(event) {
       event.preventDefault();
-      setLoginError('');
+      setAuthMessage('');
 
-      const email = loginEmail.value.trim();
+      const email = loginEmail.value.trim().toLowerCase();
       const password = loginPassword.value.trim();
+      const firstName = titleCase(loginFirstName.value);
 
-      if (!email || !email.includes('@') || password.length < 4) {
-        setLoginError('Entrez un e-mail valide et un mot de passe.');
+      if (!email || !email.includes('@') || password.length < 6) {
+        setAuthMessage('Entrez un e-mail valide et un mot de passe de 6 caractères minimum.');
         return;
       }
 
-      const session = buildSession(email, loginFirstName.value);
-      saveSession(session);
-      openAuthenticatedApp(session, false);
-      showToast('Connexion réussie.');
+      authSubmit.disabled = true;
+      authSubmit.textContent = authMode === 'signup' ? 'Création...' : 'Connexion...';
+
+      try {
+        if (authMode === 'signup') {
+          if (!firstName) {
+            setAuthMessage('Ajoutez votre prénom pour créer le compte patient.');
+            return;
+          }
+
+          const { data, error } = await sb.auth.signUp({
+            email,
+            password,
+            options: {
+              data: {
+                first_name: firstName,
+                full_name: firstName
+              }
+            }
+          });
+
+          if (error) throw error;
+
+          if (data.session) {
+            await upsertProfile(data.user, firstName);
+            await openAuthenticatedApp(data.session, false);
+            showToast('Compte patient créé.');
+          } else {
+            setAuthMode('signin');
+            setAuthMessage('Compte créé. Vérifiez vos e-mails pour confirmer votre adresse avant de vous connecter.', 'success');
+          }
+        } else {
+          const { data, error } = await sb.auth.signInWithPassword({ email, password });
+          if (error) throw error;
+          await openAuthenticatedApp(data.session, false);
+          showToast('Connexion réussie.');
+        }
+      } catch (error) {
+        console.error('Erreur Auth Supabase', error);
+        setAuthMessage(error.message || 'Connexion impossible pour le moment.');
+      } finally {
+        authSubmit.disabled = false;
+        authSubmit.textContent = authMode === 'signup' ? 'Créer mon compte' : 'Se connecter';
+      }
     }
 
-    function logout() {
-      localStorage.removeItem(SESSION_KEY);
+    async function handlePasswordReset() {
+      const email = loginEmail.value.trim().toLowerCase();
+      if (!email || !email.includes('@')) {
+        setAuthMessage("Entrez votre e-mail pour recevoir le lien de réinitialisation.");
+        return;
+      }
+
+      const { error } = await sb.auth.resetPasswordForEmail(email, {
+        redirectTo: window.location.origin + window.location.pathname
+      });
+
+      if (error) {
+        setAuthMessage(error.message || "Impossible d'envoyer l'e-mail.");
+        return;
+      }
+
+      setAuthMessage('Lien de réinitialisation envoyé par e-mail.', 'success');
+    }
+
+    async function logout() {
+      await sb.auth.signOut();
       showLogin();
     }
 
@@ -2086,6 +2367,173 @@
       }).join('');
     }
 
+    function formatDate(value) {
+      return new Intl.DateTimeFormat('fr-FR', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric'
+      }).format(new Date(value));
+    }
+
+    function formatFileSize(bytes) {
+      if (!bytes) return 'Taille inconnue';
+      if (bytes < 1024 * 1024) return Math.round(bytes / 1024) + ' Ko';
+      return (bytes / (1024 * 1024)).toFixed(1).replace('.', ',') + ' Mo';
+    }
+
+    function documentIcon(document) {
+      if (document.category === 'ordonnance') return '📄';
+      if (document.mime_type && document.mime_type.includes('pdf')) return '📕';
+      return '🩻';
+    }
+
+    function renderDocumentList(container, documents, emptyText) {
+      if (!container) return;
+      if (!documents.length) {
+        container.innerHTML = '<div class="empty-docs">' + escapeHtml(emptyText) + '</div>';
+        return;
+      }
+
+      container.innerHTML = documents.map(function(document) {
+        return (
+          '<button class="file-row" type="button" data-document-path="' + escapeHtml(document.storage_path) + '">' +
+            '<div class="file-icon">' + documentIcon(document) + '</div>' +
+            '<div style="text-align:left;min-width:0;">' +
+              '<div class="row-title">' + escapeHtml(document.title) + '</div>' +
+              '<div class="row-meta">' + formatDate(document.created_at) + ' · ' + formatFileSize(document.file_size) + '</div>' +
+            '</div>' +
+            '<div class="chevron">›</div>' +
+          '</button>'
+        );
+      }).join('');
+    }
+
+    function renderDocuments(documents) {
+      const medicalDocuments = documents.filter(function(document) {
+        return document.category === 'irm' || document.category === 'autre';
+      });
+      const prescriptionDocuments = documents.filter(function(document) {
+        return document.category === 'ordonnance';
+      });
+
+      renderDocumentList(medicalDocumentsList, medicalDocuments, 'Aucune imagerie ajoutée pour le moment.');
+      renderDocumentList(prescriptionDocumentsList, prescriptionDocuments, 'Aucune ordonnance ajoutée pour le moment.');
+    }
+
+    async function loadDocuments() {
+      if (!currentUser) {
+        renderDocuments([]);
+        return;
+      }
+
+      const { data, error } = await sb
+        .from('patient_documents')
+        .select('*')
+        .eq('patient_id', currentUser.id)
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.warn('Documents patient indisponibles', error);
+        renderDocuments([]);
+        setDocStatus('Documents indisponibles. Vérifiez que le schéma Supabase V2 est appliqué.', 'error');
+        return;
+      }
+
+      setDocStatus('');
+      renderDocuments(data || []);
+    }
+
+    function setDocumentCategory(category) {
+      selectedDocCategory = category === 'ordonnance' ? 'ordonnance' : 'irm';
+      document.querySelectorAll('[data-doc-category]').forEach(function(button) {
+        button.classList.toggle('active', button.dataset.docCategory === selectedDocCategory);
+      });
+      if (!docTitle.value.trim()) {
+        docTitle.placeholder = selectedDocCategory === 'ordonnance'
+          ? 'Ex : Ordonnance kiné'
+          : 'Ex : IRM lombaire L4-L5';
+      }
+    }
+
+    async function handleDocumentUpload(event) {
+      event.preventDefault();
+      setDocStatus('');
+
+      if (!currentUser) {
+        setDocStatus('Connectez-vous pour ajouter un document.', 'error');
+        return;
+      }
+
+      const file = docFile.files?.[0];
+      if (!file) {
+        setDocStatus('Choisissez une photo, un scan ou un PDF.', 'error');
+        return;
+      }
+
+      const title = docTitle.value.trim() || file.name.replace(/\.[^.]+$/, '') || 'Document médical';
+      const category = selectedDocCategory;
+      const safeName = Date.now() + '-' + (crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2)) + '-' + normalizeFileName(file.name);
+      const storagePath = currentUser.id + '/' + category + '/' + safeName;
+
+      uploadDocument.disabled = true;
+      uploadDocument.textContent = 'Envoi sécurisé...';
+      setDocStatus('Téléversement vers votre dossier sécurisé...');
+
+      try {
+        const { error: uploadError } = await sb.storage
+          .from(DOCUMENT_BUCKET)
+          .upload(storagePath, file, {
+            cacheControl: '3600',
+            contentType: file.type || 'application/octet-stream',
+            upsert: false
+          });
+
+        if (uploadError) throw uploadError;
+
+        const { error: insertError } = await sb.from('patient_documents').insert({
+          patient_id: currentUser.id,
+          category,
+          title,
+          storage_bucket: DOCUMENT_BUCKET,
+          storage_path: storagePath,
+          mime_type: file.type || 'application/octet-stream',
+          file_size: file.size
+        });
+
+        if (insertError) {
+          await sb.storage.from(DOCUMENT_BUCKET).remove([storagePath]);
+          throw insertError;
+        }
+
+        documentForm.reset();
+        docFileLabel.textContent = 'Scanner ou importer';
+        setDocumentCategory(category);
+        setDocStatus('Document ajouté au dossier.');
+        showToast(category === 'ordonnance' ? 'Ordonnance ajoutée.' : 'Imagerie ajoutée.');
+        await loadDocuments();
+      } catch (error) {
+        console.error('Erreur upload document', error);
+        setDocStatus(error.message || 'Impossible d’ajouter ce document.', 'error');
+      } finally {
+        uploadDocument.disabled = false;
+        uploadDocument.textContent = 'Ajouter au dossier';
+      }
+    }
+
+    async function openDocument(storagePath) {
+      const { data, error } = await sb.storage
+        .from(DOCUMENT_BUCKET)
+        .createSignedUrl(storagePath, 60 * 10);
+
+      if (error) {
+        showToast('Impossible d’ouvrir ce document.');
+        console.error('Erreur lecture document', error);
+        return;
+      }
+
+      window.open(data.signedUrl, '_blank', 'noopener');
+    }
+
     tabs.forEach(function(tab) {
       tab.addEventListener('click', function() {
         setTab(tab.dataset.tab);
@@ -2104,19 +2552,37 @@
       });
     });
 
+    document.querySelectorAll('[data-auth-mode]').forEach(function(button) {
+      button.addEventListener('click', function() {
+        setAuthMode(button.dataset.authMode);
+      });
+    });
+
+    document.querySelectorAll('[data-doc-category]').forEach(function(button) {
+      button.addEventListener('click', function() {
+        setDocumentCategory(button.dataset.docCategory);
+      });
+    });
+
     document.getElementById('savePain')?.addEventListener('click', function() {
       setPain(currentPain);
       showToast('Douleur enregistrée.');
     });
 
     loginForm?.addEventListener('submit', handleLogin);
+    resetPassword?.addEventListener('click', handlePasswordReset);
+    documentForm?.addEventListener('submit', handleDocumentUpload);
 
-    prefillLogin?.addEventListener('click', function() {
-      loginEmail.value = 'camille.patient@nesosante.fr';
-      loginPassword.value = 'neso2026';
-      loginFirstName.value = 'Camille';
-      setLoginError('');
-      loginPassword.focus();
+    docFile?.addEventListener('change', function() {
+      const file = docFile.files?.[0];
+      docFileLabel.textContent = file ? file.name : 'Scanner ou importer';
+    });
+
+    document.addEventListener('click', function(event) {
+      const documentButton = event.target.closest('[data-document-path]');
+      if (documentButton) {
+        openDocument(documentButton.dataset.documentPath);
+      }
     });
 
     document.querySelectorAll('[data-logout]').forEach(function(button) {
@@ -2128,13 +2594,23 @@
     setPain(currentPain);
     renderExerciseState();
     renderHistory();
+    setAuthMode('signin');
+    setDocumentCategory('irm');
 
-    const storedSession = loadSession();
-    if (storedSession) {
-      openAuthenticatedApp(storedSession, true);
-    } else {
-      showLogin();
-    }
+    sb.auth.getSession().then(async function(result) {
+      const session = result.data.session;
+      if (session) {
+        await openAuthenticatedApp(session, true);
+      } else {
+        showLogin();
+      }
+    });
+
+    sb.auth.onAuthStateChange(function(event, session) {
+      if (event === 'SIGNED_OUT' || !session) {
+        showLogin();
+      }
+    });
 
     window.addEventListener('hashchange', function() {
       if (!document.body.classList.contains('is-authenticated')) return;
