@@ -5,7 +5,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Physio Scan · Dashboard</title>
+  <title>Neso Santé · Dashboard</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -672,14 +672,14 @@
 <body>
   <header class="topbar">
     <div class="brand">
-      <div class="brand-title">Physio Scan · Dashboard</div>
+      <div class="brand-title">Neso Santé · Dashboard</div>
       <div class="brand-subtitle">Console kiné · Pré-bilan et analytics patient</div>
     </div>
 
     <div class="top-actions">
       <a href="index.html" class="top-pill" style="text-decoration: none;">Accueil</a>
       <a href="app-v2.html" class="top-pill" style="text-decoration: none;">Espace patient</a>
-      <a href="scan.html" class="top-pill" style="text-decoration: none;">Pré-scan</a>
+      <a href="scan.html" class="top-pill" style="text-decoration: none;">Physio Scan</a>
       <div class="top-pill">14/05/2026</div>
       <div class="top-pill">Martin Armangué</div>
       <button class="top-pill" type="button" onclick="clearAdminPassword(); location.reload();" style="cursor:pointer;">Se déconnecter</button>
@@ -871,7 +871,7 @@
         || sessionStorage.getItem(LEGACY_ADMIN_PASSWORD_STORAGE_KEY);
 
       if (!password) {
-        password = prompt('Mot de passe dashboard Physio Scan');
+        password = prompt('Mot de passe dashboard Neso Santé');
 
         if (password) {
           sessionStorage.setItem(ADMIN_PASSWORD_STORAGE_KEY, password);

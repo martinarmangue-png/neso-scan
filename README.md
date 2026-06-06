@@ -1,7 +1,7 @@
-# Physio Scan — Suite patient et praticien
+# Neso Santé — Suite patient et praticien
 
 ## Fichiers
-- `index.html` : hub public Physio Scan avec accès au pré-scan, à l'espace patient et au dashboard praticien.
+- `index.html` : hub public Neso Santé avec accès à Physio Scan, à l'espace patient et au dashboard praticien.
 - `scan.html` : lien patient Physio Scan avec enregistrement Supabase.
 - `dashboard.html` : mini dashboard praticien protégé par connexion Supabase.
 - `dashboard-v2.html` : dashboard praticien connecté à l'API admin sécurisée.
@@ -34,4 +34,4 @@
 - Les policies RLS limitent chaque patient à ses propres lignes et à son propre dossier Storage.
 
 ## Déploiement Vercel
-La page racine `index.html` sert de porte d'entrée. Les patients peuvent aller vers `scan.html` ou `app-v2.html`, et les praticiens vers `dashboard-v2.html`.
+La page racine `index.html` sert de porte d'entrée. Les patients peuvent aller vers Physio Scan (`scan.html`) ou l'espace patient (`app-v2.html`), et les praticiens vers `dashboard-v2.html`.
