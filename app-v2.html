@@ -66,6 +66,202 @@
       text-decoration: none;
     }
 
+    body:not(.is-authenticated) .app-shell {
+      display: none;
+    }
+
+    .auth-shell {
+      min-height: 100svh;
+      width: 100%;
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+      background: #dfe8f5;
+    }
+
+    body.is-authenticated .auth-shell {
+      display: none;
+    }
+
+    .auth-panel {
+      width: min(100%, 520px);
+      min-height: 100svh;
+      background: var(--bg);
+      box-shadow: 0 24px 80px rgba(21, 48, 83, 0.18);
+      overflow: hidden;
+    }
+
+    .auth-hero {
+      min-height: 300px;
+      padding: calc(34px + env(safe-area-inset-top)) 28px 74px;
+      color: #fff;
+      background: linear-gradient(135deg, #203f82 0%, #2f66f3 50%, #079a72 100%);
+    }
+
+    .auth-brand {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 42px;
+    }
+
+    .auth-logo {
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .auth-badge {
+      min-height: 34px;
+      padding: 0 13px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      color: rgba(255, 255, 255, 0.82);
+      font-size: 12px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .auth-title {
+      max-width: 420px;
+      font-size: clamp(40px, 11vw, 56px);
+      line-height: 1.02;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .auth-subtitle {
+      max-width: 390px;
+      margin-top: 16px;
+      color: rgba(255, 255, 255, 0.76);
+      font-size: 18px;
+      line-height: 1.45;
+      font-weight: 600;
+    }
+
+    .auth-card {
+      margin: -46px 22px 26px;
+      padding: 24px;
+      border-radius: 28px;
+      background: #fff;
+      border: 1px solid rgba(229, 235, 244, 0.85);
+      box-shadow: var(--shadow);
+    }
+
+    .auth-card h2 {
+      font-size: 25px;
+      line-height: 1.12;
+      font-weight: 800;
+      letter-spacing: 0;
+      color: var(--ink);
+    }
+
+    .auth-card p {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.45;
+      font-weight: 600;
+    }
+
+    .auth-form {
+      display: grid;
+      gap: 15px;
+      margin-top: 24px;
+    }
+
+    .auth-field {
+      display: grid;
+      gap: 8px;
+      color: #45546b;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .auth-input {
+      width: 100%;
+      min-height: 54px;
+      border: 1px solid #dbe4f0;
+      border-radius: 17px;
+      background: #f7faff;
+      padding: 0 16px;
+      color: var(--ink);
+      font-size: 16px;
+      font-weight: 700;
+      outline: none;
+      transition: border 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+    }
+
+    .auth-input:focus {
+      border-color: var(--blue-bright);
+      background: #fff;
+      box-shadow: 0 0 0 4px rgba(47, 102, 243, 0.12);
+    }
+
+    .auth-input::placeholder {
+      color: #9aa8bc;
+      font-weight: 600;
+    }
+
+    .auth-error {
+      display: none;
+      min-height: 42px;
+      align-items: center;
+      padding: 11px 13px;
+      border-radius: 15px;
+      color: #b32635;
+      background: #fff1f2;
+      font-size: 13px;
+      font-weight: 800;
+      line-height: 1.35;
+    }
+
+    .auth-error.show {
+      display: flex;
+    }
+
+    .auth-link-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .auth-link-row button {
+      background: transparent;
+      color: var(--blue-bright);
+      font-weight: 800;
+    }
+
+    .logout-button,
+    .outline-button {
+      min-height: 44px;
+      padding: 0 15px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.26);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .outline-button {
+      width: 100%;
+      margin-top: 18px;
+      background: #fff;
+      border-color: #dbe4f0;
+      color: var(--blue);
+    }
+
     .app-shell {
       width: min(100%, 520px);
       min-height: 100svh;
@@ -978,6 +1174,37 @@
         background: linear-gradient(135deg, #dce8f6 0%, #f3f7fd 55%, #dcefe8 100%);
       }
 
+      .auth-shell {
+        min-height: calc(100svh - 48px);
+        align-items: center;
+        background: transparent;
+      }
+
+      .auth-panel {
+        width: min(100%, 1040px);
+        min-height: min(720px, calc(100svh - 48px));
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 460px;
+        border-radius: 32px;
+      }
+
+      .auth-hero {
+        min-height: 100%;
+        padding: 46px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+
+      .auth-card {
+        margin: 0;
+        border: 0;
+        border-radius: 0;
+        box-shadow: none;
+        align-self: center;
+        padding: 40px;
+      }
+
       .app-shell {
         width: min(100%, 1180px);
         min-height: calc(100svh - 48px);
@@ -1119,6 +1346,53 @@
   </style>
 </head>
 <body>
+  <section class="auth-shell" aria-labelledby="auth-title">
+    <div class="auth-panel">
+      <header class="auth-hero">
+        <div>
+          <div class="auth-brand">
+            <div class="auth-logo">NESO Santé</div>
+            <div class="auth-badge">Espace patient</div>
+          </div>
+          <h1 class="auth-title" id="auth-title">Connexion à votre suivi</h1>
+          <p class="auth-subtitle">Retrouvez vos exercices, votre douleur du jour et votre dossier partagé avec votre praticien.</p>
+        </div>
+        <div class="appointment-card" style="margin-top:34px;">
+          <div>
+            <div class="appointment-label">Accès sécurisé</div>
+            <div class="appointment-title">Données personnelles</div>
+            <div class="appointment-meta">Session privée sur cet appareil</div>
+          </div>
+        </div>
+      </header>
+
+      <article class="auth-card">
+        <h2>Accéder à mon espace</h2>
+        <p>Connectez-vous avec l'e-mail utilisé pour votre parcours NESO.</p>
+        <form class="auth-form" id="loginForm" novalidate>
+          <label class="auth-field" for="loginEmail">
+            Adresse e-mail
+            <input class="auth-input" id="loginEmail" name="email" type="email" autocomplete="email" placeholder="prenom@exemple.fr" required />
+          </label>
+          <label class="auth-field" for="loginPassword">
+            Mot de passe
+            <input class="auth-input" id="loginPassword" name="password" type="password" autocomplete="current-password" placeholder="••••••••" required />
+          </label>
+          <label class="auth-field" for="loginFirstName">
+            Prénom affiché
+            <input class="auth-input" id="loginFirstName" name="firstName" type="text" autocomplete="given-name" placeholder="Votre prénom" />
+          </label>
+          <div class="auth-error" id="loginError" role="alert"></div>
+          <button class="primary-button" type="submit">Se connecter</button>
+          <div class="auth-link-row">
+            <span>Accès bêta NESO</span>
+            <button type="button" id="prefillLogin">Remplir un profil test</button>
+          </div>
+        </form>
+      </article>
+    </div>
+  </section>
+
   <div class="app-shell">
     <main class="screens" id="screens">
       <section class="screen active" data-screen="home" aria-labelledby="home-title">
@@ -1126,9 +1400,12 @@
           <div class="hero-row">
             <div>
               <div class="hero-eyebrow">Bonjour 👋</div>
-              <h1 class="hero-title" id="home-title">Thomas</h1>
+              <h1 class="hero-title" id="home-title" data-user-first-name>Patient</h1>
             </div>
-            <div class="avatar">TM</div>
+            <div style="display:grid;gap:10px;justify-items:end;">
+              <div class="avatar" data-user-initials>NS</div>
+              <button class="logout-button" type="button" data-logout>Sortir</button>
+            </div>
           </div>
 
           <article class="appointment-card">
@@ -1356,7 +1633,7 @@
 
           <article class="card message-card">
             <h2 class="card-title" style="margin-bottom:14px;">💬 Message du kiné</h2>
-            Bonne semaine Thomas ! Continue sur cette lancée. La régularité est la clé de ta récupération. Pense à bien t'hydrater avant les séances.
+            Bonne semaine <span data-user-first-name>Patient</span> ! Continue sur cette lancée. La régularité est la clé de ta récupération. Pense à bien t'hydrater avant les séances.
             <div class="signature">— Dr. Martin · 9 mai 2026</div>
           </article>
         </div>
@@ -1370,13 +1647,14 @@
 
         <div class="content">
           <article class="profile-card">
-            <h2>Thomas Martin</h2>
-            <div class="profile-meta">Né le 12/03/1986 · Groupe sanguin A+</div>
+            <h2 data-user-full-name>Patient NESO</h2>
+            <div class="profile-meta"><span data-user-email>patient@nesosante.fr</span> · Dossier patient sécurisé</div>
             <div class="chips">
-              <span class="chip">Lombalgie</span>
-              <span class="chip">Pas de traitement</span>
-              <span class="chip warning">⚠️ Allergie pénicilline</span>
+              <span class="chip">Suivi lombalgie</span>
+              <span class="chip">Traitement à confirmer</span>
+              <span class="chip warning">⚠️ Allergies non renseignées</span>
             </div>
+            <button class="outline-button" type="button" data-logout>Se déconnecter</button>
           </article>
 
           <article class="card share-card">
@@ -1525,6 +1803,13 @@
     const painScoreNow = document.querySelector('.pain-score-now');
     const historyList = document.getElementById('historyList');
     const toast = document.getElementById('toast');
+    const loginForm = document.getElementById('loginForm');
+    const loginEmail = document.getElementById('loginEmail');
+    const loginPassword = document.getElementById('loginPassword');
+    const loginFirstName = document.getElementById('loginFirstName');
+    const loginError = document.getElementById('loginError');
+    const prefillLogin = document.getElementById('prefillLogin');
+    const SESSION_KEY = 'neso-v2-session';
     const storedPain = Number(localStorage.getItem('neso-v2-pain') || 3);
     const validTabs = ['home', 'suivi', 'exercices', 'dossier', 'explore'];
     let currentPain = Number.isFinite(storedPain) ? storedPain : 3;
@@ -1546,6 +1831,117 @@
 
     let exerciseState = loadExerciseState();
     let toastTimeout;
+
+    function titleCase(value) {
+      return value
+        .trim()
+        .replace(/[._-]+/g, ' ')
+        .split(/\s+/)
+        .filter(Boolean)
+        .map(function(part) {
+          return part.charAt(0).toUpperCase() + part.slice(1).toLowerCase();
+        })
+        .join(' ');
+    }
+
+    function deriveNameFromEmail(email) {
+      const localPart = String(email || '').split('@')[0] || 'patient';
+      return titleCase(localPart) || 'Patient';
+    }
+
+    function getInitials(name) {
+      const parts = titleCase(name || 'Patient NESO').split(' ').filter(Boolean);
+      return (parts[0]?.charAt(0) || 'N') + (parts[1]?.charAt(0) || 'S');
+    }
+
+    function buildSession(email, firstName) {
+      const cleanEmail = String(email || '').trim().toLowerCase();
+      const displayName = titleCase(firstName || '') || deriveNameFromEmail(cleanEmail);
+
+      return {
+        email: cleanEmail,
+        firstName: displayName.split(' ')[0] || 'Patient',
+        fullName: displayName,
+        initials: getInitials(displayName),
+        connectedAt: new Date().toISOString()
+      };
+    }
+
+    function loadSession() {
+      try {
+        const session = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null');
+        return session && session.email ? session : null;
+      } catch (error) {
+        return null;
+      }
+    }
+
+    function saveSession(session) {
+      localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+    }
+
+    function applySession(session) {
+      document.querySelectorAll('[data-user-first-name]').forEach(function(node) {
+        node.textContent = session.firstName;
+      });
+
+      document.querySelectorAll('[data-user-full-name]').forEach(function(node) {
+        node.textContent = session.fullName;
+      });
+
+      document.querySelectorAll('[data-user-email]').forEach(function(node) {
+        node.textContent = session.email;
+      });
+
+      document.querySelectorAll('[data-user-initials]').forEach(function(node) {
+        node.textContent = session.initials;
+      });
+    }
+
+    function openAuthenticatedApp(session, restoreTab) {
+      applySession(session);
+      document.body.classList.add('is-authenticated');
+      setTab(restoreTab ? location.hash.replace('#', '') || 'home' : 'home');
+    }
+
+    function showLogin() {
+      document.body.classList.remove('is-authenticated');
+      if (location.hash) {
+        window.history.replaceState(null, '', location.pathname || 'app-v2.html');
+      }
+      setTimeout(function() {
+        loginEmail?.focus();
+      }, 80);
+    }
+
+    function setLoginError(message) {
+      if (!loginError) return;
+      loginError.textContent = message;
+      loginError.classList.toggle('show', Boolean(message));
+    }
+
+    function handleLogin(event) {
+      event.preventDefault();
+      setLoginError('');
+
+      const email = loginEmail.value.trim();
+      const password = loginPassword.value.trim();
+
+      if (!email || !email.includes('@') || password.length < 4) {
+        setLoginError('Entrez un e-mail valide et un mot de passe.');
+        return;
+      }
+
+      const session = buildSession(email, loginFirstName.value);
+      saveSession(session);
+      openAuthenticatedApp(session, false);
+      showToast('Connexion réussie.');
+    }
+
+    function logout() {
+      localStorage.removeItem(SESSION_KEY);
+      showLogin();
+    }
 
     function setTab(name) {
       if (!validTabs.includes(name)) {
@@ -1713,14 +2109,35 @@
       showToast('Douleur enregistrée.');
     });
 
+    loginForm?.addEventListener('submit', handleLogin);
+
+    prefillLogin?.addEventListener('click', function() {
+      loginEmail.value = 'camille.patient@nesosante.fr';
+      loginPassword.value = 'neso2026';
+      loginFirstName.value = 'Camille';
+      setLoginError('');
+      loginPassword.focus();
+    });
+
+    document.querySelectorAll('[data-logout]').forEach(function(button) {
+      button.addEventListener('click', logout);
+    });
+
     attachExerciseHandlers();
     renderPainPicker();
     setPain(currentPain);
     renderExerciseState();
     renderHistory();
-    setTab(location.hash.replace('#', '') || 'home');
+
+    const storedSession = loadSession();
+    if (storedSession) {
+      openAuthenticatedApp(storedSession, true);
+    } else {
+      showLogin();
+    }
 
     window.addEventListener('hashchange', function() {
+      if (!document.body.classList.contains('is-authenticated')) return;
       setTab(location.hash.replace('#', '') || 'home');
     });
 
