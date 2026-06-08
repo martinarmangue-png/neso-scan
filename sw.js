@@ -1,4 +1,4 @@
-const CACHE_NAME = 'neso-sante-20260608-v3';
+const CACHE_NAME = 'neso-sante-20260608-v4';
 const APP_SHELL = [
   './',
   './index.html',
@@ -40,6 +40,13 @@ self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
 
   const requestUrl = new URL(event.request.url);
+  const isAdminApiRequest = requestUrl.origin === self.location.origin
+    && (requestUrl.pathname === '/api/admin' || requestUrl.pathname.startsWith('/api/admin/'));
+
+  if (isAdminApiRequest) {
+    event.respondWith(fetch(event.request, { cache: 'no-store' }));
+    return;
+  }
 
   if (event.request.mode === 'navigate' && requestUrl.origin === self.location.origin) {
     event.respondWith(

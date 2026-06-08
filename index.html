@@ -98,10 +98,10 @@
           <a href="#praticiens" class="hover:text-white transition">Praticiens</a>
         </nav>
 
-        <button onclick="openPractitionerAccess()"
+        <a href="dashboard-v2.html"
                 class="bg-white/10 border border-white/20 px-4 sm:px-5 py-2 rounded-2xl text-xs sm:text-sm font-medium text-white hover:bg-white/20 transition whitespace-nowrap">
           Espace praticien
-        </button>
+        </a>
 
       </div>
     </header>
@@ -135,10 +135,10 @@
             Je suis patient
           </a>
 
-          <button onclick="openPractitionerAccess()"
+          <a href="dashboard-v2.html"
              class="glass-button border border-[var(--neso-border)] px-7 py-4 rounded-full font-semibold transition hover:border-[var(--neso-blue)] hover:text-[var(--neso-blue)] text-center w-full sm:w-auto">
             Je suis praticien
-          </button>
+          </a>
 
         </div>
 
@@ -252,12 +252,12 @@
           <div class="mt-6 text-[var(--neso-blue)] font-semibold">Se connecter →</div>
         </a>
 
-        <button onclick="openPractitionerAccess()" class="bg-white border border-[var(--neso-border)] rounded-[32px] p-7 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition duration-300 text-left">
+        <a href="dashboard-v2.html" class="bg-white border border-[var(--neso-border)] rounded-[32px] p-7 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition duration-300 text-left">
           <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-[var(--neso-blue)] to-[var(--neso-teal)] text-white flex items-center justify-center text-2xl shadow-sm">📊</div>
           <h2 class="mt-7 text-2xl font-semibold tracking-tight text-slate-950">Je suis praticien</h2>
           <p class="mt-4 text-slate-600 leading-7">Liste des scans, détails patient, priorités et analytics de parcours.</p>
           <div class="mt-6 text-[var(--neso-blue)] font-semibold">Accéder au dashboard →</div>
-        </button>
+        </a>
       </div>
     </section>
 
@@ -481,9 +481,9 @@
                 <div class="text-sm text-slate-600 mt-1">2 patients avec douleur élevée et gêne fonctionnelle importante.</div>
               </div>
 
-              <button onclick="openPractitionerAccess()" class="neso-gradient-button w-full text-white px-6 py-4 rounded-full font-semibold transition mt-4">
+              <a href="dashboard-v2.html" class="neso-gradient-button w-full text-white px-6 py-4 rounded-full font-semibold transition mt-4 inline-flex items-center justify-center">
                 Accéder à l’espace praticien
-              </button>
+              </a>
             </div>
 
           </div>
@@ -513,9 +513,9 @@
             Je suis patient
           </a>
 
-          <button onclick="openPractitionerAccess()" class="glass-button border border-[var(--neso-border)] px-8 py-4 rounded-full font-semibold transition hover:border-[var(--neso-blue)] hover:text-[var(--neso-blue)]">
+          <a href="dashboard-v2.html" class="glass-button border border-[var(--neso-border)] px-8 py-4 rounded-full font-semibold transition hover:border-[var(--neso-blue)] hover:text-[var(--neso-blue)] inline-flex items-center justify-center">
             Je suis praticien
-          </button>
+          </a>
         </div>
       </div>
 
@@ -533,78 +533,5 @@
 
   </section>
 
-  <div id="practitionerModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/40 px-4 backdrop-blur-sm">
-    <div class="w-full max-w-md rounded-[32px] border border-[var(--neso-border)] bg-white p-7 shadow-2xl shadow-slate-900/20">
-      <div class="flex items-start justify-between gap-4">
-        <div>
-          <div class="text-sm font-medium text-[var(--neso-blue)]">Espace praticien</div>
-          <h3 class="mt-2 text-2xl font-semibold tracking-tight text-[var(--neso-ink)]">Connexion Neso Santé</h3>
-          <p class="mt-3 text-sm leading-6 text-slate-600">Entrez votre code praticien pour accéder au dashboard.</p>
-        </div>
-        <button onclick="closePractitionerAccess()" class="flex h-10 w-10 items-center justify-center rounded-full border border-[var(--neso-border)] text-slate-500 hover:text-[var(--neso-blue)] transition">×</button>
-      </div>
-
-      <div class="mt-6">
-        <label for="practitionerCode" class="text-sm font-medium text-slate-700">Code praticien</label>
-        <input id="practitionerCode" type="password" placeholder="Ex : NESO2026" class="mt-2 w-full rounded-2xl border border-[var(--neso-border)] bg-[#f8fbfa] px-4 py-4 text-slate-900 outline-none transition focus:border-[var(--neso-blue)] focus:ring-4 focus:ring-blue-100" />
-        <p id="practitionerError" class="mt-3 hidden text-sm font-medium text-red-600">Code incorrect. Accès refusé.</p>
-      </div>
-
-      <button onclick="submitPractitionerAccess()" class="neso-gradient-button mt-6 w-full rounded-full px-6 py-4 font-semibold text-white transition">
-        Accéder au dashboard
-      </button>
-
-      <p class="mt-5 text-center text-xs leading-5 text-slate-500">Accès réservé aux praticiens autorisés.</p>
-    </div>
-  </div>
 </body>
-<script>
-  function openPractitionerAccess() {
-    const modal = document.getElementById("practitionerModal");
-    const input = document.getElementById("practitionerCode");
-    const error = document.getElementById("practitionerError");
-
-    modal.classList.remove("hidden");
-    modal.classList.add("flex");
-    error.classList.add("hidden");
-    input.value = "";
-
-    setTimeout(() => input.focus(), 50);
-  }
-
-  function closePractitionerAccess() {
-    const modal = document.getElementById("practitionerModal");
-    modal.classList.add("hidden");
-    modal.classList.remove("flex");
-  }
-
-  function submitPractitionerAccess() {
-    const input = document.getElementById("practitionerCode");
-    const error = document.getElementById("practitionerError");
-
-    const code = input.value.trim().toUpperCase();
-
-    if (code === "PHYSIO2026" || code === "NESO2026") {
-      window.location.href = "dashboard-v2.html";
-      return;
-    }
-
-    error.classList.remove("hidden");
-  }
-
-  document.addEventListener("keydown", function(event) {
-    const modal = document.getElementById("practitionerModal");
-    const isOpen = modal && !modal.classList.contains("hidden");
-
-    if (!isOpen) return;
-
-    if (event.key === "Escape") {
-      closePractitionerAccess();
-    }
-
-    if (event.key === "Enter") {
-      submitPractitionerAccess();
-    }
-  });
-</script>
 </html>
