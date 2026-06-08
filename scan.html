@@ -978,11 +978,13 @@
 
     let { error } = await sb.from('scans').insert(payload);
 
-    if (error && isMissingScanTypeColumn(error)) {
-      const fallbackPayload = { ...payload };
-      delete fallbackPayload.scan_type;
-      delete fallbackPayload.scan_type_label;
-      const fallback = await sb.from('scans').insert(fallbackPayload);
+    if (error && isMissingOptionalScanColumn(error)) {
+      const fallback = await sb.from('scans').insert(buildCompatibleScanPayload(payload));
+      error = fallback.error;
+    }
+
+    if (error && isMissingOptionalScanColumn(error)) {
+      const fallback = await sb.from('scans').insert(buildMinimalScanPayload(payload));
       error = fallback.error;
     }
 
@@ -1013,9 +1015,38 @@
     go('p10');
   }
 
-  function isMissingScanTypeColumn(error) {
+  function buildCompatibleScanPayload(payload) {
+    const fallbackPayload = { ...payload };
+
+    delete fallbackPayload.scan_type;
+    delete fallbackPayload.scan_type_label;
+    delete fallbackPayload.source;
+
+    return fallbackPayload;
+  }
+
+  function buildMinimalScanPayload(payload) {
+    return {
+      prenom: payload.prenom || null,
+      zones: payload.zones || [],
+      type_douleur: payload.type_douleur || [],
+      score_douleur: payload.score_douleur,
+      gene: payload.gene || [],
+      evolution: payload.evolution || null,
+      objectif: payload.objectif || null,
+      consent: true
+    };
+  }
+
+  function isMissingOptionalScanColumn(error) {
     const text = [error.message, error.details, error.hint, error.code].filter(Boolean).join(' ').toLowerCase();
-    return text.includes('scan_type') || text.includes('scan_type_label') || text.includes('schema cache');
+    return text.includes('schema cache')
+      || text.includes('does not exist')
+      || text.includes('scan_type')
+      || text.includes('scan_type_label')
+      || text.includes('douleur_depuis')
+      || text.includes('duration_ms')
+      || text.includes('source');
   }
 
   function trackPageEnter(pageId) {
