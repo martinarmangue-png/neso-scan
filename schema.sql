@@ -1,4 +1,4 @@
--- NESO Scan - Supabase schema V1
+-- Physio Scan - Supabase schema V1
 -- À coller dans Supabase > SQL Editor > Run
 
 create extension if not exists pgcrypto;
