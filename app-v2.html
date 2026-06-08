@@ -1064,6 +1064,58 @@
       line-height: 1.45;
     }
 
+    .profile-completion {
+      margin-top: 20px;
+      display: grid;
+      gap: 9px;
+    }
+
+    .profile-completion-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      color: rgba(255, 255, 255, 0.78);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .profile-completion-track {
+      height: 8px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.17);
+    }
+
+    .profile-completion-track span {
+      display: block;
+      width: var(--value, 20%);
+      height: 100%;
+      border-radius: inherit;
+      background: #66f2d5;
+    }
+
+    .patient-actions {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 22px;
+    }
+
+    .patient-action {
+      min-height: 48px;
+      border-radius: 16px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 14px;
+      color: #fff;
+      background: rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
     .chips {
       display: flex;
       flex-wrap: wrap;
@@ -1112,6 +1164,48 @@
 
     .share-card .row-meta {
       font-size: 15px;
+    }
+
+    .onboarding-card {
+      display: grid;
+      gap: 18px;
+    }
+
+    .onboarding-grid {
+      display: grid;
+      gap: 13px;
+    }
+
+    .patient-summary-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .patient-summary {
+      border-radius: 18px;
+      border: 1px solid #e4ebf5;
+      background: #f6f9fd;
+      padding: 14px;
+      min-width: 0;
+    }
+
+    .patient-summary span {
+      display: block;
+      color: #7c8aa1;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 7px;
+    }
+
+    .patient-summary strong {
+      display: block;
+      color: var(--ink);
+      font-size: 15px;
+      line-height: 1.25;
     }
 
     .file-row {
@@ -1169,6 +1263,54 @@
       color: var(--ink);
       font-size: 16px;
       margin-bottom: 6px;
+    }
+
+    .doc-preview {
+      display: none;
+      grid-template-columns: 54px minmax(0, 1fr);
+      gap: 12px;
+      align-items: center;
+      min-height: 74px;
+      border-radius: 18px;
+      border: 1px solid #dbe4f0;
+      background: #f7faff;
+      padding: 12px;
+    }
+
+    .doc-preview.show {
+      display: grid;
+    }
+
+    .doc-preview-icon {
+      width: 54px;
+      height: 54px;
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      background: #edf4ff;
+      font-size: 25px;
+    }
+
+    .doc-preview strong,
+    .doc-preview span {
+      display: block;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .doc-preview strong {
+      color: var(--ink);
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .doc-preview span {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
     }
 
     .empty-docs {
@@ -1661,6 +1803,15 @@
         </header>
 
         <div class="content">
+          <article class="card onboarding-card" id="homeOnboardingCard">
+            <div>
+              <h2 class="card-title">Compléter mon profil patient</h2>
+              <div class="row-meta">Ajoutez votre objectif, votre praticien et votre motif de suivi pour personnaliser l'app.</div>
+            </div>
+            <div class="profile-completion-track" style="--value:20%;" data-profile-completion-bar><span></span></div>
+            <button class="primary-button" type="button" data-open-tab="dossier">Compléter mon dossier · <span data-profile-completion>20%</span></button>
+          </article>
+
           <div class="section-title">🔥 Streak exercices</div>
           <article class="card">
             <div class="streak-head">
@@ -1890,13 +2041,66 @@
         <div class="content">
           <article class="profile-card">
             <h2 data-user-full-name>Patient Neso Santé</h2>
-            <div class="profile-meta"><span data-user-email>patient@exemple.fr</span> · Dossier patient sécurisé</div>
+            <div class="profile-meta"><span data-user-email>patient@exemple.fr</span> · <span data-profile-condition>Suivi à préciser</span> · <span data-profile-practitioner>Praticien à associer</span></div>
             <div class="chips">
-              <span class="chip">Suivi lombalgie</span>
-              <span class="chip">Traitement à confirmer</span>
-              <span class="chip warning">⚠️ Allergies non renseignées</span>
+              <span class="chip" data-profile-condition-chip>Suivi à préciser</span>
+              <span class="chip" data-profile-goal-chip>Objectif à ajouter</span>
+              <span class="chip warning" data-profile-status-chip>Profil à compléter</span>
             </div>
-            <button class="outline-button" type="button" data-logout>Se déconnecter</button>
+            <div class="profile-completion">
+              <div class="profile-completion-row">
+                <span>Dossier patient</span>
+                <strong data-profile-completion>20%</strong>
+              </div>
+              <div class="profile-completion-track" style="--value:20%;" data-profile-completion-bar><span></span></div>
+            </div>
+            <div class="patient-actions">
+              <a class="patient-action" href="scan.html">Physio Scan</a>
+              <button class="patient-action" type="button" data-logout>Se déconnecter</button>
+            </div>
+          </article>
+
+          <article class="card onboarding-card" aria-labelledby="onboarding-title">
+            <div>
+              <h2 class="card-title" id="onboarding-title">Informations patient</h2>
+              <div class="row-meta">Ces informations aident votre praticien à contextualiser vos scans et documents.</div>
+            </div>
+            <form class="document-form" id="onboardingForm">
+              <div class="onboarding-grid">
+                <label class="auth-field" for="patientFullName">
+                  Nom complet
+                  <input class="auth-input" id="patientFullName" type="text" autocomplete="name" placeholder="Ex : Thomas Martin" />
+                </label>
+                <label class="auth-field" for="patientBirthDate">
+                  Date de naissance
+                  <input class="auth-input" id="patientBirthDate" type="date" />
+                </label>
+                <label class="auth-field" for="patientPractitioner">
+                  Praticien référent
+                  <input class="auth-input" id="patientPractitioner" type="text" placeholder="Ex : Dr. Martin · Kiné du sport" />
+                </label>
+                <label class="auth-field" for="patientCondition">
+                  Motif de suivi
+                  <input class="auth-input" id="patientCondition" type="text" placeholder="Ex : Lombalgie, genou, épaule..." />
+                </label>
+                <label class="auth-field" for="patientGoal">
+                  Objectif principal
+                  <input class="auth-input" id="patientGoal" type="text" placeholder="Ex : Reprendre le sport sans douleur" />
+                </label>
+                <label class="auth-field" for="patientPhone">
+                  Téléphone
+                  <input class="auth-input" id="patientPhone" type="tel" autocomplete="tel" placeholder="Optionnel" />
+                </label>
+              </div>
+              <div class="doc-status" id="onboardingStatus" role="status" aria-live="polite"></div>
+              <button class="primary-button" type="submit" id="saveOnboarding">Enregistrer mon profil</button>
+            </form>
+            <div class="patient-summary-grid">
+              <div class="patient-summary"><span>Praticien</span><strong data-profile-practitioner>À associer</strong></div>
+              <div class="patient-summary"><span>Objectif</span><strong data-profile-goal>À définir</strong></div>
+              <div class="patient-summary"><span>Motif</span><strong data-profile-condition>À préciser</strong></div>
+              <div class="patient-summary"><span>Naissance</span><strong data-profile-birth-date>Non renseignée</strong></div>
+            </div>
           </article>
 
           <article class="card share-card">
@@ -1923,6 +2127,13 @@
                 <input id="docFile" type="file" accept="image/*,application/pdf,.pdf" capture="environment" />
                 <span><strong id="docFileLabel">Scanner ou importer</strong><span>Appareil photo, image ou PDF</span></span>
               </label>
+              <div class="doc-preview" id="docPreview" aria-live="polite">
+                <div class="doc-preview-icon" id="docPreviewIcon">📄</div>
+                <div>
+                  <strong id="docPreviewName">Document sélectionné</strong>
+                  <span id="docPreviewMeta">Prêt à classer dans le dossier</span>
+                </div>
+              </div>
               <div class="doc-status" id="docStatus" role="status" aria-live="polite"></div>
               <button class="primary-button" type="submit" id="uploadDocument">Ajouter au dossier</button>
             </form>
@@ -2059,6 +2270,19 @@
     const uploadDocument = document.getElementById('uploadDocument');
     const medicalDocumentsList = document.getElementById('medicalDocumentsList');
     const prescriptionDocumentsList = document.getElementById('prescriptionDocumentsList');
+    const onboardingForm = document.getElementById('onboardingForm');
+    const patientFullName = document.getElementById('patientFullName');
+    const patientBirthDate = document.getElementById('patientBirthDate');
+    const patientPractitioner = document.getElementById('patientPractitioner');
+    const patientCondition = document.getElementById('patientCondition');
+    const patientGoal = document.getElementById('patientGoal');
+    const patientPhone = document.getElementById('patientPhone');
+    const onboardingStatus = document.getElementById('onboardingStatus');
+    const saveOnboarding = document.getElementById('saveOnboarding');
+    const docPreview = document.getElementById('docPreview');
+    const docPreviewIcon = document.getElementById('docPreviewIcon');
+    const docPreviewName = document.getElementById('docPreviewName');
+    const docPreviewMeta = document.getElementById('docPreviewMeta');
     const storedPain = Number(localStorage.getItem('neso-v2-pain') || 3);
     const validTabs = ['home', 'suivi', 'exercices', 'dossier', 'explore'];
     let currentPain = Number.isFinite(storedPain) ? storedPain : 3;
@@ -2104,6 +2328,14 @@
         .join(' ');
     }
 
+    function normalized(value) {
+      return String(value || '')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase()
+        .trim();
+    }
+
     function deriveNameFromEmail(email) {
       const localPart = String(email || '').split('@')[0] || 'patient';
       return titleCase(localPart) || 'Patient';
@@ -2124,10 +2356,47 @@
         .toLowerCase();
     }
 
+    function localProfileKey(userId) {
+      return 'neso-v3-profile-' + userId;
+    }
+
+    function getLocalProfileExtras(userId) {
+      if (!userId) return {};
+      try {
+        return JSON.parse(localStorage.getItem(localProfileKey(userId)) || '{}');
+      } catch (error) {
+        return {};
+      }
+    }
+
+    function saveLocalProfileExtras(userId, extras) {
+      if (!userId) return;
+      localStorage.setItem(localProfileKey(userId), JSON.stringify(extras));
+    }
+
+    function profileCompletion(profile) {
+      const fields = [
+        profile?.fullName,
+        profile?.email,
+        profile?.birthDate,
+        profile?.practitionerName,
+        profile?.conditionLabel,
+        profile?.recoveryGoal
+      ];
+      const completed = fields.filter(Boolean).length;
+      return Math.round((completed / fields.length) * 100);
+    }
+
+    function profileValue(value, fallback) {
+      return String(value || '').trim() || fallback;
+    }
+
     function profileFromUser(user, profile) {
       const metadata = user?.user_metadata || {};
+      const extras = getLocalProfileExtras(user?.id);
       const fullName = titleCase(
         profile?.full_name ||
+        extras.fullName ||
         metadata.full_name ||
         metadata.name ||
         metadata.first_name ||
@@ -2139,7 +2408,13 @@
         email: user.email || profile?.email || '',
         firstName: titleCase(profile?.first_name || metadata.first_name || fullName.split(' ')[0] || 'Patient'),
         fullName: fullName || 'Patient Neso Santé',
-        initials: getInitials(fullName)
+        initials: getInitials(fullName),
+        birthDate: profile?.birth_date || extras.birthDate || '',
+        phone: profile?.phone || extras.phone || '',
+        practitionerName: profile?.practitioner_name || extras.practitionerName || '',
+        conditionLabel: profile?.condition_label || extras.conditionLabel || '',
+        recoveryGoal: profile?.recovery_goal || extras.recoveryGoal || '',
+        onboardingCompleted: Boolean(profile?.onboarding_completed || extras.onboardingCompleted)
       };
     }
 
@@ -2179,6 +2454,12 @@
       docStatus.classList.toggle('error', type === 'error');
     }
 
+    function setOnboardingStatus(message, type) {
+      if (!onboardingStatus) return;
+      onboardingStatus.textContent = message || '';
+      onboardingStatus.classList.toggle('error', type === 'error');
+    }
+
     function applySession(profile) {
       document.querySelectorAll('[data-user-first-name]').forEach(function(node) {
         node.textContent = profile.firstName;
@@ -2195,6 +2476,43 @@
       document.querySelectorAll('[data-user-initials]').forEach(function(node) {
         node.textContent = profile.initials;
       });
+
+      const completion = profileCompletion(profile);
+      document.querySelectorAll('[data-profile-completion]').forEach(function(node) {
+        node.textContent = completion + '%';
+      });
+      document.querySelectorAll('[data-profile-completion-bar]').forEach(function(node) {
+        node.style.setProperty('--value', completion + '%');
+      });
+      document.querySelectorAll('[data-profile-practitioner]').forEach(function(node) {
+        node.textContent = profileValue(profile.practitionerName, 'Praticien à associer');
+      });
+      document.querySelectorAll('[data-profile-condition]').forEach(function(node) {
+        node.textContent = profileValue(profile.conditionLabel, 'Suivi à préciser');
+      });
+      document.querySelectorAll('[data-profile-goal]').forEach(function(node) {
+        node.textContent = profileValue(profile.recoveryGoal, 'À définir');
+      });
+      document.querySelectorAll('[data-profile-birth-date]').forEach(function(node) {
+        node.textContent = profile.birthDate ? formatDate(profile.birthDate) : 'Non renseignée';
+      });
+
+      const conditionChip = document.querySelector('[data-profile-condition-chip]');
+      const goalChip = document.querySelector('[data-profile-goal-chip]');
+      const statusChip = document.querySelector('[data-profile-status-chip]');
+      if (conditionChip) conditionChip.textContent = profileValue(profile.conditionLabel, 'Suivi à préciser');
+      if (goalChip) goalChip.textContent = profileValue(profile.recoveryGoal, 'Objectif à ajouter');
+      if (statusChip) {
+        statusChip.textContent = completion >= 80 ? 'Profil prêt' : 'Profil à compléter';
+        statusChip.classList.toggle('warning', completion < 80);
+      }
+
+      if (patientFullName) patientFullName.value = profile.fullName || '';
+      if (patientBirthDate) patientBirthDate.value = profile.birthDate || '';
+      if (patientPractitioner) patientPractitioner.value = profile.practitionerName || '';
+      if (patientCondition) patientCondition.value = profile.conditionLabel || '';
+      if (patientGoal) patientGoal.value = profile.recoveryGoal || '';
+      if (patientPhone) patientPhone.value = profile.phone || '';
     }
 
     async function upsertProfile(user, firstName) {
@@ -2220,6 +2538,97 @@
       }
 
       return data;
+    }
+
+    async function saveProfileDetails(event) {
+      event.preventDefault();
+
+      if (!currentUser || !currentProfile) {
+        setOnboardingStatus('Connectez-vous pour enregistrer votre profil.', 'error');
+        return;
+      }
+
+      const fullName = titleCase(patientFullName.value) || currentProfile.fullName;
+      const details = {
+        fullName,
+        firstName: fullName.split(' ')[0] || currentProfile.firstName || 'Patient',
+        birthDate: patientBirthDate.value || '',
+        phone: patientPhone.value.trim(),
+        practitionerName: patientPractitioner.value.trim(),
+        conditionLabel: patientCondition.value.trim(),
+        recoveryGoal: patientGoal.value.trim()
+      };
+      details.onboardingCompleted = profileCompletion({
+        ...currentProfile,
+        ...details
+      }) >= 80;
+
+      saveOnboarding.disabled = true;
+      saveOnboarding.textContent = 'Synchronisation...';
+      setOnboardingStatus('Sauvegarde du profil patient...');
+
+      currentProfile = {
+        ...currentProfile,
+        ...details,
+        initials: getInitials(details.fullName)
+      };
+      saveLocalProfileExtras(currentUser.id, details);
+      applySession(currentProfile);
+
+      const extendedPayload = {
+        id: currentUser.id,
+        email: currentUser.email,
+        first_name: details.firstName,
+        full_name: details.fullName,
+        birth_date: details.birthDate || null,
+        phone: details.phone || null,
+        practitioner_name: details.practitionerName || null,
+        condition_label: details.conditionLabel || null,
+        recovery_goal: details.recoveryGoal || null,
+        onboarding_completed: details.onboardingCompleted,
+        updated_at: new Date().toISOString()
+      };
+
+      const minimalPayload = {
+        id: currentUser.id,
+        email: currentUser.email,
+        first_name: details.firstName,
+        full_name: details.fullName,
+        updated_at: new Date().toISOString()
+      };
+
+      try {
+        let result = await sb
+          .from('patient_profiles')
+          .upsert(extendedPayload, { onConflict: 'id' })
+          .select()
+          .single();
+
+        if (result.error) {
+          console.warn('Colonnes patient V3 indisponibles, sauvegarde minimale', result.error);
+          result = await sb
+            .from('patient_profiles')
+            .upsert(minimalPayload, { onConflict: 'id' })
+            .select()
+            .single();
+
+          if (result.error) throw result.error;
+
+          setOnboardingStatus('Profil sauvegardé sur cet appareil. Appliquez schema.sql pour synchroniser tous les champs Supabase.');
+        } else {
+          currentProfile = profileFromUser(currentUser, result.data);
+          applySession(currentProfile);
+          setOnboardingStatus('Profil synchronisé avec votre dossier sécurisé.');
+        }
+
+        showToast('Profil patient mis à jour.');
+      } catch (error) {
+        console.error('Erreur profil patient', error);
+        setOnboardingStatus('Profil gardé sur cet appareil. Synchronisation serveur indisponible.', 'error');
+      } finally {
+        saveOnboarding.disabled = false;
+        saveOnboarding.textContent = 'Enregistrer mon profil';
+      }
     }
 
     async function loadPatientProfile(user) {
@@ -2516,6 +2925,19 @@
       return '🩻';
     }
 
+    function documentCategoryLabel(document) {
+      if (document.category === 'ordonnance') return 'Ordonnance';
+      if (document.category === 'irm') return 'IRM / imagerie';
+      return 'Document';
+    }
+
+    function guessDocumentCategory(fileName) {
+      const name = normalized(fileName);
+      if (/ordonnance|prescription|traitement/.test(name)) return 'ordonnance';
+      if (/irm|radio|scanner|imagerie|echo|echographie|radiographie/.test(name)) return 'irm';
+      return selectedDocCategory;
+    }
+
     function renderDocumentList(container, documents, emptyText) {
       if (!container) return;
       if (!documents.length) {
@@ -2529,7 +2951,7 @@
             '<div class="file-icon">' + documentIcon(document) + '</div>' +
             '<div style="text-align:left;min-width:0;">' +
               '<div class="row-title">' + escapeHtml(document.title) + '</div>' +
-              '<div class="row-meta">' + formatDate(document.created_at) + ' · ' + formatFileSize(document.file_size) + '</div>' +
+              '<div class="row-meta">' + documentCategoryLabel(document) + ' · ' + formatDate(document.created_at) + ' · ' + formatFileSize(document.file_size) + '</div>' +
             '</div>' +
             '<div class="chevron">›</div>' +
           '</button>'
@@ -2547,6 +2969,23 @@
 
       renderDocumentList(medicalDocumentsList, medicalDocuments, 'Aucune imagerie ajoutée pour le moment.');
       renderDocumentList(prescriptionDocumentsList, prescriptionDocuments, 'Aucune ordonnance ajoutée pour le moment.');
+    }
+
+    function updateDocumentPreview(file) {
+      if (!docPreview) return;
+      if (!file) {
+        docPreview.classList.remove('show');
+        docPreviewName.textContent = 'Document sélectionné';
+        docPreviewMeta.textContent = 'Prêt à classer dans le dossier';
+        docPreviewIcon.textContent = '📄';
+        return;
+      }
+
+      const isPdf = file.type === 'application/pdf' || /\.pdf$/i.test(file.name);
+      docPreview.classList.add('show');
+      docPreviewName.textContent = file.name;
+      docPreviewMeta.textContent = (selectedDocCategory === 'ordonnance' ? 'Ordonnance' : 'IRM / imagerie') + ' · ' + formatFileSize(file.size);
+      docPreviewIcon.textContent = isPdf ? '📕' : '🩻';
     }
 
     async function loadDocuments() {
@@ -2577,6 +3016,7 @@
       document.querySelectorAll('[data-doc-category]').forEach(function(button) {
         button.classList.toggle('active', button.dataset.docCategory === selectedDocCategory);
       });
+      updateDocumentPreview(docFile?.files?.[0]);
       if (!docTitle.value.trim()) {
         docTitle.placeholder = selectedDocCategory === 'ordonnance'
           ? 'Ex : Ordonnance kiné'
@@ -2636,6 +3076,7 @@
 
         documentForm.reset();
         docFileLabel.textContent = 'Scanner ou importer';
+        updateDocumentPreview(null);
         setDocumentCategory(category);
         setDocStatus('Document ajouté au dossier.');
         showToast(category === 'ordonnance' ? 'Ordonnance ajoutée.' : 'Imagerie ajoutée.');
@@ -2700,11 +3141,19 @@
 
     loginForm?.addEventListener('submit', handleLogin);
     resetPassword?.addEventListener('click', handlePasswordReset);
+    onboardingForm?.addEventListener('submit', saveProfileDetails);
     documentForm?.addEventListener('submit', handleDocumentUpload);
 
     docFile?.addEventListener('change', function() {
       const file = docFile.files?.[0];
       docFileLabel.textContent = file ? file.name : 'Scanner ou importer';
+      if (file) {
+        setDocumentCategory(guessDocumentCategory(file.name));
+        if (!docTitle.value.trim()) {
+          docTitle.value = titleCase(file.name.replace(/\.[^.]+$/, ''));
+        }
+      }
+      updateDocumentPreview(file);
     });
 
     document.addEventListener('click', function(event) {

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'neso-sante-20260606-9';
+const CACHE_NAME = 'neso-sante-20260608-v3';
 const APP_SHELL = [
   './',
   './index.html',

@@ -9,24 +9,24 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --blue: #0f4c81;
-      --blue-dark: #143f6b;
-      --green: #0f6b57;
-      --green-soft: #e6f3ee;
-      --orange: #e8843a;
-      --orange-soft: #fff0e4;
-      --cream: #f5f2ed;
-      --card: #fffdf8;
-      --line: #e7dfd4;
-      --text: #1f2a2e;
-      --muted: #9b968e;
-      --soft: #f9f6f0;
-      --danger: #c46a3a;
-      --shadow: 0 18px 45px rgba(33, 31, 27, 0.06);
-      --radius: 24px;
+      --blue: #2455d9;
+      --blue-dark: #1d3d7a;
+      --green: #07966f;
+      --green-soft: #e9f8f2;
+      --orange: #f59e0b;
+      --orange-soft: #fff7df;
+      --cream: #f3f7fc;
+      --card: #ffffff;
+      --line: #dfe8f3;
+      --text: #172033;
+      --muted: #718098;
+      --soft: #f8fbff;
+      --danger: #ef4444;
+      --shadow: 0 18px 50px rgba(28, 55, 101, 0.1);
+      --radius: 22px;
     }
 
     * {
@@ -44,7 +44,7 @@
 
     .topbar {
       height: 86px;
-      background: var(--blue);
+      background: linear-gradient(135deg, #254fa8 0%, #316bf0 52%, #07966f 100%);
       color: white;
       display: flex;
       align-items: center;
@@ -59,9 +59,9 @@
     }
 
     .brand-title {
-      font-family: "Playfair Display", serif;
       font-size: 24px;
-      letter-spacing: 0.04em;
+      font-weight: 800;
+      letter-spacing: 0;
     }
 
     .brand-subtitle {
@@ -76,7 +76,7 @@
     }
 
     .top-pill {
-      border: 1px solid rgba(255, 255, 255, 0.16);
+      border: 1px solid rgba(255, 255, 255, 0.22);
       background: rgba(255, 255, 255, 0.1);
       color: white;
       border-radius: 14px;
@@ -125,9 +125,9 @@
     }
 
     .kpi-value {
-      font-family: "Playfair Display", serif;
       color: var(--green);
       font-size: 44px;
+      font-weight: 800;
       line-height: 1;
       margin-top: 18px;
     }
@@ -136,6 +136,81 @@
       margin-top: 10px;
       color: var(--muted);
       font-size: 14px;
+    }
+
+    .inbox-board {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 18px;
+      margin-bottom: 28px;
+    }
+
+    .inbox-card {
+      padding: 24px;
+    }
+
+    .inbox-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 16px;
+    }
+
+    .priority-list,
+    .document-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .priority-item,
+    .document-item,
+    .note-item {
+      width: 100%;
+      min-height: 64px;
+      border: 1px solid #e8eef7;
+      border-radius: 18px;
+      background: white;
+      padding: 14px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: center;
+      text-align: left;
+      color: var(--text);
+    }
+
+    .priority-item strong,
+    .document-item strong,
+    .note-item strong {
+      display: block;
+      font-size: 14px;
+      line-height: 1.25;
+      margin-bottom: 4px;
+    }
+
+    .priority-item span,
+    .document-item span,
+    .note-item span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .priority-tag {
+      border-radius: 999px;
+      padding: 7px 10px;
+      background: var(--orange-soft);
+      color: var(--danger);
+      font-size: 11px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .priority-tag.green {
+      background: var(--green-soft);
+      color: var(--green);
     }
 
     .main-grid {
@@ -147,7 +222,7 @@
 
     .panel-head {
       padding: 24px 24px 18px;
-      border-bottom: 1px solid #eee7dc;
+      border-bottom: 1px solid #e8eef7;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -155,9 +230,8 @@
     }
 
     h2 {
-      font-family: "Playfair Display", serif;
       font-size: 25px;
-      font-weight: 600;
+      font-weight: 800;
       color: var(--text);
     }
 
@@ -212,7 +286,7 @@
     .scan-list {
       max-height: 720px;
       overflow: auto;
-      border-top: 1px solid #f0e9df;
+      border-top: 1px solid #e8eef7;
     }
 
     .scan-row {
@@ -220,7 +294,7 @@
       grid-template-columns: 46px 1fr auto;
       gap: 14px;
       padding: 18px 22px;
-      border-bottom: 1px solid #f0e9df;
+      border-bottom: 1px solid #e8eef7;
       cursor: pointer;
       transition: 0.2s ease;
     }
@@ -296,8 +370,8 @@
     }
 
     .pain {
-      font-family: "Playfair Display", serif;
       font-size: 28px;
+      font-weight: 800;
       color: var(--orange);
       line-height: 1;
     }
@@ -329,13 +403,12 @@
       gap: 28px;
       align-items: flex-start;
       padding-bottom: 28px;
-      border-bottom: 1px solid #f0e9df;
+      border-bottom: 1px solid #e8eef7;
     }
 
     .patient-title {
-      font-family: "Playfair Display", serif;
       font-size: 42px;
-      font-weight: 600;
+      font-weight: 800;
       margin-bottom: 8px;
     }
 
@@ -344,8 +417,8 @@
     }
 
     .score {
-      font-family: "Playfair Display", serif;
       font-size: 70px;
+      font-weight: 800;
       color: var(--orange);
       line-height: 0.9;
     }
@@ -395,6 +468,34 @@
       font-weight: 600;
     }
 
+    .detail-section {
+      margin-top: 28px;
+      padding-top: 24px;
+      border-top: 1px solid #e8eef7;
+    }
+
+    .detail-section h3 {
+      font-size: 18px;
+      margin-bottom: 14px;
+    }
+
+    .profile-mini {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .profile-mini .info {
+      padding: 15px;
+      border-radius: 16px;
+    }
+
+    .profile-mini .info-value {
+      display: block;
+      border-radius: 14px;
+      line-height: 1.35;
+    }
+
     .analytics {
       margin-top: 24px;
       padding: 28px;
@@ -439,7 +540,7 @@
 
     .stat-line {
       background: white;
-      border: 1px solid #f0e9df;
+      border: 1px solid #e8eef7;
       border-radius: 14px;
       padding: 12px;
       margin-bottom: 10px;
@@ -455,7 +556,7 @@
 
     .mini-bar {
       height: 6px;
-      background: #eee7dc;
+      background: #edf2f8;
       border-radius: 999px;
       overflow: hidden;
     }
@@ -479,6 +580,7 @@
 
     @media (max-width: 1100px) {
       .kpis,
+      .inbox-board,
       .analytics-grid,
       .info-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -492,17 +594,17 @@
     @media (max-width: 720px) {
       .topbar {
         height: auto;
-        padding: 18px;
+        padding: 18px 16px 16px;
         align-items: flex-start;
         flex-direction: column;
-        gap: 14px;
-        border-bottom-left-radius: 28px;
-        border-bottom-right-radius: 28px;
-        box-shadow: 0 10px 30px rgba(15, 76, 129, 0.12);
+        gap: 16px;
+        border-bottom-left-radius: 26px;
+        border-bottom-right-radius: 26px;
+        box-shadow: 0 14px 34px rgba(36, 85, 217, 0.18);
       }
 
       .brand-title {
-        font-size: 22px;
+        font-size: 26px;
         line-height: 1.1;
       }
 
@@ -514,21 +616,28 @@
 
       .top-actions {
         width: 100%;
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 10px;
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+        padding-bottom: 2px;
+        scrollbar-width: none;
+      }
+
+      .top-actions::-webkit-scrollbar {
+        display: none;
       }
 
       .top-pill {
-        width: 100%;
-        min-height: 52px;
+        min-height: 42px;
         display: flex;
         align-items: center;
         justify-content: center;
         text-align: center;
-        white-space: normal;
+        white-space: nowrap;
         line-height: 1.2;
-        padding: 11px 12px;
+        padding: 10px 13px;
+        font-size: 13px;
+        flex: 0 0 auto;
       }
 
       .page {
@@ -613,8 +722,13 @@
       }
 
       .kpis,
+      .inbox-board,
       .analytics-grid,
       .info-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .profile-mini {
         grid-template-columns: 1fr;
       }
 
@@ -714,10 +828,38 @@
 
       <article class="card kpi">
         <div>
-          <div class="label">Taux d'abandon</div>
-          <div class="kpi-value" id="kpiAbandon">0%</div>
+          <div class="label">À traiter</div>
+          <div class="kpi-value" id="kpiAbandon">0</div>
         </div>
-        <div class="kpi-caption">tracking avancé à venir</div>
+        <div class="kpi-caption">priorités praticien ouvertes</div>
+      </article>
+    </section>
+
+    <section class="inbox-board" aria-label="Priorités praticien">
+      <article class="card inbox-card">
+        <div class="inbox-head">
+          <div>
+            <h2>À traiter</h2>
+            <div class="small-muted">Douleurs fortes, scans incomplets et patients à rappeler</div>
+          </div>
+          <div class="period" id="priorityCount">0 priorité</div>
+        </div>
+        <div class="priority-list" id="priorityList">
+          <div class="small-muted">Chargement des priorités...</div>
+        </div>
+      </article>
+
+      <article class="card inbox-card">
+        <div class="inbox-head">
+          <div>
+            <h2>Documents reçus</h2>
+            <div class="small-muted">IRM, ordonnances et fichiers patient récents</div>
+          </div>
+          <div class="period" id="documentCount">0 doc</div>
+        </div>
+        <div class="document-list" id="documentInbox">
+          <div class="small-muted">Aucun document chargé.</div>
+        </div>
       </article>
     </section>
 
@@ -725,8 +867,8 @@
       <aside class="card">
         <div class="panel-head">
           <div>
-            <h2>Scans récents</h2>
-            <div class="small-muted">Tous les résultats, classés par date</div>
+            <h2>Inbox patients</h2>
+            <div class="small-muted">Scans classés par priorité et date</div>
           </div>
         </div>
 
@@ -736,6 +878,7 @@
           <button class="filter-chip active-filter" onclick="filterScans('all', this)">Tous</button>
           <button class="filter-chip" onclick="filterScans('completed', this)">Complétés</button>
           <button class="filter-chip" onclick="filterScans('abandoned', this)">Abandons</button>
+          <button class="filter-chip" onclick="filterScans('priority', this)">Priorité</button>
           <button class="filter-chip" onclick="filterScans('today', this)">Aujourd'hui</button>
         </div>
 
@@ -790,6 +933,42 @@
             <div class="info">
               <div class="label">Objectif patient</div>
               <div class="info-value" id="patientGoal">Reprendre une vie normale</div>
+            </div>
+          </div>
+
+          <div class="detail-section">
+            <h3>Profil patient</h3>
+            <div class="profile-mini">
+              <div class="info">
+                <div class="label">Praticien associé</div>
+                <div class="info-value" id="profilePractitioner">À associer</div>
+              </div>
+              <div class="info">
+                <div class="label">Motif de suivi</div>
+                <div class="info-value" id="profileCondition">À préciser</div>
+              </div>
+              <div class="info">
+                <div class="label">Objectif long terme</div>
+                <div class="info-value" id="profileGoal">À définir</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="detail-section">
+            <h3>Documents du patient</h3>
+            <div class="document-list" id="patientDocuments">
+              <div class="small-muted">Aucun document relié à ce patient.</div>
+            </div>
+          </div>
+
+          <div class="detail-section">
+            <h3>Notes praticien</h3>
+            <div class="note-item">
+              <div>
+                <strong id="patientNextAction">Préparer la séance avec les éléments du scan.</strong>
+                <span>Priorité calculée automatiquement depuis la douleur, le statut du scan et les documents reçus.</span>
+              </div>
+              <div class="priority-tag green">Auto</div>
             </div>
           </div>
         </article>
@@ -889,6 +1068,8 @@
 
     let scans = [];
     let scanEvents = [];
+    let patientProfiles = [];
+    let patientDocuments = [];
     let activeFilter = 'all';
     let activeScanIndex = 0;
 
@@ -925,8 +1106,11 @@
 
         scans = payload.scans || [];
         scanEvents = payload.scanEvents || [];
+        patientProfiles = payload.patientProfiles || [];
+        patientDocuments = payload.patientDocuments || [];
         renderScans();
         renderKpis();
+        renderInbox();
         renderAnalytics();
 
         if (scans.length > 0) {
@@ -941,6 +1125,10 @@
           document.getElementById('patientProblem').textContent = '-';
           document.getElementById('patientType').textContent = '-';
           document.getElementById('patientGoal').textContent = '-';
+          document.getElementById('profilePractitioner').textContent = '-';
+          document.getElementById('profileCondition').textContent = '-';
+          document.getElementById('profileGoal').textContent = '-';
+          document.getElementById('patientDocuments').innerHTML = '<div class="small-muted">Aucun document relié à ce patient.</div>';
           document.getElementById('painBar').style.width = '0%';
         }
       } catch (error) {
@@ -948,7 +1136,7 @@
         document.getElementById('scanList').innerHTML = `
           <div style="padding:24px;color:#9D3D31;font-size:14px;line-height:1.6;">
             Impossible de contacter l’API sécurisée du dashboard.<br>
-            Vérifie que la route <strong>/api/scans</strong> existe bien côté serveur.
+            Vérifie que la route <strong>/api/admin/scans</strong> existe bien côté serveur.
           </div>
         `;
       }
@@ -963,6 +1151,10 @@
       button.classList.add('active-filter');
 
       renderScans();
+      const filtered = getFilteredScans();
+      if (filtered.length && !filtered.includes(scans[activeScanIndex])) {
+        selectScan(scans.indexOf(filtered[0]), false);
+      }
     }
 
     function getFilteredScans() {
@@ -979,6 +1171,7 @@
           activeFilter === 'all' ||
           (activeFilter === 'completed' && completed) ||
           (activeFilter === 'abandoned' && !completed) ||
+          (activeFilter === 'priority' && scanPriority(scan).level !== 'normal') ||
           (activeFilter === 'today' && isToday);
 
         const searchable = [
@@ -996,6 +1189,135 @@
       });
     }
 
+    function scanPriority(scan) {
+      const pain = Number(scan.score_douleur);
+      const completed = isCompleted(scan);
+
+      if (Number.isFinite(pain) && pain >= 7) {
+        return {
+          level: 'high',
+          label: 'Douleur forte',
+          action: 'Préparer un point douleur élevé avant la séance.'
+        };
+      }
+
+      if (!completed) {
+        return {
+          level: 'medium',
+          label: 'Scan incomplet',
+          action: 'Recontacter le patient ou refaire compléter Physio Scan.'
+        };
+      }
+
+      if (documentsForScan(scan, findProfileForScan(scan)).length > 0) {
+        return {
+          level: 'document',
+          label: 'Doc reçu',
+          action: 'Consulter les documents avant le rendez-vous.'
+        };
+      }
+
+      return {
+        level: 'normal',
+        label: 'Complété',
+        action: 'Préparer la séance avec les éléments du scan.'
+      };
+    }
+
+    function normalized(value) {
+      return String(value || '')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase()
+        .trim();
+    }
+
+    function findProfileForScan(scan) {
+      const scanName = normalized(scan.prenom);
+      if (!scanName) return null;
+
+      return patientProfiles.find(function(profile) {
+        const firstName = normalized(profile.first_name);
+        const fullName = normalized(profile.full_name);
+        return firstName === scanName || fullName.startsWith(scanName + ' ') || fullName === scanName;
+      }) || null;
+    }
+
+    function documentsForScan(scan, profile) {
+      if (!profile) return [];
+      return patientDocuments.filter(function(document) {
+        return document.patient_id === profile.id;
+      });
+    }
+
+    function categoryLabel(document) {
+      if (document.category === 'ordonnance') return 'Ordonnance';
+      if (document.category === 'irm') return 'IRM / imagerie';
+      return 'Document';
+    }
+
+    function renderDocumentItems(container, documents, emptyText) {
+      if (!container) return;
+      if (!documents.length) {
+        container.innerHTML = '<div class="small-muted">' + esc(emptyText) + '</div>';
+        return;
+      }
+
+      container.innerHTML = documents.slice(0, 6).map(function(document) {
+        const url = document.signed_url || '#';
+        return `
+          <a class="document-item" href="${esc(url)}" target="_blank" rel="noopener">
+            <div>
+              <strong>${esc(document.title || 'Document médical')}</strong>
+              <span>${esc(categoryLabel(document))} · ${esc(fmtFullDate(document.created_at))}</span>
+            </div>
+            <div class="priority-tag green">Ouvrir</div>
+          </a>
+        `;
+      }).join('');
+    }
+
+    function renderInbox() {
+      const priorityList = document.getElementById('priorityList');
+      const priorityCount = document.getElementById('priorityCount');
+      const documentInbox = document.getElementById('documentInbox');
+      const documentCount = document.getElementById('documentCount');
+
+      const priorityScans = scans
+        .map(function(scan, index) {
+          return { scan, index, priority: scanPriority(scan) };
+        })
+        .filter(function(item) {
+          return item.priority.level !== 'normal';
+        })
+        .sort(function(a, b) {
+          const order = { high: 0, medium: 1, document: 2, normal: 3 };
+          return order[a.priority.level] - order[b.priority.level];
+        });
+
+      priorityCount.textContent = priorityScans.length + (priorityScans.length > 1 ? ' priorités' : ' priorité');
+
+      if (!priorityScans.length) {
+        priorityList.innerHTML = '<div class="small-muted">Aucune priorité immédiate. Les scans récents restent disponibles dans l’inbox.</div>';
+      } else {
+        priorityList.innerHTML = priorityScans.slice(0, 5).map(function(item) {
+          const scan = item.scan;
+          return `
+            <button class="priority-item" type="button" onclick="selectScan(${item.index})">
+              <div>
+                <strong>${esc(scan.prenom || 'Patient')} · ${esc(item.priority.label)}</strong>
+                <span>${esc(firstValue(scan.zones, 'Zone non renseignée'))} · ${esc(fmtDate(scan.created_at))}</span>
+              </div>
+              <div class="priority-tag">${esc(scan.score_douleur ?? '-')} / 10</div>
+            </button>
+          `;
+        }).join('');
+      }
+
+      documentCount.textContent = patientDocuments.length + (patientDocuments.length > 1 ? ' docs' : ' doc');
+      renderDocumentItems(documentInbox, patientDocuments, 'Aucun document reçu pour le moment.');
+    }
+
     function renderScans() {
       const list = document.getElementById('scanList');
       const filtered = getFilteredScans();
@@ -1011,6 +1333,7 @@
         const zone = firstValue(scan.zones, 'Zone non renseignée');
         const pain = scan.score_douleur ?? '-';
         const completed = isCompleted(scan);
+        const priority = scanPriority(scan);
 
         return `
           <div class="scan-row ${realIndex === activeScanIndex ? 'active' : ''}" onclick="selectScan(${realIndex})">
@@ -1022,7 +1345,7 @@
             <div class="scan-actions">
               <div class="scan-side">
                 <div class="pain">${esc(pain)}</div>
-                <div class="status ${completed ? 'completed' : 'abandoned'}">${completed ? 'Complété' : 'Abandon'}</div>
+                <div class="status ${priority.level === 'normal' ? (completed ? 'completed' : 'abandoned') : 'abandoned'}">${esc(priority.label)}</div>
               </div>
 
               <button class="delete-btn" title="Supprimer ce scan" aria-label="Supprimer ce scan" onclick="deleteScan(event, '${scan.id || scan.identifiant}')">
@@ -1043,6 +1366,9 @@
 
       const pain = Number(scan.score_douleur);
       const safePain = Number.isFinite(pain) ? pain : 0;
+      const profile = findProfileForScan(scan);
+      const documents = documentsForScan(scan, profile);
+      const nextAction = scanPriority(scan).action;
 
       document.getElementById('patientName').textContent = scan.prenom || 'Patient';
       document.getElementById('patientDate').textContent = `Scan reçu le ${fmtFullDate(scan.created_at)}`;
@@ -1053,6 +1379,11 @@
       document.getElementById('patientProblem').textContent = arrayText(scan.gene) || '-';
       document.getElementById('patientType').textContent = arrayText(scan.type_douleur) || '-';
       document.getElementById('patientGoal').textContent = scan.objectif || '-';
+      document.getElementById('profilePractitioner').textContent = profile?.practitioner_name || 'À associer';
+      document.getElementById('profileCondition').textContent = profile?.condition_label || arrayText(scan.zones) || 'À préciser';
+      document.getElementById('profileGoal').textContent = profile?.recovery_goal || scan.objectif || 'À définir';
+      document.getElementById('patientNextAction').textContent = nextAction;
+      renderDocumentItems(document.getElementById('patientDocuments'), documents, 'Aucun document relié à ce patient.');
       document.getElementById('painBar').style.width = Math.min(Math.max(safePain * 10, 0), 100) + '%';
 
       if (openOnMobile && window.matchMedia('(max-width: 720px)').matches) {
@@ -1107,6 +1438,7 @@
 
         renderScans();
         renderKpis();
+        renderInbox();
         renderAnalytics();
 
         if (scans.length > 0) {
@@ -1121,6 +1453,11 @@
           document.getElementById('patientProblem').textContent = '-';
           document.getElementById('patientType').textContent = '-';
           document.getElementById('patientGoal').textContent = '-';
+          document.getElementById('profilePractitioner').textContent = '-';
+          document.getElementById('profileCondition').textContent = '-';
+          document.getElementById('profileGoal').textContent = '-';
+          document.getElementById('patientDocuments').innerHTML = '<div class="small-muted">Aucun document relié à ce patient.</div>';
+          document.getElementById('patientNextAction').textContent = '-';
           document.getElementById('painBar').style.width = '0%';
         }
       } catch (error) {
@@ -1139,14 +1476,16 @@
       const totalJourneys = completedSessions + abandonedSessions;
 
       const completionRate = totalJourneys ? Math.round((completedSessions / totalJourneys) * 100) : 0;
-      const abandonRate = totalJourneys ? Math.round((abandonedSessions / totalJourneys) * 100) : 0;
+      const priorityCount = scans.filter(function(scan) {
+        return scanPriority(scan).level !== 'normal';
+      }).length;
 
       const avgDurationMs = averageCompletedJourneyDuration();
 
       document.getElementById('kpiToday').textContent = todayCount;
       document.getElementById('kpiTotal').textContent = scans.length + ' scans au total';
       document.getElementById('kpiCompletion').textContent = completionRate + '%';
-      document.getElementById('kpiAbandon').textContent = abandonRate + '%';
+      document.getElementById('kpiAbandon').textContent = priorityCount;
       document.getElementById('kpiAverageTime').textContent = avgDurationMs ? formatDuration(avgDurationMs) : 'à tester';
     }
 

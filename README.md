@@ -5,7 +5,7 @@
 - `scan.html` : lien patient Physio Scan avec enregistrement Supabase.
 - `dashboard.html` : mini dashboard praticien protégé par connexion Supabase.
 - `dashboard-v2.html` : dashboard praticien connecté à l'API admin sécurisée.
-- `app-v2.html` : web app mobile patient avec compte Supabase Auth, Accueil, Suivi, Exercices, Dossier et documents.
+- `app-v2.html` : web app mobile patient avec compte Supabase Auth, onboarding patient, Accueil, Suivi, Exercices, Dossier et documents.
 - `manifest.webmanifest`, `neso-icon.svg`, `sw.js` : base PWA pour une installation mobile.
 - `schema.sql` : table + règles de sécurité Supabase.
 
@@ -32,6 +32,13 @@
 - Les profils patients sont dans `patient_profiles`.
 - Les documents sont enregistrés dans `patient_documents` et stockés dans le bucket privé `patient-documents`.
 - Les policies RLS limitent chaque patient à ses propres lignes et à son propre dossier Storage.
+
+## V3 Produit
+- L'accueil oriente clairement vers `Lancer Physio Scan`, `Je suis patient` ou `Je suis praticien`.
+- L'espace patient propose un profil enrichi : praticien référent, motif de suivi, objectif, date de naissance et téléphone.
+- Les documents affichent une preview locale avant envoi et sont classés automatiquement quand le nom du fichier le permet.
+- Le dashboard praticien devient une inbox : priorités, documents reçus, fiche patient et notes d'action.
+- Les champs V3 sont sauvegardés côté Supabase si `schema.sql` est appliqué ; sinon l'app garde un fallback local côté patient.
 
 ## Déploiement Vercel
 La page racine `index.html` sert de porte d'entrée. Les patients peuvent aller vers Physio Scan (`scan.html`) ou l'espace patient (`app-v2.html`), et les praticiens vers `dashboard-v2.html`.

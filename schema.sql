@@ -9,14 +9,19 @@ create table if not exists public.scans (
   prenom text,
   zones text[] default '{}',
   duree text,
+  douleur_depuis text,
   type_douleur text[] default '{}',
   score_douleur int check (score_douleur between 0 and 10),
   gene text[] default '{}',
   evolution text,
   objectif text,
+  duration_ms bigint,
   consent boolean default false,
   source text default 'neso_scan_v1'
 );
+
+alter table public.scans add column if not exists douleur_depuis text;
+alter table public.scans add column if not exists duration_ms bigint;
 
 alter table public.scans enable row level security;
 
@@ -44,6 +49,43 @@ for delete
 to authenticated
 using (true);
 
+create table if not exists public.scan_events (
+  id uuid primary key default gen_random_uuid(),
+  created_at timestamptz not null default now(),
+  session_id text,
+  event_type text not null,
+  page_id text,
+  question_key text,
+  question_label text,
+  answer jsonb,
+  duration_ms bigint,
+  is_completed boolean default false,
+  is_abandon boolean default false,
+  source text default 'physio_scan_v1'
+);
+
+create index if not exists scan_events_created_idx
+on public.scan_events (created_at desc);
+
+create index if not exists scan_events_session_idx
+on public.scan_events (session_id, created_at desc);
+
+alter table public.scan_events enable row level security;
+
+drop policy if exists "Public insert scan events" on public.scan_events;
+create policy "Public insert scan events"
+on public.scan_events
+for insert
+to anon
+with check (source = 'physio_scan_v1');
+
+drop policy if exists "Authenticated select scan events" on public.scan_events;
+create policy "Authenticated select scan events"
+on public.scan_events
+for select
+to authenticated
+using (true);
+
 -- NESO App V2 - comptes patients et documents sécurisés
 
 create table if not exists public.patient_profiles (
@@ -51,9 +93,22 @@ create table if not exists public.patient_profiles (
   email text not null,
   first_name text,
   full_name text,
+  birth_date date,
+  phone text,
+  practitioner_name text,
+  condition_label text,
+  recovery_goal text,
+  onboarding_completed boolean not null default false,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+
+alter table public.patient_profiles add column if not exists birth_date date;
+alter table public.patient_profiles add column if not exists phone text;
+alter table public.patient_profiles add column if not exists practitioner_name text;
+alter table public.patient_profiles add column if not exists condition_label text;
+alter table public.patient_profiles add column if not exists recovery_goal text;
+alter table public.patient_profiles add column if not exists onboarding_completed boolean not null default false;
 
 alter table public.patient_profiles enable row level security;
 
