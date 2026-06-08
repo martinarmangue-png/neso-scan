@@ -1047,8 +1047,18 @@
       error = fallback.error;
     }
 
+    if (error && shouldSerializeMultipleAnswers(error)) {
+      const fallback = await sb.from('scans').insert(buildCompatibleScanPayload(payload, true));
+      error = fallback.error;
+    }
+
     if (error && isMissingOptionalScanColumn(error)) {
-      const fallback = await sb.from('scans').insert(buildMinimalScanPayload(payload));
+      const fallback = await sb.from('scans').insert(buildMinimalScanPayload(payload, shouldSerializeMultipleAnswers(error)));
+      error = fallback.error;
+    }
+
+    if (error && shouldSerializeMultipleAnswers(error)) {
+      const fallback = await sb.from('scans').insert(buildMinimalScanPayload(payload, true));
       error = fallback.error;
     }
 
@@ -1079,42 +1089,56 @@
     go('p10');
   }
 
-  function buildCompatibleScanPayload(payload) {
+  function buildCompatibleScanPayload(payload, serializeMultipleAnswers = false) {
     const fallbackPayload = { ...payload };
 
     delete fallbackPayload.scan_type;
     delete fallbackPayload.scan_type_label;
     delete fallbackPayload.source;
-    fallbackPayload.evolution = textAnswer(fallbackPayload.evolution);
-    fallbackPayload.objectif = textAnswer(fallbackPayload.objectif);
+    fallbackPayload.evolution = payloadAnswer(fallbackPayload.evolution, serializeMultipleAnswers);
+    fallbackPayload.objectif = payloadAnswer(fallbackPayload.objectif, serializeMultipleAnswers);
 
     return fallbackPayload;
   }
 
-  function buildMinimalScanPayload(payload) {
+  function buildMinimalScanPayload(payload, serializeMultipleAnswers = false) {
     return {
       prenom: payload.prenom || null,
       zones: payload.zones || [],
       type_douleur: payload.type_douleur || [],
       score_douleur: payload.score_douleur,
       gene: payload.gene || [],
-      evolution: textAnswer(payload.evolution),
-      objectif: textAnswer(payload.objectif),
+      evolution: payloadAnswer(payload.evolution, serializeMultipleAnswers),
+      objectif: payloadAnswer(payload.objectif, serializeMultipleAnswers),
       consent: true
     };
   }
 
+  function payloadAnswer(value, serializeMultipleAnswers) {
+    return serializeMultipleAnswers ? textAnswer(value) : value;
+  }
+
+  function scanErrorText(error) {
+    return [error.message, error.details, error.hint, error.code].filter(Boolean).join(' ').toLowerCase();
+  }
+
   function isMissingOptionalScanColumn(error) {
-    const text = [error.message, error.details, error.hint, error.code].filter(Boolean).join(' ').toLowerCase();
+    const text = scanErrorText(error);
     return text.includes('schema cache')
       || text.includes('does not exist')
-      || text.includes('invalid input syntax')
-      || text.includes('malformed')
       || text.includes('scan_type')
       || text.includes('scan_type_label')
       || text.includes('douleur_depuis')
       || text.includes('duration_ms')
       || text.includes('source');
+  }
+
+  function shouldSerializeMultipleAnswers(error) {
+    const text = scanErrorText(error);
+    return text.includes('invalid input syntax')
+      || text.includes('malformed')
+      || text.includes('array literal')
+      || text.includes('text[]');
   }
 
   function trackPageEnter(pageId) {

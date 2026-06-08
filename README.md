@@ -40,5 +40,14 @@
 - Le dashboard praticien devient une inbox : priorités, documents reçus, fiche patient et notes d'action.
 - Les champs V3 sont sauvegardés côté Supabase si `schema.sql` est appliqué ; sinon l'app garde un fallback local côté patient.
 
+## Migration Physio Scan réponses multiples
+Pour stocker les objectifs et évolutions en vrais tableaux Supabase, exécuter dans Supabase > SQL Editor :
+
+```sql
+-- migrations/20260608_physio_scan_multiple_answers.sql
+```
+
+La migration est idempotente : elle ajoute les colonnes manquantes, convertit les anciennes valeurs texte de `evolution` et `objectif` en `text[]`, puis garde les règles RLS existantes.
+
 ## Déploiement Vercel
 La page racine `index.html` sert de porte d'entrée. Les patients peuvent aller vers Physio Scan (`scan.html`) ou l'espace patient (`app-v2.html`), et les praticiens vers `dashboard-v2.html`.

@@ -468,6 +468,14 @@
       font-weight: 600;
     }
 
+    .info-value.text-value {
+      display: block;
+      width: 100%;
+      border-radius: 14px;
+      line-height: 1.45;
+      white-space: normal;
+    }
+
     .detail-section {
       margin-top: 28px;
       padding-top: 24px;
@@ -477,6 +485,84 @@
     .detail-section h3 {
       font-size: 18px;
       margin-bottom: 14px;
+    }
+
+    .section-headline {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 18px;
+      margin-bottom: 14px;
+    }
+
+    .clinical-summary {
+      border: 1px solid var(--line);
+      background: linear-gradient(135deg, #f8fbff 0%, #eef8f3 100%);
+      border-radius: 18px;
+      padding: 18px;
+      color: #334155;
+      font-size: 14px;
+      line-height: 1.65;
+      margin-bottom: 14px;
+    }
+
+    .response-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .response-panel {
+      border: 1px solid var(--line);
+      background: var(--soft);
+      border-radius: 18px;
+      padding: 16px;
+    }
+
+    .answer-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .answer-tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 34px;
+      border-radius: 999px;
+      padding: 8px 11px;
+      background: white;
+      border: 1px solid var(--line);
+      color: var(--green);
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.25;
+    }
+
+    .prep-list {
+      display: grid;
+      gap: 8px;
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+      list-style: none;
+    }
+
+    .prep-list li {
+      border-left: 3px solid var(--green);
+      padding-left: 10px;
+    }
+
+    .priority-tag.blue {
+      background: #eaf1ff;
+      color: var(--blue);
+    }
+
+    .priority-tag.red {
+      background: #fff0f0;
+      color: var(--danger);
     }
 
     .profile-mini {
@@ -732,6 +818,14 @@
         grid-template-columns: 1fr;
       }
 
+      .section-headline {
+        flex-direction: column;
+      }
+
+      .response-grid {
+        grid-template-columns: 1fr;
+      }
+
       .detail-top {
         flex-direction: column;
       }
@@ -922,23 +1016,37 @@
 
             <div class="info">
               <div class="label">Évolution</div>
-              <div class="info-value" id="patientEvolution">Variable selon les jours</div>
+              <div class="info-value text-value" id="patientEvolution">Variable selon les jours</div>
             </div>
 
             <div class="info">
               <div class="label">Ce qui gêne le plus</div>
-              <div class="info-value" id="patientProblem">Rester assis</div>
+              <div class="info-value text-value" id="patientProblem">Rester assis</div>
             </div>
 
             <div class="info">
               <div class="label">Type de douleur</div>
-              <div class="info-value" id="patientType">Gêne diffuse</div>
+              <div class="info-value text-value" id="patientType">Gêne diffuse</div>
             </div>
 
             <div class="info">
               <div class="label">Objectif patient</div>
-              <div class="info-value" id="patientGoal">Reprendre une vie normale</div>
+              <div class="info-value text-value" id="patientGoal">Reprendre une vie normale</div>
             </div>
+          </div>
+
+          <div class="detail-section">
+            <div class="section-headline">
+              <div>
+                <h3>Lecture Physio Scan</h3>
+                <div class="small-muted">Réponses clés du patient, prêtes à lire avant la séance</div>
+              </div>
+              <div class="priority-tag green" id="patientPriorityTag">Complété</div>
+            </div>
+            <div class="clinical-summary" id="clinicalSummary">
+              Sélectionnez un scan pour afficher la synthèse.
+            </div>
+            <div class="response-grid" id="responseGrid"></div>
           </div>
 
           <div class="detail-section">
@@ -972,6 +1080,7 @@
               <div>
                 <strong id="patientNextAction">Préparer la séance avec les éléments du scan.</strong>
                 <span>Priorité calculée automatiquement depuis la douleur, le statut du scan et les documents reçus.</span>
+                <ul class="prep-list" id="patientPrepList"></ul>
               </div>
               <div class="priority-tag green">Auto</div>
             </div>
@@ -1078,6 +1187,51 @@
     let activeFilter = 'all';
     let activeScanIndex = 0;
 
+    const RESPONSE_LABELS_BY_SCAN_TYPE = {
+      lombaires_sciatique: {
+        specific: 'Irradiation',
+        problem: 'Facteurs aggravants',
+        evolution: 'Soulagements',
+        goal: 'Objectifs patient'
+      },
+      cervicales: {
+        specific: 'Irradiation',
+        problem: 'Mouvement gênant',
+        evolution: 'Lien écran ou posture',
+        goal: 'Objectifs patient'
+      },
+      epaule: {
+        specific: 'Geste gênant',
+        problem: 'Bras au-dessus de la tête',
+        evolution: 'Gêne nocturne',
+        goal: 'Objectifs patient'
+      },
+      genou: {
+        specific: 'Gêne principale',
+        problem: 'Gonflement',
+        evolution: 'Instabilité ou blocage',
+        goal: 'Objectifs patient'
+      },
+      cheville_entorse: {
+        specific: 'Marche',
+        problem: 'Instabilité',
+        evolution: 'Appui gênant',
+        goal: 'Objectifs patient'
+      },
+      post_operatoire: {
+        specific: 'Date de l’opération',
+        problem: 'Aide actuelle',
+        evolution: 'Évolution post-opératoire',
+        goal: 'Objectifs patient'
+      },
+      default: {
+        specific: 'Réponse spécifique',
+        problem: 'Gêne principale',
+        evolution: 'Évolution',
+        goal: 'Objectifs patient'
+      }
+    };
+
     async function loadScans() {
       try {
         const response = await fetch(`${ADMIN_API_BASE}/scans`, {
@@ -1136,6 +1290,7 @@
           document.getElementById('profileGoal').textContent = '-';
           document.getElementById('patientDocuments').innerHTML = '<div class="small-muted">Aucun document relié à ce patient.</div>';
           document.getElementById('patientNextAction').textContent = '-';
+          setClinicalEmpty();
           document.getElementById('painBar').style.width = '0%';
         }
       } catch (error) {
@@ -1186,7 +1341,7 @@
           scanTypeLabel(scan),
           arrayText(scan.objectif),
           scan.douleur_depuis || scan.duree,
-          scan.evolution,
+          arrayText(scan.evolution),
           arrayText(scan.zones),
           arrayText(scan.type_douleur),
           arrayText(scan.gene)
@@ -1245,6 +1400,135 @@
       return scan.scan_type_label
         || knownTypes[scan.scan_type]
         || firstValue(scan.zones, 'Scan général');
+    }
+
+    function responseLabels(scan) {
+      return RESPONSE_LABELS_BY_SCAN_TYPE[scan.scan_type] || RESPONSE_LABELS_BY_SCAN_TYPE.default;
+    }
+
+    function renderPatientReading(scan, priority, documents) {
+      const priorityTag = document.getElementById('patientPriorityTag');
+      const responseGrid = document.getElementById('responseGrid');
+      const summary = document.getElementById('clinicalSummary');
+      const prepList = document.getElementById('patientPrepList');
+      const labels = responseLabels(scan);
+
+      if (priorityTag) {
+        const tagClass = priority.level === 'high'
+          ? 'priority-tag red'
+          : priority.level === 'normal'
+            ? 'priority-tag green'
+            : 'priority-tag blue';
+        priorityTag.className = tagClass;
+        priorityTag.textContent = priority.label;
+      }
+
+      if (summary) {
+        summary.textContent = buildClinicalSummary(scan, priority);
+      }
+
+      if (responseGrid) {
+        const rows = [
+          { label: labels.specific, values: scan.type_douleur },
+          { label: labels.problem, values: scan.gene },
+          { label: labels.evolution, values: scan.evolution },
+          { label: labels.goal, values: scan.objectif }
+        ];
+
+        responseGrid.innerHTML = rows.map(function(row) {
+          return `
+            <div class="response-panel">
+              <div class="label">${esc(row.label)}</div>
+              ${renderAnswerTags(row.values)}
+            </div>
+          `;
+        }).join('');
+      }
+
+      if (prepList) {
+        const items = practitionerPrepItems(scan, priority, documents);
+        prepList.innerHTML = items.map(function(item) {
+          return '<li>' + esc(item) + '</li>';
+        }).join('');
+      }
+    }
+
+    function setClinicalEmpty() {
+      const priorityTag = document.getElementById('patientPriorityTag');
+      const responseGrid = document.getElementById('responseGrid');
+      const summary = document.getElementById('clinicalSummary');
+      const prepList = document.getElementById('patientPrepList');
+
+      if (priorityTag) {
+        priorityTag.className = 'priority-tag green';
+        priorityTag.textContent = '-';
+      }
+      if (responseGrid) responseGrid.innerHTML = '';
+      if (summary) summary.textContent = 'Aucun scan sélectionné.';
+      if (prepList) prepList.innerHTML = '';
+    }
+
+    function renderAnswerTags(value) {
+      const values = answerList(value);
+      if (!values.length) {
+        return '<div class="small-muted">Non renseigné</div>';
+      }
+
+      return '<div class="answer-tags">' + values.map(function(answer) {
+        return '<span class="answer-tag">' + esc(answer) + '</span>';
+      }).join('') + '</div>';
+    }
+
+    function buildClinicalSummary(scan, priority) {
+      const pain = Number(scan.score_douleur);
+      const type = scanTypeLabel(scan);
+      const since = scan.douleur_depuis || scan.duree || 'durée non précisée';
+      const problems = arrayText(scan.gene);
+      const reliefs = arrayText(scan.evolution);
+      const goals = arrayText(scan.objectif);
+      const parts = [`${type} · ${since}.`];
+
+      if (Number.isFinite(pain)) {
+        parts.push(`Douleur déclarée à ${pain}/10.`);
+      }
+      if (problems) {
+        parts.push(`Gêne surtout liée à : ${problems}.`);
+      }
+      if (reliefs) {
+        parts.push(`Soulagement ou évolution : ${reliefs}.`);
+      }
+      if (goals) {
+        parts.push(`Objectif patient : ${goals}.`);
+      }
+      parts.push(`Priorité actuelle : ${priority.label}.`);
+
+      return parts.join(' ');
+    }
+
+    function practitionerPrepItems(scan, priority, documents) {
+      const items = [priority.action];
+      const pain = Number(scan.score_douleur);
+      const problems = answerList(scan.gene);
+      const goals = answerList(scan.objectif);
+      const reliefs = answerList(scan.evolution);
+
+      if (Number.isFinite(pain) && pain >= 7) {
+        items.push('Clarifier les mouvements déclencheurs et les stratégies antalgique avant les exercices.');
+      }
+      if (problems.length > 1) {
+        items.push('Explorer les facteurs aggravants multiples pour prioriser le test clinique.');
+      }
+      if (reliefs.includes('Rien pour le moment')) {
+        items.push('Identifier un premier levier de soulagement simple et mesurable.');
+      }
+      if (goals.length) {
+        items.push('Relier le plan de séance aux objectifs exprimés : ' + goals.join(', ') + '.');
+      }
+      if (documents.length) {
+        items.push('Lire les documents patient avant la séance.');
+      }
+
+      return [...new Set(items)].slice(0, 5);
     }
 
     function normalized(value) {
@@ -1391,7 +1675,8 @@
       const safePain = Number.isFinite(pain) ? pain : 0;
       const profile = findProfileForScan(scan);
       const documents = documentsForScan(scan, profile);
-      const nextAction = scanPriority(scan).action;
+      const priority = scanPriority(scan);
+      const nextAction = priority.action;
 
       document.getElementById('patientName').textContent = scan.prenom || 'Patient';
       document.getElementById('patientDate').textContent = `Scan reçu le ${fmtFullDate(scan.created_at)}`;
@@ -1399,7 +1684,7 @@
       document.getElementById('patientScanType').textContent = scanTypeLabel(scan);
       document.getElementById('patientZone').textContent = arrayText(scan.zones) || '-';
       document.getElementById('patientSince').textContent = scan.douleur_depuis || scan.duree || '-';
-      document.getElementById('patientEvolution').textContent = scan.evolution || '-';
+      document.getElementById('patientEvolution').textContent = arrayText(scan.evolution) || '-';
       document.getElementById('patientProblem').textContent = arrayText(scan.gene) || '-';
       document.getElementById('patientType').textContent = arrayText(scan.type_douleur) || '-';
       document.getElementById('patientGoal').textContent = arrayText(scan.objectif) || '-';
@@ -1407,6 +1692,7 @@
       document.getElementById('profileCondition').textContent = profile?.condition_label || scanTypeLabel(scan) || 'À préciser';
       document.getElementById('profileGoal').textContent = profile?.recovery_goal || arrayText(scan.objectif) || 'À définir';
       document.getElementById('patientNextAction').textContent = nextAction;
+      renderPatientReading(scan, priority, documents);
       renderDocumentItems(document.getElementById('patientDocuments'), documents, 'Aucun document relié à ce patient.');
       document.getElementById('painBar').style.width = Math.min(Math.max(safePain * 10, 0), 100) + '%';
 
@@ -1483,6 +1769,7 @@
           document.getElementById('profileGoal').textContent = '-';
           document.getElementById('patientDocuments').innerHTML = '<div class="small-muted">Aucun document relié à ce patient.</div>';
           document.getElementById('patientNextAction').textContent = '-';
+          setClinicalEmpty();
           document.getElementById('painBar').style.width = '0%';
         }
       } catch (error) {
@@ -1515,13 +1802,13 @@
     }
 
     function renderAnalytics() {
-      renderStatBlock(0, 'Réponses · zones douloureuses', countArrayAnswers('zones'));
-      renderStatBlock(1, 'Temps moyen par question', averageTimeByQuestion());
-      renderStatBlock(2, 'Abandons par question', abandonByQuestion(), true);
+      renderStatBlock(0, 'Réponses · zones évaluées', countArrayAnswers('zones'));
+      renderStatBlock(1, 'Réponses · objectifs patients', countArrayAnswers('objectif'));
+      renderStatBlock(2, 'Réponses · facteurs gênants', countArrayAnswers('gene'), true);
 
       const footer = document.querySelector('.footer-note');
       if (footer) {
-        footer.textContent = 'Analytics en direct : réponses issues de la table scans, temps et abandons issus de la table scan_events.';
+        footer.textContent = 'Analytics en direct : réponses issues de la table scans. Les anciens textes et les nouvelles réponses multiples sont normalisés ensemble.';
       }
     }
     function renderStatBlock(blockIndex, title, stats, isProblemBlock = false) {
@@ -1553,7 +1840,7 @@
     function countArrayAnswers(field) {
       const counts = {};
       scans.forEach(function(scan) {
-        const values = Array.isArray(scan[field]) ? scan[field] : [];
+        const values = answerList(scan[field]);
         values.forEach(function(value) {
           if (!value) return;
           counts[value] = (counts[value] || 0) + 1;
@@ -1702,7 +1989,7 @@
     }
 
     function isCompleted(scan) {
-      return Boolean(scan.objectif || scan.score_douleur || scan.zones?.length);
+      return Boolean(answerList(scan.objectif).length || scan.score_douleur || answerList(scan.zones).length);
     }
 
     function firstValue(value, fallback) {
@@ -1711,9 +1998,24 @@
       return fallback;
     }
 
+    function answerList(value) {
+      if (Array.isArray(value)) {
+        return value.map(function(item) {
+          return String(item || '').trim();
+        }).filter(Boolean);
+      }
+
+      if (typeof value === 'string') {
+        return value.split(',').map(function(item) {
+          return item.trim();
+        }).filter(Boolean);
+      }
+
+      return value ? [String(value)] : [];
+    }
+
     function arrayText(value) {
-      if (Array.isArray(value)) return value.join(', ');
-      return value || '';
+      return answerList(value).join(', ');
     }
 
     function fmtDate(date) {
