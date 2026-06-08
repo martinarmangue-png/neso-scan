@@ -6,6 +6,8 @@ create extension if not exists pgcrypto;
 create table if not exists public.scans (
   id uuid primary key default gen_random_uuid(),
   created_at timestamptz not null default now(),
+  scan_type text,
+  scan_type_label text,
   prenom text,
   zones text[] default '{}',
   duree text,
@@ -20,6 +22,8 @@ create table if not exists public.scans (
   source text default 'neso_scan_v1'
 );
 
+alter table public.scans add column if not exists scan_type text;
+alter table public.scans add column if not exists scan_type_label text;
 alter table public.scans add column if not exists douleur_depuis text;
 alter table public.scans add column if not exists duration_ms bigint;
 

@@ -906,6 +906,11 @@
 
           <div class="info-grid">
             <div class="info">
+              <div class="label">Type de scan</div>
+              <div class="info-value" id="patientScanType">Lombaires / Sciatique</div>
+            </div>
+
+            <div class="info">
               <div class="label">Zones concernées</div>
               <div class="info-value" id="patientZone">Haut du dos</div>
             </div>
@@ -1119,6 +1124,7 @@
           document.getElementById('patientName').textContent = 'Aucun scan';
           document.getElementById('patientDate').textContent = 'Aucune donnée chargée';
           document.getElementById('patientPain').textContent = '-';
+          document.getElementById('patientScanType').textContent = '-';
           document.getElementById('patientZone').textContent = '-';
           document.getElementById('patientSince').textContent = '-';
           document.getElementById('patientEvolution').textContent = '-';
@@ -1129,6 +1135,7 @@
           document.getElementById('profileCondition').textContent = '-';
           document.getElementById('profileGoal').textContent = '-';
           document.getElementById('patientDocuments').innerHTML = '<div class="small-muted">Aucun document relié à ce patient.</div>';
+          document.getElementById('patientNextAction').textContent = '-';
           document.getElementById('painBar').style.width = '0%';
         }
       } catch (error) {
@@ -1176,6 +1183,7 @@
 
         const searchable = [
           scan.prenom,
+          scanTypeLabel(scan),
           scan.objectif,
           scan.douleur_depuis || scan.duree,
           scan.evolution,
@@ -1222,6 +1230,21 @@
         label: 'Complété',
         action: 'Préparer la séance avec les éléments du scan.'
       };
+    }
+
+    function scanTypeLabel(scan) {
+      const knownTypes = {
+        lombaires_sciatique: 'Lombaires / Sciatique',
+        cervicales: 'Cervicales',
+        epaule: 'Épaule',
+        genou: 'Genou',
+        cheville_entorse: 'Cheville / Entorse',
+        post_operatoire: 'Rééducation post-opératoire'
+      };
+
+      return scan.scan_type_label
+        || knownTypes[scan.scan_type]
+        || firstValue(scan.zones, 'Scan général');
     }
 
     function normalized(value) {
@@ -1306,7 +1329,7 @@
             <button class="priority-item" type="button" onclick="selectScan(${item.index})">
               <div>
                 <strong>${esc(scan.prenom || 'Patient')} · ${esc(item.priority.label)}</strong>
-                <span>${esc(firstValue(scan.zones, 'Zone non renseignée'))} · ${esc(fmtDate(scan.created_at))}</span>
+                <span>${esc(scanTypeLabel(scan))} · ${esc(fmtDate(scan.created_at))}</span>
               </div>
               <div class="priority-tag">${esc(scan.score_douleur ?? '-')} / 10</div>
             </button>
@@ -1330,7 +1353,7 @@
       list.innerHTML = filtered.map(function(scan) {
         const realIndex = scans.indexOf(scan);
         const name = scan.prenom || 'Patient';
-        const zone = firstValue(scan.zones, 'Zone non renseignée');
+        const scanType = scanTypeLabel(scan);
         const pain = scan.score_douleur ?? '-';
         const completed = isCompleted(scan);
         const priority = scanPriority(scan);
@@ -1340,7 +1363,7 @@
             <div class="avatar">${esc(name.charAt(0).toUpperCase())}</div>
             <div>
               <div class="scan-name">${esc(name)}</div>
-              <div class="scan-meta">${esc(zone)} · ${fmtDate(scan.created_at)}<br />${completed ? 'Scan complété' : 'Scan incomplet'}</div>
+              <div class="scan-meta">${esc(scanType)} · ${fmtDate(scan.created_at)}<br />${completed ? 'Scan complété' : 'Scan incomplet'}</div>
             </div>
             <div class="scan-actions">
               <div class="scan-side">
@@ -1373,6 +1396,7 @@
       document.getElementById('patientName').textContent = scan.prenom || 'Patient';
       document.getElementById('patientDate').textContent = `Scan reçu le ${fmtFullDate(scan.created_at)}`;
       document.getElementById('patientPain').textContent = scan.score_douleur ?? '-';
+      document.getElementById('patientScanType').textContent = scanTypeLabel(scan);
       document.getElementById('patientZone').textContent = arrayText(scan.zones) || '-';
       document.getElementById('patientSince').textContent = scan.douleur_depuis || scan.duree || '-';
       document.getElementById('patientEvolution').textContent = scan.evolution || '-';
@@ -1380,7 +1404,7 @@
       document.getElementById('patientType').textContent = arrayText(scan.type_douleur) || '-';
       document.getElementById('patientGoal').textContent = scan.objectif || '-';
       document.getElementById('profilePractitioner').textContent = profile?.practitioner_name || 'À associer';
-      document.getElementById('profileCondition').textContent = profile?.condition_label || arrayText(scan.zones) || 'À préciser';
+      document.getElementById('profileCondition').textContent = profile?.condition_label || scanTypeLabel(scan) || 'À préciser';
       document.getElementById('profileGoal').textContent = profile?.recovery_goal || scan.objectif || 'À définir';
       document.getElementById('patientNextAction').textContent = nextAction;
       renderDocumentItems(document.getElementById('patientDocuments'), documents, 'Aucun document relié à ce patient.');
@@ -1447,6 +1471,7 @@
           document.getElementById('patientName').textContent = 'Aucun scan';
           document.getElementById('patientDate').textContent = 'Aucune donnée chargée';
           document.getElementById('patientPain').textContent = '-';
+          document.getElementById('patientScanType').textContent = '-';
           document.getElementById('patientZone').textContent = '-';
           document.getElementById('patientSince').textContent = '-';
           document.getElementById('patientEvolution').textContent = '-';

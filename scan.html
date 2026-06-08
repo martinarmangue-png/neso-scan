@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Physio Scan</title>
+  <title>NESO Scan</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Cormorant+Garamond:wght@300;400&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -35,6 +35,51 @@
     .chip-autre:hover { border-color: #9FB8D4; color: #0C447C; }
     .chip-autre.sel { background: linear-gradient(135deg, #185FA5 0%, #0A5C48 100%); border: none; color: #E1F5EE; font-weight: 500; transform: scale(1.01); box-shadow: 0 6px 16px rgba(12,68,124,0.18), 0 0 0 2px rgba(159,225,203,0.08); }
     .full { grid-column: 1/-1; }
+
+    .scan-choice-grid { display: grid; gap: 9px; margin-bottom: 18px; }
+    .scan-choice-card {
+      width: 100%;
+      min-height: 58px;
+      border: 0.5px solid #DDD9D0;
+      border-radius: 18px;
+      background: #EFECE5;
+      padding: 12px 13px;
+      display: grid;
+      grid-template-columns: 38px 1fr;
+      gap: 12px;
+      align-items: center;
+      text-align: left;
+      color: #4A4A48;
+      cursor: pointer;
+      transition: all 0.22s cubic-bezier(0.34,1.56,0.64,1);
+      font-family: inherit;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+    .scan-choice-card:hover { border-color: #9FB8D4; color: #0C447C; }
+    .scan-choice-card.sel {
+      background: linear-gradient(135deg, #185FA5 0%, #0A5C48 100%);
+      border-color: transparent;
+      color: #E1F5EE;
+      transform: scale(1.01);
+      box-shadow: 0 8px 20px rgba(12,68,124,0.18), 0 0 0 2px rgba(159,225,203,0.08);
+    }
+    .scan-choice-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.48);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #0C447C;
+    }
+    .scan-choice-card.sel .scan-choice-icon {
+      background: rgba(255,255,255,0.1);
+      color: #9FE1CB;
+    }
+    .scan-choice-title { display: block; font-size: 12.5px; font-weight: 600; line-height: 1.25; }
+    .scan-choice-meta { display: block; margin-top: 3px; color: #888780; font-size: 10.5px; line-height: 1.35; }
+    .scan-choice-card.sel .scan-choice-meta { color: rgba(225,245,238,0.72); }
 
     .btn { width: 100%; padding: 17px 0; border-radius: 18px; font-size: 14px; font-weight: 500; font-family: inherit; letter-spacing: 0.01em; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: all 0.25s ease; border: none; }
     .btn-off { background: #F0EDE6; border: 0.5px solid #C8C4BB !important; color: #A8A49C; cursor: default; pointer-events: none; }
@@ -393,7 +438,7 @@ padding:20px;
     color:#1C1C1A;
     margin-bottom:10px;
     ">
-      Physio Scan
+      NESO Scan
     </p>
 
     <p style="
@@ -448,7 +493,7 @@ padding:20px;
 </div>
 <main class="desktop-shell">
   <section class="desktop-copy" aria-hidden="true">
-    <div class="desktop-pill"><span class="desktop-dot"></span> Expérience patient Physio Scan</div>
+    <div class="desktop-pill"><span class="desktop-dot"></span> Expérience patient NESO Scan</div>
     <h1 class="desktop-title">Un scan simple pour mieux <span>préparer la séance.</span></h1>
     <p class="desktop-text">Quelques questions guidées permettent au patient de transmettre les informations importantes avant le rendez-vous, dans une expérience claire, rapide et sécurisée.</p>
     <div class="desktop-points">
@@ -469,7 +514,7 @@ padding:20px;
         <text x="35" y="40" text-anchor="middle" font-family="Cormorant Garamond,serif" font-size="16" font-weight="600" fill="#E6F1FB">PS</text>
         <circle cx="35" cy="35" r="0.9" fill="#9FE1CB" opacity="0.7"/>
       </svg>
-      <p class="logo-name">Physio Scan</p>
+      <p class="logo-name">NESO Scan</p>
     </div>
     <div class="progress" id="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
   </div>
@@ -483,66 +528,65 @@ padding:20px;
       <div class="feat"><div class="fi" style="background:#E6F1FB;"><i class="ti ti-clock" style="color:#185FA5;"></i></div><div><p style="font-size:12.5px;font-weight:500;color:#1C1C1A;margin-bottom:1px;">Rapide</p><p style="font-size:11px;color:#888780;">Environ 1 minute</p></div></div>
       <div class="feat"><div class="fi" style="background:#E1F5EE;"><i class="ti ti-lock" style="color:#0F6E56;"></i></div><div><p style="font-size:12.5px;font-weight:500;color:#1C1C1A;margin-bottom:1px;">Sécurisé</p><p style="font-size:11px;color:#888780;">Vos données sont protégées</p></div></div>
       <div class="feat" style="margin-bottom:26px;"><div class="fi" style="background:#E6F1FB;"><i class="ti ti-circle-check" style="color:#185FA5;"></i></div><div><p style="font-size:12.5px;font-weight:500;color:#1C1C1A;margin-bottom:1px;">Adapté à vous</p><p style="font-size:11px;color:#888780;">Un questionnaire personnalisé selon votre situation</p></div></div>
-      <button class="btn btn-on" onclick="go('p1')">Commencer le Physio Scan <div class="ac"><i class="ti ti-arrow-right"></i></div></button>
+      <button class="btn btn-on" onclick="go('p1')">Commencer le NESO Scan <div class="ac"><i class="ti ti-arrow-right"></i></div></button>
     </div>
 
     <div class="page" id="p1">
       <p class="question" style="margin-bottom:44px;">Faisons<br>connaissance.</p>
       <input class="neso-input" id="inp-prenom" type="text" placeholder="Votre prénom" autocomplete="given-name" oninput="onPrenom(this.value)" />
       <div style="padding-top:44px;">
-        <button class="btn btn-off" id="cta-prenom" onclick="goZones()">Continuer <div class="ac"><i class="ti ti-arrow-right"></i></div></button>
+        <button class="btn btn-off" id="cta-prenom" onclick="goScanChoice()">Continuer <div class="ac"><i class="ti ti-arrow-right"></i></div></button>
       </div>
     </div>
 
     <div class="page" id="p2">
-      <p class="question" id="q-zones">Où avez-vous mal ?</p>
-      <div class="grid" id="zones-grid">
-        <div class="chip" onclick="togZ(this)">Haut du dos</div>
-        <div class="chip" onclick="togZ(this)">Milieu du dos</div>
-        <div class="chip" onclick="togZ(this)">Bas du dos</div>
-        <div class="chip" onclick="togZ(this)">Épaule</div>
-        <div class="chip" onclick="togZ(this)">Coude</div>
-        <div class="chip" onclick="togZ(this)">Poignet</div>
-        <div class="chip" onclick="togZ(this)">Hanche</div>
-        <div class="chip" onclick="togZ(this)">Genou</div>
-        <div class="chip" onclick="togZ(this)">Pied / Cheville</div>
-        <div class="chip" onclick="togZ(this)">Cervicales</div>
-        <div class="chip" onclick="togZ(this)">Tête / Vertiges</div>
-        <div class="chip" onclick="togZ(this)">Ventre</div>
-        <div class="chip-autre" onclick="togZA(this)"><i class="ti ti-plus" style="font-size:11px;"></i> Autre</div>
+      <p class="question">Quelle zone souhaitez-vous faire évaluer ?</p>
+      <div class="scan-choice-grid" id="scan-type-grid">
+        <button class="scan-choice-card" type="button" data-scan-type="lombaires_sciatique" onclick="selectScanType('lombaires_sciatique')">
+          <span class="scan-choice-icon"><i class="ti ti-activity"></i></span>
+          <span><span class="scan-choice-title">Lombaires / Sciatique</span><span class="scan-choice-meta">Bas du dos, fesse ou jambe</span></span>
+        </button>
+        <button class="scan-choice-card" type="button" data-scan-type="cervicales" onclick="selectScanType('cervicales')">
+          <span class="scan-choice-icon"><i class="ti ti-arrow-wave-right-up"></i></span>
+          <span><span class="scan-choice-title">Cervicales</span><span class="scan-choice-meta">Nuque, épaule, bras ou main</span></span>
+        </button>
+        <button class="scan-choice-card" type="button" data-scan-type="epaule" onclick="selectScanType('epaule')">
+          <span class="scan-choice-icon"><i class="ti ti-armchair-2"></i></span>
+          <span><span class="scan-choice-title">Épaule</span><span class="scan-choice-meta">Geste, amplitude ou nuit</span></span>
+        </button>
+        <button class="scan-choice-card" type="button" data-scan-type="genou" onclick="selectScanType('genou')">
+          <span class="scan-choice-icon"><i class="ti ti-run"></i></span>
+          <span><span class="scan-choice-title">Genou</span><span class="scan-choice-meta">Escaliers, appui ou blocage</span></span>
+        </button>
+        <button class="scan-choice-card" type="button" data-scan-type="cheville_entorse" onclick="selectScanType('cheville_entorse')">
+          <span class="scan-choice-icon"><i class="ti ti-bandage"></i></span>
+          <span><span class="scan-choice-title">Cheville / Entorse</span><span class="scan-choice-meta">Marche, appui ou instabilité</span></span>
+        </button>
+        <button class="scan-choice-card" type="button" data-scan-type="post_operatoire" onclick="selectScanType('post_operatoire')">
+          <span class="scan-choice-icon"><i class="ti ti-medical-cross"></i></span>
+          <span><span class="scan-choice-title">Rééducation post-opératoire</span><span class="scan-choice-meta">Suite d’opération et reprise</span></span>
+        </button>
       </div>
-      <button class="btn btn-off" id="cta-zones" onclick="go('p3')">Continuer <div class="ac"><i class="ti ti-arrow-right"></i></div></button>
+      <button class="btn btn-off" id="cta-scan-type" onclick="go('p3')">Commencer le NESO Scan <div class="ac"><i class="ti ti-arrow-right"></i></div></button>
     </div>
 
     <div class="page" id="p3">
       <button class="back" onclick="go('p2')">← retour</button>
-      <p class="question">Depuis quand<br>avez-vous mal ?</p>
-      <div class="grid">
-        <div class="chip" onclick="sel1(this,'q1')">Aujourd'hui</div>
-        <div class="chip" onclick="sel1(this,'q1')">Quelques jours</div>
-        <div class="chip" onclick="sel1(this,'q1')">Quelques semaines</div>
-        <div class="chip" onclick="sel1(this,'q1')">Plusieurs mois</div>
-        <div class="chip" onclick="sel1(this,'q1')">Plus d'un an</div>
-      </div>
+      <p class="question" id="question-q1">Depuis quand ressentez-vous cette gêne ?</p>
+      <div class="grid" id="grid-q1"></div>
       <button class="btn btn-off" id="cta-p3" onclick="go('p4')">Continuer <div class="ac"><i class="ti ti-arrow-right"></i></div></button>
     </div>
 
     <div class="page" id="p4">
       <button class="back" onclick="go('p3')">← retour</button>
-      <p class="question">Comment décririez-vous<br>cette sensation ?</p>
-      <div class="grid">
-        <div class="chip" onclick="selM(this,'q2')">Douleur précise</div>
-        <div class="chip" onclick="selM(this,'q2')">Raideur</div>
-        <div class="chip" onclick="selM(this,'q2')">Brûlure</div>
-        <div class="chip" onclick="selM(this,'q2')">Fourmillements</div>
-        <div class="chip" onclick="selM(this,'q2')">Gêne diffuse</div>
-      </div>
+      <p class="question" id="question-q2">La gêne descend-elle ailleurs ?</p>
+      <div class="grid" id="grid-q2"></div>
       <button class="btn btn-off" id="cta-p4" onclick="go('p5')">Continuer <div class="ac"><i class="ti ti-arrow-right"></i></div></button>
     </div>
 
     <div class="page" id="p5">
       <button class="back" onclick="go('p4')">← retour</button>
-      <p class="question">Votre douleur<br>aujourd'hui ?</p>
+      <p class="question">Votre gêne<br>aujourd'hui ?</p>
       <p class="sv" id="sv">5</p>
       <input type="range" id="slider" min="0" max="10" value="5" step="1" style="--val:50%;" oninput="onSlider(this)" />
       <div class="sl"><span>Pas de douleur</span><span>Insupportable</span></div>
@@ -551,54 +595,33 @@ padding:20px;
 
     <div class="page" id="p6">
       <button class="back" onclick="go('p5')">← retour</button>
-      <p class="question">Qu'est-ce qui vous<br>gêne le plus ?</p>
-      <div class="grid">
-        <div class="chip" onclick="selM(this,'q4')">Marcher</div>
-        <div class="chip" onclick="selM(this,'q4')">Dormir</div>
-        <div class="chip" onclick="selM(this,'q4')">Travailler</div>
-        <div class="chip" onclick="selM(this,'q4')">Sport</div>
-        <div class="chip" onclick="selM(this,'q4')">Bouger normalement</div>
-        <div class="chip" onclick="selM(this,'q4')">Rester assis</div>
-        <div class="chip" id="stairs-chip" onclick="selM(this,'q4')">Monter et descendre les escaliers</div>
-      </div>
+      <p class="question" id="question-q4">Qu’est-ce qui augmente le plus votre gêne ?</p>
+      <div class="grid" id="grid-q4"></div>
       <button class="btn btn-off" id="cta-p6" onclick="go('p7')">Continuer <div class="ac"><i class="ti ti-arrow-right"></i></div></button>
     </div>
 
     <div class="page" id="p7">
       <button class="back" onclick="go('p6')">← retour</button>
-      <p class="question">Cette douleur<br>évolue comment ?</p>
-      <div class="grid">
-        <div class="chip" onclick="sel1(this,'q5')">Stable</div>
-        <div class="chip" onclick="sel1(this,'q5')">S'améliore</div>
-        <div class="chip" onclick="sel1(this,'q5')">S'aggrave</div>
-        <div class="chip" onclick="sel1(this,'q5')">Variable selon les jours</div>
-      </div>
+      <p class="question" id="question-q5">Qu’est-ce qui vous soulage le plus ?</p>
+      <div class="grid" id="grid-q5"></div>
       <button class="btn btn-off" id="cta-p7" onclick="go('p8')">Continuer <div class="ac"><i class="ti ti-arrow-right"></i></div></button>
     </div>
 
     <div class="page" id="p8">
       <button class="back" onclick="go('p7')">← retour</button>
-      <p class="question">Quels sont vos<br>objectifs ?</p>
-      <div class="grid">
-        <div class="chip" onclick="selM(this,'q6')">Ne plus avoir mal</div>
-        <div class="chip" onclick="selM(this,'q6')">Reprendre le sport</div>
-        <div class="chip" onclick="selM(this,'q6')">Reprendre le travail</div>
-        <div class="chip" onclick="selM(this,'q6')">Retrouver ma mobilité</div>
-        <div class="chip" onclick="selM(this,'q6')">Comprendre mon problème</div>
-        <div class="chip" onclick="selM(this,'q6')">Reprendre une vie normale</div>
-      </div>
-      <button class="btn btn-off" id="cta-p8" onclick="goRecap()">Voir mon Physio Scan <div class="ac"><i class="ti ti-arrow-right"></i></div></button>
-      <p style="font-size:11px;color:#888780;margin-top:12px;text-align:center;">Vous pouvez sélectionner plusieurs objectifs</p>
+      <p class="question" id="question-q6">Quel est votre objectif principal ?</p>
+      <div class="grid" id="grid-q6"></div>
+      <button class="btn btn-off" id="cta-p8" onclick="goRecap()">Voir mon NESO Scan <div class="ac"><i class="ti ti-arrow-right"></i></div></button>
     </div>
 
     <div class="page" id="p9">
       <button class="back" onclick="go('p8')">← retour</button>
-      <p style="font-family:'Playfair Display',serif;font-size:22px;font-weight:500;color:#1C1C1A;margin-bottom:22px;">Votre <span style="color:#0A5C48;">Physio Scan</span></p>
-      <div class="rb"><p class="rl">Zones concernées</p><div class="rt" id="r-zones"></div></div>
+      <p style="font-family:'Playfair Display',serif;font-size:22px;font-weight:500;color:#1C1C1A;margin-bottom:22px;">Votre <span style="color:#0A5C48;">NESO Scan</span></p>
+      <div class="rb"><p class="rl">Type de scan</p><div class="rt" id="r-scan-type"></div></div>
       <div class="rd"></div>
-      <div class="rb"><p class="rl">Depuis quand</p><div class="rt" id="r-q1"></div></div>
+      <div class="rb"><p class="rl" id="recap-label-q1">Depuis quand</p><div class="rt" id="r-q1"></div></div>
       <div class="rd"></div>
-      <div class="rb"><p class="rl">Type de douleur</p><div class="rt" id="r-q2"></div></div>
+      <div class="rb"><p class="rl" id="recap-label-q2">Question spécifique</p><div class="rt" id="r-q2"></div></div>
       <div class="rd"></div>
       <div class="rb">
         <p class="rl">Intensité</p>
@@ -608,11 +631,11 @@ padding:20px;
         </div>
       </div>
       <div class="rd"></div>
-      <div class="rb"><p class="rl">Ce qui gêne le plus</p><div class="rt" id="r-q4"></div></div>
+      <div class="rb"><p class="rl" id="recap-label-q4">Question spécifique</p><div class="rt" id="r-q4"></div></div>
       <div class="rd"></div>
-      <div class="rb"><p class="rl">Évolution</p><div class="rt" id="r-q5"></div></div>
+      <div class="rb"><p class="rl" id="recap-label-q5">Question spécifique</p><div class="rt" id="r-q5"></div></div>
       <div class="rd"></div>
-      <div class="rb" style="margin-bottom:18px;"><p class="rl">Objectif</p><div class="rt" id="r-q6"></div></div>
+      <div class="rb" style="margin-bottom:18px;"><p class="rl" id="recap-label-q6">Objectif</p><div class="rt" id="r-q6"></div></div>
 
       <label class="consent">
         <input type="checkbox" id="consent" onchange="toggleSend()" />
@@ -627,7 +650,7 @@ padding:20px;
       <div style="text-align:center;padding:40px 0 20px;">
         <div class="si"><i class="ti ti-check" style="font-size:22px;color:#0A5C48;"></i></div>
         <p style="font-family:'Playfair Display',serif;font-size:27px;font-weight:500;color:#1C1C1A;line-height:1.25;margin-bottom:14px;">Merci, <span style="color:#0A5C48;" id="merci-nom">Martin</span>.</p>
-        <p style="font-size:14px;color:#4A4A48;line-height:1.8;margin-bottom:10px;">Votre Physio Scan est bien envoyé.</p>
+        <p style="font-size:14px;color:#4A4A48;line-height:1.8;margin-bottom:10px;">Votre NESO Scan est bien envoyé.</p>
         <p style="font-size:13px;color:#888780;line-height:1.8;margin-bottom:30px;">Votre kiné dispose maintenant des informations utiles pour mieux préparer votre séance.</p>
         <a href="index.html" class="btn btn-on" style="text-decoration:none;">Retour à l’accueil <div class="ac"><i class="ti ti-home"></i></div></a>
       </div>
@@ -644,17 +667,200 @@ padding:20px;
   const SUPABASE_ANON_KEY = "sb_publishable_1aS8qPPmGm76n0zN_L2uIQ_ArUVtHsF";
   const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  const S = { prenom:'', zones:[], q1:[], q2:[], q3:'5', q4:[], q5:[], q6:[] };
+  const S = { scanType:'', scanTypeLabel:'', prenom:'', zones:[], q1:[], q2:[], q3:'5', q4:[], q5:[], q6:[] };
+  const QUESTION_PAGE = { q1: 'p3', q2: 'p4', q4: 'p6', q5: 'p7', q6: 'p8' };
+  const SCAN_TYPES = {
+    lombaires_sciatique: {
+      label: 'Lombaires / Sciatique',
+      questions: {
+        q1: {
+          label: 'Depuis quand ressentez-vous cette gêne ?',
+          recap: 'Depuis quand',
+          options: ['Aujourd’hui', 'Quelques jours', 'Quelques semaines', 'Plusieurs mois', 'Plus d’un an']
+        },
+        q2: {
+          label: 'La gêne descend-elle dans la fesse ou la jambe ?',
+          recap: 'Irradiation',
+          options: ['Non', 'Dans la fesse', 'Dans la jambe', 'Jusqu’au pied']
+        },
+        q4: {
+          label: 'Qu’est-ce qui augmente le plus votre gêne ?',
+          recap: 'Facteur aggravant',
+          options: ['Rester assis', 'Se pencher', 'Porter une charge', 'Marcher longtemps', 'Se lever']
+        },
+        q5: {
+          label: 'Qu’est-ce qui vous soulage le plus ?',
+          recap: 'Soulagement',
+          options: ['Repos', 'Mouvement doux', 'Chaleur', 'Étirements', 'Rien pour le moment']
+        },
+        q6: {
+          label: 'Quel est votre objectif principal ?',
+          recap: 'Objectif',
+          options: ['Ne plus avoir mal', 'Reprendre le sport', 'Reprendre le travail', 'Mieux bouger', 'Comprendre le problème']
+        }
+      }
+    },
+    cervicales: {
+      label: 'Cervicales',
+      questions: {
+        q1: {
+          label: 'Depuis quand ressentez-vous cette gêne ?',
+          recap: 'Depuis quand',
+          options: ['Aujourd’hui', 'Quelques jours', 'Quelques semaines', 'Plusieurs mois', 'Plus d’un an']
+        },
+        q2: {
+          label: 'La gêne descend-elle dans l’épaule, le bras ou la main ?',
+          recap: 'Irradiation',
+          options: ['Non', 'Vers l’épaule', 'Vers le bras', 'Vers la main']
+        },
+        q4: {
+          label: 'Quel mouvement est le plus gênant ?',
+          recap: 'Mouvement gênant',
+          options: ['Tourner la tête', 'Regarder en haut', 'Regarder en bas', 'Rester immobile', 'Conduire']
+        },
+        q5: {
+          label: 'Votre gêne est-elle liée à l’écran ou à une posture prolongée ?',
+          recap: 'Lien posture',
+          options: ['Non', 'Oui, écran', 'Oui, posture', 'Oui, les deux']
+        },
+        q6: {
+          label: 'Quel est votre objectif principal ?',
+          recap: 'Objectif',
+          options: ['Moins de tension', 'Travailler sans gêne', 'Tourner la tête', 'Reprendre le sport', 'Mieux dormir']
+        }
+      }
+    },
+    epaule: {
+      label: 'Épaule',
+      questions: {
+        q1: {
+          label: 'Depuis quand ressentez-vous cette gêne ?',
+          recap: 'Depuis quand',
+          options: ['Aujourd’hui', 'Quelques jours', 'Quelques semaines', 'Plusieurs mois', 'Plus d’un an']
+        },
+        q2: {
+          label: 'Quel geste est le plus gênant ?',
+          recap: 'Geste gênant',
+          options: ['Lever le bras', 'Porter une charge', 'Mettre une veste', 'Passer la main derrière le dos', 'Lancer']
+        },
+        q4: {
+          label: 'Pouvez-vous lever le bras au-dessus de la tête ?',
+          recap: 'Bras au-dessus de la tête',
+          options: ['Oui', 'Oui, avec gêne', 'Difficilement', 'Non']
+        },
+        q5: {
+          label: 'La gêne vous réveille-t-elle la nuit ?',
+          recap: 'Gêne nocturne',
+          options: ['Non', 'Parfois', 'Souvent', 'Toutes les nuits']
+        },
+        q6: {
+          label: 'Quel est votre objectif principal ?',
+          recap: 'Objectif',
+          options: ['Lever le bras', 'Dormir sans gêne', 'Reprendre le sport', 'Porter sans gêne', 'Retrouver la mobilité']
+        }
+      }
+    },
+    genou: {
+      label: 'Genou',
+      questions: {
+        q1: {
+          label: 'Depuis quand ressentez-vous cette gêne ?',
+          recap: 'Depuis quand',
+          options: ['Aujourd’hui', 'Quelques jours', 'Quelques semaines', 'Plusieurs mois', 'Plus d’un an']
+        },
+        q2: {
+          label: 'Qu’est-ce qui est le plus gênant ?',
+          recap: 'Gêne principale',
+          options: ['Marcher', 'Courir', 'Escaliers', 'S’accroupir', 'Rester assis']
+        },
+        q4: {
+          label: 'Avez-vous une sensation de gonflement ?',
+          recap: 'Gonflement',
+          options: ['Non', 'Un peu', 'Oui', 'Important']
+        },
+        q5: {
+          label: 'Avez-vous une sensation d’instabilité ou de blocage ?',
+          recap: 'Instabilité ou blocage',
+          options: ['Non', 'Instabilité', 'Blocage', 'Les deux']
+        },
+        q6: {
+          label: 'Quel est votre objectif principal ?',
+          recap: 'Objectif',
+          options: ['Marcher sans gêne', 'Monter les escaliers', 'Reprendre le sport', 'Courir', 'Gagner en stabilité']
+        }
+      }
+    },
+    cheville_entorse: {
+      label: 'Cheville / Entorse',
+      questions: {
+        q1: {
+          label: 'Depuis quand ressentez-vous cette gêne ?',
+          recap: 'Depuis quand',
+          options: ['Aujourd’hui', 'Quelques jours', 'Quelques semaines', 'Plusieurs mois', 'Plus d’un an']
+        },
+        q2: {
+          label: 'Pouvez-vous marcher normalement ?',
+          recap: 'Marche',
+          options: ['Oui', 'Oui, avec gêne', 'Avec boiterie', 'Non']
+        },
+        q4: {
+          label: 'Avez-vous une sensation d’instabilité ?',
+          recap: 'Instabilité',
+          options: ['Non', 'Parfois', 'Souvent', 'À chaque appui']
+        },
+        q5: {
+          label: 'Quel type d’appui est le plus gênant ?',
+          recap: 'Appui gênant',
+          options: ['Appui simple', 'Marcher vite', 'Escaliers', 'Terrain irrégulier', 'Sauter']
+        },
+        q6: {
+          label: 'Quel est votre objectif principal ?',
+          recap: 'Objectif',
+          options: ['Marcher normalement', 'Reprendre le sport', 'Retrouver la stabilité', 'Ne plus gonfler', 'Reprendre la course']
+        }
+      }
+    },
+    post_operatoire: {
+      label: 'Rééducation post-opératoire',
+      questions: {
+        q1: {
+          label: 'Quelle zone a été opérée ?',
+          recap: 'Zone opérée',
+          options: ['Genou', 'Épaule', 'Cheville', 'Hanche', 'Dos', 'Autre zone']
+        },
+        q2: {
+          label: 'Quand a eu lieu l’opération ?',
+          recap: 'Date de l’opération',
+          options: ['Moins de 2 semaines', '2 à 6 semaines', '1 à 3 mois', 'Plus de 3 mois', 'Plus d’un an']
+        },
+        q4: {
+          label: 'Utilisez-vous une aide pour marcher ou vous déplacer ?',
+          recap: 'Aide actuelle',
+          options: ['Non', 'Canne', 'Béquilles', 'Attelle', 'Autre aide']
+        },
+        q5: {
+          label: 'Comment évolue votre gêne depuis l’opération ?',
+          recap: 'Évolution',
+          options: ['Diminue', 'Stable', 'Augmente', 'Variable selon les jours']
+        },
+        q6: {
+          label: 'Quel est votre objectif principal ?',
+          recap: 'Objectif',
+          options: ['Marcher sans aide', 'Récupérer la mobilité', 'Reprendre le travail', 'Reprendre le sport', 'Reprendre confiance']
+        }
+      }
+    }
+  };
   const TRACKING_SESSION_ID = 'physio_' + Date.now() + '_' + Math.random().toString(36).slice(2);
   const TRACKING_PAGE_LABELS = {
     p0: { key: 'intro', label: 'Écran d’introduction' },
     p1: { key: 'prenom', label: 'Prénom' },
-    p2: { key: 'zones', label: 'Où avez-vous mal ?' },
+    p2: { key: 'scan_type', label: 'Quelle zone souhaitez-vous faire évaluer ?' },
     p3: { key: 'douleur_depuis', label: 'Depuis quand avez-vous mal ?' },
-    p4: { key: 'type_douleur', label: 'Comment décririez-vous cette douleur ?' },
-    p5: { key: 'score_douleur', label: 'Votre douleur aujourd’hui ?' },
+    p4: { key: 'question_specifique_1', label: 'Question spécifique' },
+    p5: { key: 'score_douleur', label: 'Votre gêne aujourd’hui ?' },
     p6: { key: 'gene', label: 'Qu’est-ce qui vous gêne le plus ?' },
-    p7: { key: 'evolution', label: 'Cette douleur évolue comment ?' },
+    p7: { key: 'question_specifique_2', label: 'Question spécifique' },
     p8: { key: 'objectif', label: 'Votre objectif principal ?' },
     p9: { key: 'recap', label: 'Récapitulatif' },
     p10: { key: 'merci', label: 'Confirmation' }
@@ -693,65 +899,89 @@ padding:20px;
     S.prenom = v.trim();
     const cta = document.getElementById('cta-prenom');
     cta.className = 'btn ' + (S.prenom ? 'btn-on' : 'btn-off');
-    if (S.prenom) document.getElementById('q-zones').innerHTML = `Où avez-vous mal,<br><span style="color:#0A5C48;">${escapeHtml(S.prenom)}</span> ?`;
   }
 
-  function goZones() { if (S.prenom) go('p2'); }
+  function goScanChoice() { if (S.prenom) go('p2'); }
 
-  function togZ(el) {
-    el.classList.toggle('sel');
-    S.zones = [...document.querySelectorAll('#zones-grid .chip.sel')].map(c => c.textContent.trim());
-    updateConditionalOptions();
-    updZCta();
-  }
-  function togZA(el) {
-    el.classList.toggle('sel');
-    if (el.classList.contains('sel')) { if (!S.zones.includes('Autre')) S.zones.push('Autre'); }
-    else S.zones = S.zones.filter(z => z !== 'Autre');
-    updateConditionalOptions();
-    updZCta();
+  function currentScanConfig() {
+    return SCAN_TYPES[S.scanType] || null;
   }
 
-  function updateConditionalOptions() {
-    const stairsChip = document.getElementById('stairs-chip');
-    if (!stairsChip) return;
+  function selectScanType(type) {
+    const config = SCAN_TYPES[type];
+    if (!config) return;
 
-    const lowerBodyZones = ['Hanche', 'Genou', 'Pied / Cheville'];
-    const shouldShow = S.zones.some(zone => lowerBodyZones.includes(zone));
+    const hasChanged = S.scanType !== type;
+    S.scanType = type;
+    S.scanTypeLabel = config.label;
+    S.zones = [config.label];
 
-    if (shouldShow) {
-      stairsChip.style.display = 'flex';
-    } else {
-      stairsChip.style.display = 'none';
-      stairsChip.classList.remove('sel');
-      S.q4 = S.q4.filter(item => item !== 'Monter et descendre les escaliers');
+    document.querySelectorAll('[data-scan-type]').forEach(function(card) {
+      card.classList.toggle('sel', card.dataset.scanType === type);
+    });
 
-      const cta = document.getElementById('cta-p6');
-      if (cta) {
-        cta.className = 'btn ' + (S.q4.length > 0 ? 'btn-on' : 'btn-off');
-      }
+    if (hasChanged) {
+      resetSpecificAnswers();
     }
-  }
-  function updZCta() {
-    const any = document.querySelectorAll('#zones-grid .chip.sel, #zones-grid .chip-autre.sel').length > 0;
-    document.getElementById('cta-zones').className = 'btn ' + (any ? 'btn-on' : 'btn-off');
+
+    renderSpecificQuestions();
+    document.getElementById('cta-scan-type').className = 'btn btn-on';
   }
 
-  function sel1(el, key) {
-    el.closest('.grid').querySelectorAll('.chip').forEach(c => c.classList.remove('sel'));
+  function resetSpecificAnswers() {
+    S.q1 = [];
+    S.q2 = [];
+    S.q4 = [];
+    S.q5 = [];
+    S.q6 = [];
+    ['p3', 'p4', 'p6', 'p7', 'p8'].forEach(function(pageId) {
+      const cta = document.getElementById('cta-' + pageId);
+      if (cta) cta.className = 'btn btn-off';
+    });
+  }
+
+  function renderSpecificQuestions() {
+    const config = currentScanConfig();
+    if (!config) return;
+
+    Object.entries(QUESTION_PAGE).forEach(function([key, pageId]) {
+      const question = config.questions[key];
+      const questionNode = document.getElementById('question-' + key);
+      const grid = document.getElementById('grid-' + key);
+      const cta = document.getElementById('cta-' + pageId);
+
+      if (!question || !questionNode || !grid) return;
+
+      questionNode.textContent = question.label;
+      grid.innerHTML = question.options.map(function(option) {
+        return '<button class="chip" type="button" data-answer="' + escapeHtml(option) + '">' + escapeHtml(option) + '</button>';
+      }).join('');
+
+      grid.querySelectorAll('.chip').forEach(function(chip) {
+        chip.addEventListener('click', function() {
+          selectSpecificAnswer(chip, key);
+        });
+
+        chip.classList.toggle('sel', S[key].includes(chip.dataset.answer));
+      });
+
+      if (cta) {
+        cta.className = 'btn ' + (S[key].length > 0 ? 'btn-on' : 'btn-off');
+      }
+    });
+  }
+
+  function selectSpecificAnswer(el, key) {
+    const grid = el.closest('.grid');
+    grid.querySelectorAll('.chip').forEach(function(chip) {
+      chip.classList.remove('sel');
+    });
     el.classList.add('sel');
-    S[key] = [el.textContent.trim()];
+    S[key] = [el.dataset.answer];
+
     const ctaId = 'cta-' + el.closest('.page').id;
     const cta = document.getElementById(ctaId);
     if (cta) cta.className = 'btn btn-on';
-  }
-
-  function selM(el, key) {
-    el.classList.toggle('sel');
-    S[key] = [...el.closest('.grid').querySelectorAll('.chip.sel')].map(c => c.textContent.trim());
-    const ctaId = 'cta-' + el.closest('.page').id;
-    const cta = document.getElementById(ctaId);
-    if (cta) cta.className = 'btn ' + (S[key].length > 0 ? 'btn-on' : 'btn-off');
   }
 
   function onSlider(input) {
@@ -764,12 +994,21 @@ padding:20px;
   function goRecap() { go('p9'); }
 
   function buildRecap() {
-    tags('r-zones', S.zones);
+    const config = currentScanConfig();
+    tags('r-scan-type', S.scanTypeLabel ? [S.scanTypeLabel] : []);
     tags('r-q1', S.q1);
     tags('r-q2', S.q2);
     tags('r-q4', S.q4);
     tags('r-q5', S.q5);
     tags('r-q6', S.q6);
+
+    if (config) {
+      Object.entries(QUESTION_PAGE).forEach(function([key]) {
+        const label = document.getElementById('recap-label-' + key);
+        if (label && config.questions[key]) label.textContent = config.questions[key].recap;
+      });
+    }
+
     document.getElementById('r-score').textContent = S.q3;
     const consent = document.getElementById('consent');
     if (consent) consent.checked = false;
@@ -803,6 +1042,8 @@ padding:20px;
     const completedDurationMs = Date.now() - trackingScanStartedAt;
 
     const payload = {
+      scan_type: S.scanType || null,
+      scan_type_label: S.scanTypeLabel || null,
       prenom: S.prenom || null,
       zones: S.zones,
       douleur_depuis: S.q1[0] || null,
@@ -812,10 +1053,19 @@ padding:20px;
       evolution: S.q5[0] || null,
       objectif: S.q6[0] || null,
       duration_ms: completedDurationMs,
-      consent: true
+      consent: true,
+      source: 'neso_scan_v2'
     };
 
-    const { error } = await sb.from('scans').insert(payload);
+    let { error } = await sb.from('scans').insert(payload);
+
+    if (error && isMissingScanTypeColumn(error)) {
+      const fallbackPayload = { ...payload };
+      delete fallbackPayload.scan_type;
+      delete fallbackPayload.scan_type_label;
+      const fallback = await sb.from('scans').insert(fallbackPayload);
+      error = fallback.error;
+    }
 
     if (error) {
       const details = [error.message, error.details, error.hint, error.code].filter(Boolean).join(' | ');
@@ -839,9 +1089,14 @@ padding:20px;
     });
     trackingCompleted = true;
 
-    console.log('Physio Scan terminé en', Math.round(completedDurationMs / 1000), 'secondes');
+    console.log('NESO Scan terminé en', Math.round(completedDurationMs / 1000), 'secondes');
 
     go('p10');
+  }
+
+  function isMissingScanTypeColumn(error) {
+    const text = [error.message, error.details, error.hint, error.code].filter(Boolean).join(' ').toLowerCase();
+    return text.includes('scan_type') || text.includes('scan_type_label') || text.includes('schema cache');
   }
 
   function trackPageEnter(pageId) {
@@ -920,12 +1175,12 @@ padding:20px;
 
       if (!response.ok) {
         const message = await response.text();
-        console.warn('Tracking Physio Scan refusé par Supabase', response.status, message, payload);
+        console.warn('Tracking NESO Scan refusé par Supabase', response.status, message, payload);
       } else {
-        console.log('Tracking Physio Scan enregistré', eventType, payload.page_id);
+        console.log('Tracking NESO Scan enregistré', eventType, payload.page_id);
       }
     } catch (error) {
-      console.warn('Tracking Physio Scan non envoyé', error, payload);
+      console.warn('Tracking NESO Scan non envoyé', error, payload);
     }
   }
 
@@ -959,11 +1214,25 @@ padding:20px;
         body: JSON.stringify(payload)
       });
     } catch (error) {
-      console.warn('Abandon Physio Scan non enregistré', error);
+      console.warn('Abandon NESO Scan non enregistré', error);
     }
   }
 
   function pageMeta(pageId) {
+    const pageQuestionKey = Object.entries(QUESTION_PAGE).find(function(entry) {
+      return entry[1] === pageId;
+    })?.[0];
+
+    if (pageQuestionKey) {
+      const question = currentScanConfig()?.questions?.[pageQuestionKey];
+      if (question) {
+        return {
+          key: pageQuestionKey,
+          label: question.label
+        };
+      }
+    }
+
     return TRACKING_PAGE_LABELS[pageId] || { key: pageId, label: pageId };
   }
 
@@ -971,7 +1240,10 @@ padding:20px;
     const answers = {
       p0: null,
       p1: S.prenom || null,
-      p2: S.zones,
+      p2: {
+        scan_type: S.scanType || null,
+        scan_type_label: S.scanTypeLabel || null
+      },
       p3: S.q1[0] || null,
       p4: S.q2,
       p5: Number(S.q3),
@@ -979,6 +1251,8 @@ padding:20px;
       p7: S.q5[0] || null,
       p8: S.q6[0] || null,
       p9: {
+        scan_type: S.scanType || null,
+        scan_type_label: S.scanTypeLabel || null,
         prenom: S.prenom || null,
         zones: S.zones,
         douleur_depuis: S.q1[0] || null,
@@ -1012,7 +1286,6 @@ padding:20px;
     }
   }
   renderDots('p0');
-  updateConditionalOptions();
 </script>
 </body>
 </html>
