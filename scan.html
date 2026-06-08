@@ -31,6 +31,8 @@
     .chip { padding: 11px 14px; border-radius: 14px; border: 0.5px solid #DDD9D0; background: #EFECE5; font-size: 12.5px; font-weight: 400; color: #4A4A48; cursor: pointer; transition: all 0.2s cubic-bezier(0.34,1.56,0.64,1); text-align: center; user-select: none; font-family: inherit; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
     .chip:hover { border-color: #9FB8D4; color: #0C447C; }
     .chip.sel { background: linear-gradient(135deg, #185FA5 0%, #0A5C48 100%); border-color: transparent; color: #E1F5EE; font-weight: 500; transform: scale(1.02); box-shadow: 0 6px 16px rgba(12,68,124,0.18), 0 0 0 2px rgba(159,225,203,0.08); }
+    .question-helper { min-height: 16px; margin: -12px 0 14px; font-size: 11px; line-height: 1.45; color: #888780; }
+    .question-helper:empty { display: none; }
     .chip-autre { padding: 13px 14px; border-radius: 14px; border: 0.5px dashed #C4C0B8; background: transparent; font-size: 12.5px; color: #888780; cursor: pointer; transition: all 0.22s cubic-bezier(0.34,1.56,0.64,1); text-align: center; user-select: none; font-family: inherit; display: flex; align-items: center; justify-content: center; gap: 5px; grid-column: 1/-1; }
     .chip-autre:hover { border-color: #9FB8D4; color: #0C447C; }
     .chip-autre.sel { background: linear-gradient(135deg, #185FA5 0%, #0A5C48 100%); border: none; color: #E1F5EE; font-weight: 500; transform: scale(1.01); box-shadow: 0 6px 16px rgba(12,68,124,0.18), 0 0 0 2px rgba(159,225,203,0.08); }
@@ -492,6 +494,7 @@
     <div class="page" id="p3">
       <button class="back" onclick="go('p2')">← retour</button>
       <p class="question" id="question-q1">Depuis quand ressentez-vous cette gêne ?</p>
+      <p class="question-helper" id="helper-q1"></p>
       <div class="grid" id="grid-q1"></div>
       <button class="btn btn-off" id="cta-p3" onclick="go('p4')">Continuer <div class="ac"><i class="ti ti-arrow-right"></i></div></button>
     </div>
@@ -499,6 +502,7 @@
     <div class="page" id="p4">
       <button class="back" onclick="go('p3')">← retour</button>
       <p class="question" id="question-q2">La gêne descend-elle ailleurs ?</p>
+      <p class="question-helper" id="helper-q2"></p>
       <div class="grid" id="grid-q2"></div>
       <button class="btn btn-off" id="cta-p4" onclick="go('p5')">Continuer <div class="ac"><i class="ti ti-arrow-right"></i></div></button>
     </div>
@@ -515,6 +519,7 @@
     <div class="page" id="p6">
       <button class="back" onclick="go('p5')">← retour</button>
       <p class="question" id="question-q4">Qu’est-ce qui augmente le plus votre gêne ?</p>
+      <p class="question-helper" id="helper-q4"></p>
       <div class="grid" id="grid-q4"></div>
       <button class="btn btn-off" id="cta-p6" onclick="go('p7')">Continuer <div class="ac"><i class="ti ti-arrow-right"></i></div></button>
     </div>
@@ -522,6 +527,7 @@
     <div class="page" id="p7">
       <button class="back" onclick="go('p6')">← retour</button>
       <p class="question" id="question-q5">Qu’est-ce qui vous soulage le plus ?</p>
+      <p class="question-helper" id="helper-q5"></p>
       <div class="grid" id="grid-q5"></div>
       <button class="btn btn-off" id="cta-p7" onclick="go('p8')">Continuer <div class="ac"><i class="ti ti-arrow-right"></i></div></button>
     </div>
@@ -529,6 +535,7 @@
     <div class="page" id="p8">
       <button class="back" onclick="go('p7')">← retour</button>
       <p class="question" id="question-q6">Quel est votre objectif principal ?</p>
+      <p class="question-helper" id="helper-q6"></p>
       <div class="grid" id="grid-q6"></div>
       <button class="btn btn-off" id="cta-p8" onclick="goRecap()">Voir mon Physio Scan <div class="ac"><i class="ti ti-arrow-right"></i></div></button>
     </div>
@@ -605,16 +612,21 @@
         q4: {
           label: 'Qu’est-ce qui augmente le plus votre gêne ?',
           recap: 'Facteur aggravant',
+          multiple: true,
           options: ['Rester assis', 'Se pencher', 'Porter une charge', 'Marcher longtemps', 'Se lever']
         },
         q5: {
           label: 'Qu’est-ce qui vous soulage le plus ?',
           recap: 'Soulagement',
+          multiple: true,
           options: ['Repos', 'Mouvement doux', 'Chaleur', 'Étirements', 'Rien pour le moment']
         },
         q6: {
           label: 'Quel est votre objectif principal ?',
           recap: 'Objectif',
+          multiple: true,
+          maxChoices: 2,
+          helper: 'Vous pouvez choisir jusqu’à 2 réponses.',
           options: ['Ne plus avoir mal', 'Reprendre le sport', 'Reprendre le travail', 'Mieux bouger', 'Comprendre le problème']
         }
       }
@@ -645,6 +657,9 @@
         q6: {
           label: 'Quel est votre objectif principal ?',
           recap: 'Objectif',
+          multiple: true,
+          maxChoices: 2,
+          helper: 'Vous pouvez choisir jusqu’à 2 réponses.',
           options: ['Moins de tension', 'Travailler sans gêne', 'Tourner la tête', 'Reprendre le sport', 'Mieux dormir']
         }
       }
@@ -660,6 +675,7 @@
         q2: {
           label: 'Quel geste est le plus gênant ?',
           recap: 'Geste gênant',
+          multiple: true,
           options: ['Lever le bras', 'Porter une charge', 'Mettre une veste', 'Passer la main derrière le dos', 'Lancer']
         },
         q4: {
@@ -675,6 +691,9 @@
         q6: {
           label: 'Quel est votre objectif principal ?',
           recap: 'Objectif',
+          multiple: true,
+          maxChoices: 2,
+          helper: 'Vous pouvez choisir jusqu’à 2 réponses.',
           options: ['Lever le bras', 'Dormir sans gêne', 'Reprendre le sport', 'Porter sans gêne', 'Retrouver la mobilité']
         }
       }
@@ -690,6 +709,7 @@
         q2: {
           label: 'Qu’est-ce qui est le plus gênant ?',
           recap: 'Gêne principale',
+          multiple: true,
           options: ['Marcher', 'Courir', 'Escaliers', 'S’accroupir', 'Rester assis']
         },
         q4: {
@@ -705,6 +725,9 @@
         q6: {
           label: 'Quel est votre objectif principal ?',
           recap: 'Objectif',
+          multiple: true,
+          maxChoices: 2,
+          helper: 'Vous pouvez choisir jusqu’à 2 réponses.',
           options: ['Marcher sans gêne', 'Monter les escaliers', 'Reprendre le sport', 'Courir', 'Gagner en stabilité']
         }
       }
@@ -730,11 +753,15 @@
         q5: {
           label: 'Quel type d’appui est le plus gênant ?',
           recap: 'Appui gênant',
+          multiple: true,
           options: ['Appui simple', 'Marcher vite', 'Escaliers', 'Terrain irrégulier', 'Sauter']
         },
         q6: {
           label: 'Quel est votre objectif principal ?',
           recap: 'Objectif',
+          multiple: true,
+          maxChoices: 2,
+          helper: 'Vous pouvez choisir jusqu’à 2 réponses.',
           options: ['Marcher normalement', 'Reprendre le sport', 'Retrouver la stabilité', 'Ne plus gonfler', 'Reprendre la course']
         }
       }
@@ -765,6 +792,9 @@
         q6: {
           label: 'Quel est votre objectif principal ?',
           recap: 'Objectif',
+          multiple: true,
+          maxChoices: 2,
+          helper: 'Vous pouvez choisir jusqu’à 2 réponses.',
           options: ['Marcher sans aide', 'Récupérer la mobilité', 'Reprendre le travail', 'Reprendre le sport', 'Reprendre confiance']
         }
       }
@@ -866,12 +896,14 @@
     Object.entries(QUESTION_PAGE).forEach(function([key, pageId]) {
       const question = config.questions[key];
       const questionNode = document.getElementById('question-' + key);
+      const helperNode = document.getElementById('helper-' + key);
       const grid = document.getElementById('grid-' + key);
       const cta = document.getElementById('cta-' + pageId);
 
       if (!question || !questionNode || !grid) return;
 
       questionNode.textContent = question.label;
+      if (helperNode) helperNode.textContent = question.helper || '';
       grid.innerHTML = question.options.map(function(option) {
         return '<button class="chip" type="button" data-answer="' + escapeHtml(option) + '">' + escapeHtml(option) + '</button>';
       }).join('');
@@ -891,6 +923,28 @@
   }
 
   function selectSpecificAnswer(el, key) {
+    const question = currentScanConfig()?.questions?.[key] || {};
+    const value = el.dataset.answer;
+    const isMultiple = Boolean(question.multiple);
+
+    if (isMultiple) {
+      const selected = S[key].includes(value);
+      if (selected) {
+        S[key] = S[key].filter(function(answer) {
+          return answer !== value;
+        });
+        el.classList.remove('sel');
+      } else if (!question.maxChoices || S[key].length < question.maxChoices) {
+        S[key] = [...S[key], value];
+        el.classList.add('sel');
+      }
+
+      const ctaId = 'cta-' + el.closest('.page').id;
+      const cta = document.getElementById(ctaId);
+      if (cta) cta.className = 'btn ' + (S[key].length > 0 ? 'btn-on' : 'btn-off');
+      return;
+    }
+
     const grid = el.closest('.grid');
     grid.querySelectorAll('.chip').forEach(function(chip) {
       chip.classList.remove('sel');
@@ -942,6 +996,16 @@
       : items.map(t=>`<span class="rtag">${escapeHtml(t)}</span>`).join('');
   }
 
+  function questionAnswerValue(key) {
+    const question = currentScanConfig()?.questions?.[key] || {};
+    return question.multiple ? [...S[key]] : (S[key][0] || null);
+  }
+
+  function textAnswer(value) {
+    if (Array.isArray(value)) return value.join(', ');
+    return value || null;
+  }
+
   function toggleSend() {
     const ok = document.getElementById('consent')?.checked;
     const btn = document.getElementById('send-btn');
@@ -969,8 +1033,8 @@
       type_douleur: S.q2,
       score_douleur: Number(S.q3),
       gene: S.q4,
-      evolution: S.q5[0] || null,
-      objectif: S.q6[0] || null,
+      evolution: questionAnswerValue('q5'),
+      objectif: questionAnswerValue('q6'),
       duration_ms: completedDurationMs,
       consent: true,
       source: 'physio_scan_v2'
@@ -1021,6 +1085,8 @@
     delete fallbackPayload.scan_type;
     delete fallbackPayload.scan_type_label;
     delete fallbackPayload.source;
+    fallbackPayload.evolution = textAnswer(fallbackPayload.evolution);
+    fallbackPayload.objectif = textAnswer(fallbackPayload.objectif);
 
     return fallbackPayload;
   }
@@ -1032,8 +1098,8 @@
       type_douleur: payload.type_douleur || [],
       score_douleur: payload.score_douleur,
       gene: payload.gene || [],
-      evolution: payload.evolution || null,
-      objectif: payload.objectif || null,
+      evolution: textAnswer(payload.evolution),
+      objectif: textAnswer(payload.objectif),
       consent: true
     };
   }
@@ -1042,6 +1108,8 @@
     const text = [error.message, error.details, error.hint, error.code].filter(Boolean).join(' ').toLowerCase();
     return text.includes('schema cache')
       || text.includes('does not exist')
+      || text.includes('invalid input syntax')
+      || text.includes('malformed')
       || text.includes('scan_type')
       || text.includes('scan_type_label')
       || text.includes('douleur_depuis')
@@ -1194,23 +1262,23 @@
         scan_type: S.scanType || null,
         scan_type_label: S.scanTypeLabel || null
       },
-      p3: S.q1[0] || null,
-      p4: S.q2,
+      p3: questionAnswerValue('q1'),
+      p4: questionAnswerValue('q2'),
       p5: Number(S.q3),
-      p6: S.q4,
-      p7: S.q5[0] || null,
-      p8: S.q6[0] || null,
+      p6: questionAnswerValue('q4'),
+      p7: questionAnswerValue('q5'),
+      p8: questionAnswerValue('q6'),
       p9: {
         scan_type: S.scanType || null,
         scan_type_label: S.scanTypeLabel || null,
         prenom: S.prenom || null,
         zones: S.zones,
-        douleur_depuis: S.q1[0] || null,
-        type_douleur: S.q2,
+        douleur_depuis: questionAnswerValue('q1'),
+        type_douleur: questionAnswerValue('q2'),
         score_douleur: Number(S.q3),
-        gene: S.q4,
-        evolution: S.q5[0] || null,
-        objectif: S.q6[0] || null
+        gene: questionAnswerValue('q4'),
+        evolution: questionAnswerValue('q5'),
+        objectif: questionAnswerValue('q6')
       },
       p10: null
     };

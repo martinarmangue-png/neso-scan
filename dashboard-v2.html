@@ -1184,7 +1184,7 @@
         const searchable = [
           scan.prenom,
           scanTypeLabel(scan),
-          scan.objectif,
+          arrayText(scan.objectif),
           scan.douleur_depuis || scan.duree,
           scan.evolution,
           arrayText(scan.zones),
@@ -1402,10 +1402,10 @@
       document.getElementById('patientEvolution').textContent = scan.evolution || '-';
       document.getElementById('patientProblem').textContent = arrayText(scan.gene) || '-';
       document.getElementById('patientType').textContent = arrayText(scan.type_douleur) || '-';
-      document.getElementById('patientGoal').textContent = scan.objectif || '-';
+      document.getElementById('patientGoal').textContent = arrayText(scan.objectif) || '-';
       document.getElementById('profilePractitioner').textContent = profile?.practitioner_name || 'À associer';
       document.getElementById('profileCondition').textContent = profile?.condition_label || scanTypeLabel(scan) || 'À préciser';
-      document.getElementById('profileGoal').textContent = profile?.recovery_goal || scan.objectif || 'À définir';
+      document.getElementById('profileGoal').textContent = profile?.recovery_goal || arrayText(scan.objectif) || 'À définir';
       document.getElementById('patientNextAction').textContent = nextAction;
       renderDocumentItems(document.getElementById('patientDocuments'), documents, 'Aucun document relié à ce patient.');
       document.getElementById('painBar').style.width = Math.min(Math.max(safePain * 10, 0), 100) + '%';
