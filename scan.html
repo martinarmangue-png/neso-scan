@@ -1001,6 +1001,12 @@
     return question.multiple ? [...S[key]] : (S[key][0] || null);
   }
 
+  function arrayAnswerValue(key) {
+    const value = questionAnswerValue(key);
+    if (Array.isArray(value)) return value;
+    return value ? [value] : [];
+  }
+
   function textAnswer(value) {
     if (Array.isArray(value)) return value.join(', ');
     return value || null;
@@ -1033,8 +1039,8 @@
       type_douleur: S.q2,
       score_douleur: Number(S.q3),
       gene: S.q4,
-      evolution: questionAnswerValue('q5'),
-      objectif: questionAnswerValue('q6'),
+      evolution: arrayAnswerValue('q5'),
+      objectif: arrayAnswerValue('q6'),
       duration_ms: completedDurationMs,
       consent: true,
       source: 'physio_scan_v2'
