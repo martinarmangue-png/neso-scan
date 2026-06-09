@@ -20,6 +20,9 @@ create table if not exists public.scans (
   duration_ms bigint,
   consent boolean default false,
   source text default 'neso_scan_v1',
+  patient_id uuid references auth.users(id) on delete set null,
+  patient_email text,
+  patient_full_name text,
   practitioner_status text not null default 'new',
   practitioner_status_updated_at timestamptz,
   constraint scans_practitioner_status_check
@@ -33,6 +36,9 @@ alter table public.scans add column if not exists duration_ms bigint;
 alter table public.scans add column if not exists source text default 'neso_scan_v1';
 alter table public.scans add column if not exists evolution text[] default '{}';
 alter table public.scans add column if not exists objectif text[] default '{}';
+alter table public.scans add column if not exists patient_id uuid references auth.users(id) on delete set null;
+alter table public.scans add column if not exists patient_email text;
+alter table public.scans add column if not exists patient_full_name text;
 alter table public.scans add column if not exists practitioner_status text not null default 'new';
 alter table public.scans add column if not exists practitioner_status_updated_at timestamptz;
 
@@ -87,6 +93,9 @@ end $$;
 create index if not exists scans_scan_type_created_idx
 on public.scans (scan_type, created_at desc);
 
+create index if not exists scans_patient_created_idx
+on public.scans (patient_id, created_at desc);
+
 do $$
 begin
   if not exists (
@@ -117,23 +126,41 @@ create policy "Public insert scans"
 on public.scans
 for insert
 to anon
-with check (consent = true);
+with check (
+  consent = true
+  and patient_id is null
+  and patient_email is null
+  and patient_full_name is null
+);
 
--- Seuls les praticiens connectés peuvent lire les scans.
+-- Les patients connectés peuvent lire leurs propres scans.
 drop policy if exists "Authenticated select scans" on public.scans;
-create policy "Authenticated select scans"
+drop policy if exists "Patients select own scans" on public.scans;
+create policy "Patients select own scans"
 on public.scans
 for select
 to authenticated
-using (true);
+using (patient_id = auth.uid());
 
--- Optionnel : permettre suppression/modification uniquement aux comptes authentifiés.
+-- Les patients connectés peuvent créer un scan relié à leur compte.
+drop policy if exists "Patients insert own scans" on public.scans;
+create policy "Patients insert own scans"
+on public.scans
+for insert
+to authenticated
+with check (
+  consent = true
+  and patient_id = auth.uid()
+);
+
+-- Les patients connectés peuvent supprimer leurs propres scans.
 drop policy if exists "Authenticated delete scans" on public.scans;
-create policy "Authenticated delete scans"
+drop policy if exists "Patients delete own scans" on public.scans;
+create policy "Patients delete own scans"
 on public.scans
 for delete
 to authenticated
-using (true);
+using (patient_id = auth.uid());
 
 create table if not exists public.scan_events (
   id uuid primary key default gen_random_uuid(),

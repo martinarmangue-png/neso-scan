@@ -1125,6 +1125,10 @@
                 <div class="label">Objectif long terme</div>
                 <div class="info-value" id="profileGoal">À définir</div>
               </div>
+              <div class="info">
+                <div class="label">Compte patient</div>
+                <div class="info-value" id="profileAccount">Non relié</div>
+              </div>
             </div>
           </div>
 
@@ -1372,6 +1376,7 @@
           document.getElementById('profilePractitioner').textContent = '-';
           document.getElementById('profileCondition').textContent = '-';
           document.getElementById('profileGoal').textContent = '-';
+          document.getElementById('profileAccount').textContent = '-';
           document.getElementById('patientDocuments').innerHTML = '<div class="small-muted">Aucun document relié à ce patient.</div>';
           document.getElementById('patientNextAction').textContent = '-';
           setClinicalEmpty();
@@ -1657,6 +1662,13 @@
     }
 
     function findProfileForScan(scan) {
+      if (scan?.patient_id) {
+        const linkedProfile = patientProfiles.find(function(profile) {
+          return profile.id === scan.patient_id;
+        });
+        if (linkedProfile) return linkedProfile;
+      }
+
       const scanName = normalized(scan.prenom);
       if (!scanName) return null;
 
@@ -1811,6 +1823,7 @@
       document.getElementById('profilePractitioner').textContent = profile?.practitioner_name || 'À associer';
       document.getElementById('profileCondition').textContent = profile?.condition_label || scanTypeLabel(scan) || 'À préciser';
       document.getElementById('profileGoal').textContent = profile?.recovery_goal || arrayText(scan.objectif) || 'À définir';
+      document.getElementById('profileAccount').textContent = profile?.email || scan.patient_email || scan.patient_full_name || (scan.patient_id ? 'Compte relié' : 'Non relié');
       document.getElementById('patientNextAction').textContent = nextAction;
       renderStatusControls(scan);
       renderPatientReading(scan, priority, documents);
@@ -1960,6 +1973,7 @@
           document.getElementById('profilePractitioner').textContent = '-';
           document.getElementById('profileCondition').textContent = '-';
           document.getElementById('profileGoal').textContent = '-';
+          document.getElementById('profileAccount').textContent = '-';
           document.getElementById('patientDocuments').innerHTML = '<div class="small-muted">Aucun document relié à ce patient.</div>';
           document.getElementById('patientNextAction').textContent = '-';
           setClinicalEmpty();

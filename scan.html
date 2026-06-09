@@ -26,6 +26,8 @@
     .question span { color: #0A5C48; }
     .title-lg { font-family: 'Playfair Display', Georgia, serif; font-size: 27px; font-weight: 600; color: #1C1C1A; line-height: 1.25; margin-bottom: 8px; }
     .title-lg span { color: #0A5C48; }
+    .patient-context { min-height: 16px; margin: 12px 0 -20px; font-size: 11px; line-height: 1.45; color: #0A5C48; }
+    .patient-context:empty { display: none; }
 
     .grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 8px; margin-bottom: 18px; }
     .chip { padding: 11px 14px; border-radius: 14px; border: 0.5px solid #DDD9D0; background: #EFECE5; font-size: 12.5px; font-weight: 400; color: #4A4A48; cursor: pointer; transition: all 0.2s cubic-bezier(0.34,1.56,0.64,1); text-align: center; user-select: none; font-family: inherit; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
@@ -455,6 +457,7 @@
     <div class="page" id="p1">
       <p class="question" style="margin-bottom:44px;">Faisons<br>connaissance.</p>
       <input class="neso-input" id="inp-prenom" type="text" placeholder="Votre prénom" autocomplete="given-name" oninput="onPrenom(this.value)" />
+      <p class="patient-context" id="patient-context"></p>
       <div style="padding-top:44px;">
         <button class="btn btn-off" id="cta-prenom" onclick="goScanChoice()">Continuer <div class="ac"><i class="ti ti-arrow-right"></i></div></button>
       </div>
@@ -592,8 +595,17 @@
   const SUPABASE_URL = "https://infjgfupfbylzzuvywpg.supabase.co";
   const SUPABASE_ANON_KEY = "sb_publishable_1aS8qPPmGm76n0zN_L2uIQ_ArUVtHsF";
   const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  const publicSb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+    auth: {
+      persistSession: false,
+      autoRefreshToken: false,
+      detectSessionInUrl: false,
+      storageKey: 'physio-scan-public'
+    }
+  });
 
   const S = { scanType:'', scanTypeLabel:'', prenom:'', zones:[], q1:[], q2:[], q3:'5', q4:[], q5:[], q6:[] };
+  const SCAN_PATIENT_CONTEXT_KEY = 'neso-scan-patient-context';
   const QUESTION_PAGE = { q1: 'p3', q2: 'p4', q4: 'p6', q5: 'p7', q6: 'p8' };
   const SCAN_TYPES = {
     lombaires_sciatique: {
@@ -820,7 +832,107 @@
   let trackingCurrentPage = 'p0';
   let trackingPageStartedAt = Date.now();
   let trackingScanStartedAt = Date.now();
+  let currentPatient = null;
   const PROGRESS_MAP = { p0:0, p1:25, p2:50, p3:62, p4:68, p5:74, p6:80, p7:86, p8:92, p9:100, p10:100 };
+
+  function titleCase(value) {
+    return String(value || '')
+      .trim()
+      .replace(/[._-]+/g, ' ')
+      .split(/\s+/)
+      .filter(Boolean)
+      .map(function(part) {
+        return part.charAt(0).toUpperCase() + part.slice(1).toLowerCase();
+      })
+      .join(' ');
+  }
+
+  function firstNameFromProfile(profile) {
+    const name = titleCase(profile?.firstName || profile?.first_name || profile?.fullName || profile?.full_name || '');
+    return name.split(' ')[0] || '';
+  }
+
+  function applyPatientName(name) {
+    const firstName = titleCase(name).split(' ')[0] || '';
+    if (!firstName || S.prenom) return;
+
+    S.prenom = firstName;
+    const input = document.getElementById('inp-prenom');
+    const cta = document.getElementById('cta-prenom');
+    if (input) input.value = firstName;
+    if (cta) cta.className = 'btn btn-on';
+  }
+
+  function setPatientContext(message) {
+    const node = document.getElementById('patient-context');
+    if (node) node.textContent = message || '';
+  }
+
+  function hydratePatientContextFromStorage() {
+    try {
+      const context = JSON.parse(localStorage.getItem(SCAN_PATIENT_CONTEXT_KEY) || 'null');
+      if (!context || !context.createdAt || Date.now() - context.createdAt > 10 * 60 * 1000) return;
+      applyPatientName(context.firstName || context.fullName);
+      setPatientContext('Prérempli depuis votre espace patient.');
+    } catch (error) {
+      localStorage.removeItem(SCAN_PATIENT_CONTEXT_KEY);
+    }
+  }
+
+  async function hydratePatientSession() {
+    try {
+      const { data } = await sb.auth.getSession();
+      const user = data?.session?.user;
+      if (!user) {
+        currentPatient = null;
+        return;
+      }
+
+      currentPatient = {
+        id: user.id,
+        email: user.email || '',
+        firstName: titleCase(user.user_metadata?.first_name || ''),
+        fullName: titleCase(user.user_metadata?.full_name || user.user_metadata?.name || user.user_metadata?.first_name || '')
+      };
+
+      const profileResult = await sb
+        .from('patient_profiles')
+        .select('email, first_name, full_name')
+        .eq('id', user.id)
+        .maybeSingle();
+
+      if (!profileResult.error && profileResult.data) {
+        currentPatient = {
+          ...currentPatient,
+          email: profileResult.data.email || currentPatient.email,
+          firstName: titleCase(profileResult.data.first_name || currentPatient.firstName),
+          fullName: titleCase(profileResult.data.full_name || currentPatient.fullName)
+        };
+      }
+
+      const displayName = currentPatient.fullName || currentPatient.firstName || currentPatient.email;
+      applyPatientName(firstNameFromProfile(currentPatient));
+      setPatientContext(displayName ? 'Relié au dossier patient de ' + displayName + '.' : 'Relié à votre dossier patient.');
+    } catch (error) {
+      console.warn('Session patient Physio Scan indisponible', error);
+    }
+  }
+
+  function currentPatientPayload() {
+    if (!currentPatient?.id) {
+      return {
+        patient_id: null,
+        patient_email: null,
+        patient_full_name: null
+      };
+    }
+
+    return {
+      patient_id: currentPatient.id,
+      patient_email: currentPatient.email || null,
+      patient_full_name: currentPatient.fullName || currentPatient.firstName || null
+    };
+  }
 
   function renderDots(id) {
     const fill = document.getElementById('progress-fill');
@@ -1043,7 +1155,8 @@
       objectif: arrayAnswerValue('q6'),
       duration_ms: completedDurationMs,
       consent: true,
-      source: 'physio_scan_v2'
+      source: 'physio_scan_v2',
+      ...currentPatientPayload()
     };
 
     let { error } = await sb.from('scans').insert(payload);
@@ -1065,6 +1178,21 @@
 
     if (error && shouldSerializeMultipleAnswers(error)) {
       const fallback = await sb.from('scans').insert(buildMinimalScanPayload(payload, true));
+      error = fallback.error;
+    }
+
+    if (error && currentPatient?.id && isAuthInsertBlocked(error)) {
+      const fallback = await publicSb.from('scans').insert(buildPublicScanPayload(payload, shouldSerializeMultipleAnswers(error)));
+      error = fallback.error;
+    }
+
+    if (error && currentPatient?.id && shouldSerializeMultipleAnswers(error)) {
+      const fallback = await publicSb.from('scans').insert(buildPublicScanPayload(payload, true));
+      error = fallback.error;
+    }
+
+    if (error && currentPatient?.id && (isMissingOptionalScanColumn(error) || isAuthInsertBlocked(error))) {
+      const fallback = await publicSb.from('scans').insert(buildMinimalScanPayload(payload, shouldSerializeMultipleAnswers(error)));
       error = fallback.error;
     }
 
@@ -1095,12 +1223,27 @@
     go('p10');
   }
 
+  function buildPublicScanPayload(payload, serializeMultipleAnswers = false) {
+    const publicPayload = { ...payload };
+
+    delete publicPayload.patient_id;
+    delete publicPayload.patient_email;
+    delete publicPayload.patient_full_name;
+    publicPayload.evolution = payloadAnswer(publicPayload.evolution, serializeMultipleAnswers);
+    publicPayload.objectif = payloadAnswer(publicPayload.objectif, serializeMultipleAnswers);
+
+    return publicPayload;
+  }
+
   function buildCompatibleScanPayload(payload, serializeMultipleAnswers = false) {
     const fallbackPayload = { ...payload };
 
     delete fallbackPayload.scan_type;
     delete fallbackPayload.scan_type_label;
     delete fallbackPayload.source;
+    delete fallbackPayload.patient_id;
+    delete fallbackPayload.patient_email;
+    delete fallbackPayload.patient_full_name;
     fallbackPayload.evolution = payloadAnswer(fallbackPayload.evolution, serializeMultipleAnswers);
     fallbackPayload.objectif = payloadAnswer(fallbackPayload.objectif, serializeMultipleAnswers);
 
@@ -1136,7 +1279,10 @@
       || text.includes('scan_type_label')
       || text.includes('douleur_depuis')
       || text.includes('duration_ms')
-      || text.includes('source');
+      || text.includes('source')
+      || text.includes('patient_id')
+      || text.includes('patient_email')
+      || text.includes('patient_full_name');
   }
 
   function shouldSerializeMultipleAnswers(error) {
@@ -1145,6 +1291,14 @@
       || text.includes('malformed')
       || text.includes('array literal')
       || text.includes('text[]');
+  }
+
+  function isAuthInsertBlocked(error) {
+    const text = scanErrorText(error);
+    return error?.code === '42501'
+      || text.includes('row-level security')
+      || text.includes('violates row-level security')
+      || text.includes('permission denied');
   }
 
   function trackPageEnter(pageId) {
@@ -1322,6 +1476,8 @@
     return String(str).replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[s]));
   }
 
+  hydratePatientContextFromStorage();
+  hydratePatientSession();
   renderDots('p0');
 </script>
 </body>

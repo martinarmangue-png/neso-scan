@@ -1757,7 +1757,7 @@
           <p>Retrouvez aussi les briques existantes : Physio Scan, dashboard praticien et accueil public.</p>
         </div>
         <div class="suite-links">
-          <a class="suite-link" href="scan.html">
+          <a class="suite-link" href="scan.html" data-scan-link>
             <span class="suite-link-icon">🩺</span>
             <div class="suite-link-copy"><strong>Physio Scan</strong><span>Questionnaire avant rendez-vous</span></div>
             <span class="suite-link-arrow">›</span>
@@ -2055,7 +2055,7 @@
               <div class="profile-completion-track" style="--value:20%;" data-profile-completion-bar><span></span></div>
             </div>
             <div class="patient-actions">
-              <a class="patient-action" href="scan.html">Physio Scan</a>
+              <a class="patient-action" href="scan.html" data-scan-link>Physio Scan</a>
               <button class="patient-action" type="button" data-logout>Se déconnecter</button>
             </div>
           </article>
@@ -2179,7 +2179,7 @@
             Accès rapide aux expériences Neso Santé : compte patient, Physio Scan et dashboard praticien.
           </p>
 
-          <a class="card explore-card" href="scan.html">
+          <a class="card explore-card" href="scan.html" data-scan-link>
             <div class="explore-icon">🩺</div>
             <div>
               <div class="row-title">Physio Scan</div>
@@ -2283,6 +2283,8 @@
     const docPreviewIcon = document.getElementById('docPreviewIcon');
     const docPreviewName = document.getElementById('docPreviewName');
     const docPreviewMeta = document.getElementById('docPreviewMeta');
+    const scanLinks = document.querySelectorAll('[data-scan-link]');
+    const SCAN_PATIENT_CONTEXT_KEY = 'neso-scan-patient-context';
     const storedPain = Number(localStorage.getItem('neso-v2-pain') || 3);
     const validTabs = ['home', 'suivi', 'exercices', 'dossier', 'explore'];
     let currentPain = Number.isFinite(storedPain) ? storedPain : 3;
@@ -2374,6 +2376,33 @@
       localStorage.setItem(localProfileKey(userId), JSON.stringify(extras));
     }
 
+    function scanUrlForCurrentPatient() {
+      return currentUser ? 'scan.html?patient=1' : 'scan.html';
+    }
+
+    function syncScanLinks() {
+      scanLinks.forEach(function(link) {
+        link.setAttribute('href', scanUrlForCurrentPatient());
+      });
+    }
+
+    function prepareScanContext() {
+      if (!currentUser || !currentProfile) {
+        localStorage.removeItem(SCAN_PATIENT_CONTEXT_KEY);
+        return;
+      }
+
+      localStorage.setItem(SCAN_PATIENT_CONTEXT_KEY, JSON.stringify({
+        patientId: currentUser.id,
+        email: currentUser.email || currentProfile.email || '',
+        firstName: currentProfile.firstName || '',
+        fullName: currentProfile.fullName || '',
+        conditionLabel: currentProfile.conditionLabel || '',
+        recoveryGoal: currentProfile.recoveryGoal || '',
+        createdAt: Date.now()
+      }));
+    }
+
     function profileCompletion(profile) {
       const fields = [
         profile?.fullName,
@@ -2461,6 +2490,8 @@
     }
 
     function applySession(profile) {
+      syncScanLinks();
+
       document.querySelectorAll('[data-user-first-name]').forEach(function(node) {
         node.textContent = profile.firstName;
       });
@@ -2667,6 +2698,8 @@
       currentSession = null;
       currentUser = null;
       currentProfile = null;
+      localStorage.removeItem(SCAN_PATIENT_CONTEXT_KEY);
+      syncScanLinks();
       document.body.classList.remove('is-authenticated');
       renderDocuments([]);
       if (location.hash) {
@@ -3167,6 +3200,10 @@
       button.addEventListener('click', logout);
     });
 
+    scanLinks.forEach(function(link) {
+      link.addEventListener('click', prepareScanContext);
+    });
+
     attachExerciseHandlers();
     renderPainPicker();
     setPain(currentPain);
@@ -3174,6 +3211,7 @@
     renderHistory();
     setAuthMode('signin');
     setDocumentCategory('irm');
+    syncScanLinks();
 
     sb.auth.getSession().then(async function(result) {
       const session = result.data.session;

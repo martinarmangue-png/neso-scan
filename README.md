@@ -58,5 +58,14 @@ Pour activer les statuts du dashboard (`Nouveau`, `Vu`, `À rappeler`, `Pris en 
 
 Cette migration ajoute `practitioner_status` et `practitioner_status_updated_at` à la table `scans`.
 
+## Migration liaison patients / scans
+Pour rattacher les nouveaux Physio Scans aux comptes patients Supabase Auth, exécuter ensuite :
+
+```sql
+-- migrations/20260609_link_scans_to_patients.sql
+```
+
+Cette migration ajoute `patient_id`, `patient_email` et `patient_full_name` à `scans`, puis remplace les anciennes policies trop larges par des règles où un patient connecté lit et crée uniquement ses propres scans. Le dashboard praticien continue de passer par l’API admin sécurisée.
+
 ## Déploiement Vercel
 La page racine `index.html` sert de porte d'entrée. Les patients peuvent aller vers Physio Scan (`scan.html`) ou l'espace patient (`app-v2.html`), et les praticiens vers `dashboard-v2.html`.
