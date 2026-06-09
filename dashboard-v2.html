@@ -393,6 +393,21 @@
       color: var(--danger);
     }
 
+    .status.seen {
+      background: #eaf1ff;
+      color: var(--blue);
+    }
+
+    .status.callback {
+      background: var(--orange-soft);
+      color: var(--danger);
+    }
+
+    .status.handled {
+      background: var(--green-soft);
+      color: var(--green);
+    }
+
     .detail {
       padding: 32px;
     }
@@ -563,6 +578,45 @@
     .priority-tag.red {
       background: #fff0f0;
       color: var(--danger);
+    }
+
+    .status-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 18px 0 0;
+    }
+
+    .status-button {
+      border: 1px solid var(--line);
+      background: white;
+      color: var(--muted);
+      border-radius: 999px;
+      padding: 9px 12px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .status-button:hover,
+    .status-button.active {
+      background: var(--text);
+      color: white;
+      border-color: var(--text);
+    }
+
+    .status-button.loading {
+      opacity: 0.58;
+      pointer-events: none;
+    }
+
+    .status-error {
+      display: none;
+      margin-top: 10px;
+      color: var(--danger);
+      font-size: 13px;
+      line-height: 1.45;
     }
 
     .profile-mini {
@@ -988,6 +1042,13 @@
             <div>
               <h1 class="patient-title" id="patientName">Vianney</h1>
               <div class="small-muted" id="patientDate">Scan reçu le 14 mai à 18:42 · durée 1m42</div>
+              <div class="status-controls" id="statusControls" aria-label="Statut praticien">
+                <button class="status-button" type="button" data-status="new" onclick="updateScanStatus('new')">Nouveau</button>
+                <button class="status-button" type="button" data-status="seen" onclick="updateScanStatus('seen')">Vu</button>
+                <button class="status-button" type="button" data-status="callback" onclick="updateScanStatus('callback')">À rappeler</button>
+                <button class="status-button" type="button" data-status="handled" onclick="updateScanStatus('handled')">Pris en charge</button>
+              </div>
+              <div class="status-error" id="statusError"></div>
             </div>
 
             <div class="score-box">
@@ -1232,6 +1293,29 @@
       }
     };
 
+    const PRACTITIONER_STATUSES = {
+      new: {
+        label: 'Nouveau',
+        className: 'completed',
+        action: 'Lire le scan et décider de la prochaine action.'
+      },
+      seen: {
+        label: 'Vu',
+        className: 'seen',
+        action: 'Scan lu : préparer la séance avec les réponses clés.'
+      },
+      callback: {
+        label: 'À rappeler',
+        className: 'callback',
+        action: 'Recontacter le patient avant la séance.'
+      },
+      handled: {
+        label: 'Pris en charge',
+        className: 'handled',
+        action: 'Scan traité : garder les informations pour le suivi.'
+      }
+    };
+
     async function loadScans() {
       try {
         const response = await fetch(`${ADMIN_API_BASE}/scans`, {
@@ -1355,6 +1439,23 @@
     function scanPriority(scan) {
       const pain = Number(scan.score_douleur);
       const completed = isCompleted(scan);
+      const status = practitionerStatus(scan);
+
+      if (status === 'callback') {
+        return {
+          level: 'high',
+          label: 'À rappeler',
+          action: PRACTITIONER_STATUSES.callback.action
+        };
+      }
+
+      if (status === 'handled') {
+        return {
+          level: 'normal',
+          label: 'Pris en charge',
+          action: PRACTITIONER_STATUSES.handled.action
+        };
+      }
 
       if (Number.isFinite(pain) && pain >= 7) {
         return {
@@ -1380,11 +1481,27 @@
         };
       }
 
+      if (status === 'new') {
+        return {
+          level: 'medium',
+          label: 'Nouveau',
+          action: PRACTITIONER_STATUSES.new.action
+        };
+      }
+
       return {
         level: 'normal',
-        label: 'Complété',
-        action: 'Préparer la séance avec les éléments du scan.'
+        label: status === 'seen' ? 'Vu' : 'Nouveau',
+        action: PRACTITIONER_STATUSES[status]?.action || 'Préparer la séance avec les éléments du scan.'
       };
+    }
+
+    function practitionerStatus(scan) {
+      return PRACTITIONER_STATUSES[scan?.practitioner_status] ? scan.practitioner_status : 'new';
+    }
+
+    function practitionerStatusLabel(scan) {
+      return PRACTITIONER_STATUSES[practitionerStatus(scan)].label;
     }
 
     function scanTypeLabel(scan) {
@@ -1613,7 +1730,7 @@
             <button class="priority-item" type="button" onclick="selectScan(${item.index})">
               <div>
                 <strong>${esc(scan.prenom || 'Patient')} · ${esc(item.priority.label)}</strong>
-                <span>${esc(scanTypeLabel(scan))} · ${esc(fmtDate(scan.created_at))}</span>
+                <span>${esc(scanTypeLabel(scan))} · ${esc(practitionerStatusLabel(scan))} · ${esc(fmtDate(scan.created_at))}</span>
               </div>
               <div class="priority-tag">${esc(scan.score_douleur ?? '-')} / 10</div>
             </button>
@@ -1641,17 +1758,20 @@
         const pain = scan.score_douleur ?? '-';
         const completed = isCompleted(scan);
         const priority = scanPriority(scan);
+        const status = practitionerStatus(scan);
+        const statusConfig = PRACTITIONER_STATUSES[status];
 
         return `
           <div class="scan-row ${realIndex === activeScanIndex ? 'active' : ''}" onclick="selectScan(${realIndex})">
             <div class="avatar">${esc(name.charAt(0).toUpperCase())}</div>
             <div>
               <div class="scan-name">${esc(name)}</div>
-              <div class="scan-meta">${esc(scanType)} · ${fmtDate(scan.created_at)}<br />${completed ? 'Scan complété' : 'Scan incomplet'}</div>
+              <div class="scan-meta">${esc(scanType)} · ${fmtDate(scan.created_at)}<br />${completed ? 'Scan complété' : 'Scan incomplet'} · ${esc(statusConfig.label)}</div>
             </div>
             <div class="scan-actions">
               <div class="scan-side">
                 <div class="pain">${esc(pain)}</div>
+                <div class="status ${statusConfig.className}">${esc(statusConfig.label)}</div>
                 <div class="status ${priority.level === 'normal' ? (completed ? 'completed' : 'abandoned') : 'abandoned'}">${esc(priority.label)}</div>
               </div>
 
@@ -1692,6 +1812,7 @@
       document.getElementById('profileCondition').textContent = profile?.condition_label || scanTypeLabel(scan) || 'À préciser';
       document.getElementById('profileGoal').textContent = profile?.recovery_goal || arrayText(scan.objectif) || 'À définir';
       document.getElementById('patientNextAction').textContent = nextAction;
+      renderStatusControls(scan);
       renderPatientReading(scan, priority, documents);
       renderDocumentItems(document.getElementById('patientDocuments'), documents, 'Aucun document relié à ce patient.');
       document.getElementById('painBar').style.width = Math.min(Math.max(safePain * 10, 0), 100) + '%';
@@ -1701,6 +1822,78 @@
         setTimeout(function() {
           document.querySelector('.detail')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }, 80);
+      }
+    }
+
+    function renderStatusControls(scan) {
+      const currentStatus = practitionerStatus(scan);
+      const error = document.getElementById('statusError');
+      if (error) {
+        error.style.display = 'none';
+        error.textContent = '';
+      }
+
+      document.querySelectorAll('.status-button').forEach(function(button) {
+        button.classList.toggle('active', button.dataset.status === currentStatus);
+        button.classList.remove('loading');
+      });
+    }
+
+    async function updateScanStatus(status) {
+      const scan = scans[activeScanIndex];
+      const scanId = scan?.id || scan?.identifiant;
+      const error = document.getElementById('statusError');
+
+      if (!scanId || !PRACTITIONER_STATUSES[status]) return;
+
+      if (error) {
+        error.style.display = 'none';
+        error.textContent = '';
+      }
+
+      document.querySelectorAll('.status-button').forEach(function(button) {
+        button.classList.toggle('loading', button.dataset.status === status);
+      });
+
+      try {
+        const response = await fetch(`${ADMIN_API_BASE}/scans/${encodeURIComponent(scanId)}`, {
+          method: 'PATCH',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'x-admin-password': getAdminPassword()
+          },
+          credentials: 'same-origin',
+          body: JSON.stringify({
+            practitioner_status: status
+          })
+        });
+
+        const payload = await response.json().catch(function() {
+          return {};
+        });
+
+        if (!response.ok) {
+          throw new Error(payload.error || payload.details?.message || 'Statut non mis à jour.');
+        }
+
+        scans[activeScanIndex] = {
+          ...scan,
+          ...(payload.scan || {}),
+          practitioner_status: status
+        };
+
+        renderScans();
+        renderKpis();
+        renderInbox();
+        selectScan(activeScanIndex, false);
+      } catch (updateError) {
+        console.error(updateError);
+        renderStatusControls(scan);
+        if (error) {
+          error.textContent = 'Impossible de modifier le statut. Vérifie que la migration statuts praticien est appliquée dans Supabase.';
+          error.style.display = 'block';
+        }
       }
     }
 

@@ -49,5 +49,14 @@ Pour stocker les objectifs et évolutions en vrais tableaux Supabase, exécuter 
 
 La migration est idempotente : elle ajoute les colonnes manquantes, convertit les anciennes valeurs texte de `evolution` et `objectif` en `text[]`, puis garde les règles RLS existantes.
 
+## Migration statuts praticien
+Pour activer les statuts du dashboard (`Nouveau`, `Vu`, `À rappeler`, `Pris en charge`), exécuter ensuite :
+
+```sql
+-- migrations/20260609_practitioner_scan_status.sql
+```
+
+Cette migration ajoute `practitioner_status` et `practitioner_status_updated_at` à la table `scans`.
+
 ## Déploiement Vercel
 La page racine `index.html` sert de porte d'entrée. Les patients peuvent aller vers Physio Scan (`scan.html`) ou l'espace patient (`app-v2.html`), et les praticiens vers `dashboard-v2.html`.

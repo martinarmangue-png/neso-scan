@@ -19,7 +19,11 @@ create table if not exists public.scans (
   objectif text[] default '{}',
   duration_ms bigint,
   consent boolean default false,
-  source text default 'neso_scan_v1'
+  source text default 'neso_scan_v1',
+  practitioner_status text not null default 'new',
+  practitioner_status_updated_at timestamptz,
+  constraint scans_practitioner_status_check
+    check (practitioner_status in ('new', 'seen', 'callback', 'handled'))
 );
 
 alter table public.scans add column if not exists scan_type text;
@@ -29,6 +33,8 @@ alter table public.scans add column if not exists duration_ms bigint;
 alter table public.scans add column if not exists source text default 'neso_scan_v1';
 alter table public.scans add column if not exists evolution text[] default '{}';
 alter table public.scans add column if not exists objectif text[] default '{}';
+alter table public.scans add column if not exists practitioner_status text not null default 'new';
+alter table public.scans add column if not exists practitioner_status_updated_at timestamptz;
 
 do $$
 begin
@@ -46,11 +52,7 @@ begin
       using (
         case
           when evolution is null or btrim(evolution) = '' then '{}'::text[]
-          else array(
-            select btrim(answer)
-            from unnest(string_to_array(evolution, ',')) as value(answer)
-            where btrim(answer) <> ''
-          )
+          else regexp_split_to_array(btrim(evolution), '[[:space:]]*,[[:space:]]*')
         end
       );
   end if;
@@ -74,11 +76,7 @@ begin
       using (
         case
           when objectif is null or btrim(objectif) = '' then '{}'::text[]
-          else array(
-            select btrim(answer)
-            from unnest(string_to_array(objectif, ',')) as value(answer)
-            where btrim(answer) <> ''
-          )
+          else regexp_split_to_array(btrim(objectif), '[[:space:]]*,[[:space:]]*')
         end
       );
   end if;
@@ -88,6 +86,28 @@ end $$;
 
 create index if not exists scans_scan_type_created_idx
 on public.scans (scan_type, created_at desc);
+
+do $$
+begin
+  if not exists (
+    select 1
+    from pg_constraint
+    where conname = 'scans_practitioner_status_check'
+      and conrelid = 'public.scans'::regclass
+  ) then
+    alter table public.scans
+    add constraint scans_practitioner_status_check
+    check (practitioner_status in ('new', 'seen', 'callback', 'handled'));
+  end if;
+end $$;
+
+update public.scans
+set practitioner_status = 'new'
+where practitioner_status is null
+   or practitioner_status not in ('new', 'seen', 'callback', 'handled');
+
+create index if not exists scans_practitioner_status_created_idx
+on public.scans (practitioner_status, created_at desc);
 
 alter table public.scans enable row level security;
 

@@ -27,11 +27,7 @@ begin
       using (
         case
           when evolution is null or btrim(evolution) = '' then '{}'::text[]
-          else array(
-            select btrim(answer)
-            from unnest(string_to_array(evolution, ',')) as value(answer)
-            where btrim(answer) <> ''
-          )
+          else regexp_split_to_array(btrim(evolution), '[[:space:]]*,[[:space:]]*')
         end
       );
   end if;
@@ -55,11 +51,7 @@ begin
       using (
         case
           when objectif is null or btrim(objectif) = '' then '{}'::text[]
-          else array(
-            select btrim(answer)
-            from unnest(string_to_array(objectif, ',')) as value(answer)
-            where btrim(answer) <> ''
-          )
+          else regexp_split_to_array(btrim(objectif), '[[:space:]]*,[[:space:]]*')
         end
       );
   end if;
