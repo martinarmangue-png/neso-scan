@@ -1008,6 +1008,202 @@
       color: var(--warning);
     }
 
+    .scan-history-card {
+      display: grid;
+      gap: 16px;
+    }
+
+    .scan-history-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .scan-refresh {
+      min-height: 40px;
+      padding: 0 13px;
+      border-radius: 999px;
+      background: #edf4ff;
+      color: var(--blue-bright);
+      font-size: 13px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .scan-mini-stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .scan-mini-stat {
+      min-width: 0;
+      padding: 12px;
+      border-radius: 16px;
+      background: #f6f9fd;
+      border: 1px solid #e4ebf5;
+    }
+
+    .scan-mini-stat span {
+      display: block;
+      color: #7c8aa1;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+    }
+
+    .scan-mini-stat strong {
+      display: block;
+      color: var(--ink);
+      font-size: 15px;
+      line-height: 1.2;
+      font-weight: 800;
+      overflow-wrap: anywhere;
+    }
+
+    .patient-scans-list {
+      display: grid;
+      gap: 11px;
+    }
+
+    .patient-scan-item {
+      border: 1px solid #e4ebf5;
+      border-radius: 20px;
+      background: #f8fbff;
+      overflow: hidden;
+    }
+
+    .patient-scan-item summary {
+      list-style: none;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: center;
+      padding: 15px;
+      cursor: pointer;
+    }
+
+    .patient-scan-item summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .scan-main {
+      min-width: 0;
+    }
+
+    .scan-title-line {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .scan-title {
+      color: var(--ink);
+      font-size: 16px;
+      line-height: 1.2;
+      font-weight: 800;
+      overflow-wrap: anywhere;
+    }
+
+    .scan-status {
+      min-height: 25px;
+      display: inline-flex;
+      align-items: center;
+      padding: 0 10px;
+      border-radius: 999px;
+      background: #edf4ff;
+      color: var(--blue-bright);
+      font-size: 11px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .scan-status.seen {
+      background: #eef8f5;
+      color: #118567;
+    }
+
+    .scan-status.callback {
+      background: #fff6df;
+      color: #b46c00;
+    }
+
+    .scan-status.handled {
+      background: #eaf8ef;
+      color: #25835b;
+    }
+
+    .scan-score-pill {
+      min-width: 62px;
+      min-height: 46px;
+      padding: 0 12px;
+      border-radius: 16px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #1f3f79 0%, #088f6a 100%);
+      color: #fff;
+      font-size: 17px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .scan-details {
+      display: grid;
+      gap: 12px;
+      padding: 0 15px 15px;
+      border-top: 1px solid #e6edf6;
+    }
+
+    .scan-detail-row {
+      display: grid;
+      gap: 7px;
+      padding-top: 12px;
+    }
+
+    .scan-detail-label {
+      color: #7c8aa1;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .scan-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .scan-answer-tag {
+      min-height: 28px;
+      display: inline-flex;
+      align-items: center;
+      padding: 0 10px;
+      border-radius: 999px;
+      background: #edf2f8;
+      color: #54637a;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .scan-action-link {
+      min-height: 48px;
+      border-radius: 16px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 16px;
+      background: #edf4ff;
+      color: var(--blue-bright);
+      font-size: 14px;
+      font-weight: 800;
+    }
+
     .exercise-card {
       display: grid;
       grid-template-columns: 50px minmax(0, 1fr) 46px;
@@ -1520,6 +1716,14 @@
         grid-template-columns: 1fr;
       }
 
+      .scan-history-head {
+        display: grid;
+      }
+
+      .scan-mini-stats {
+        grid-template-columns: 1fr;
+      }
+
       .tab {
         font-size: 11px;
       }
@@ -1995,6 +2199,21 @@
             <button class="primary-button" type="button" id="savePain">Enregistrer · <span class="pain-score-inline">3/10</span></button>
           </article>
 
+          <article class="card scan-history-card" aria-labelledby="patient-scans-title">
+            <div class="scan-history-head">
+              <div>
+                <h2 class="card-title" id="patient-scans-title">Mes Physio Scans</h2>
+                <div class="row-meta" id="patientScansIntro">Historique sécurisé lié à votre compte patient.</div>
+              </div>
+              <button class="scan-refresh" type="button" id="refreshPatientScans">Rafraîchir</button>
+            </div>
+            <div class="scan-mini-stats is-hidden" id="patientScansStats" aria-label="Résumé des Physio Scans"></div>
+            <div class="patient-scans-list" id="patientScansList" role="list">
+              <div class="empty-docs">Chargement des Physio Scans...</div>
+            </div>
+            <a class="scan-action-link" href="scan.html" data-scan-link>Faire un nouveau Physio Scan</a>
+          </article>
+
           <article class="card">
             <h2 class="card-title">📋 Historique</h2>
             <div id="historyList" style="margin-top:18px;"></div>
@@ -2312,6 +2531,10 @@
     const docPreviewIcon = document.getElementById('docPreviewIcon');
     const docPreviewName = document.getElementById('docPreviewName');
     const docPreviewMeta = document.getElementById('docPreviewMeta');
+    const patientScansList = document.getElementById('patientScansList');
+    const patientScansStats = document.getElementById('patientScansStats');
+    const patientScansIntro = document.getElementById('patientScansIntro');
+    const refreshPatientScans = document.getElementById('refreshPatientScans');
     const scanLinks = document.querySelectorAll('[data-scan-link]');
     const SCAN_PATIENT_CONTEXT_KEY = 'neso-scan-patient-context';
     const storedPain = Number(localStorage.getItem('neso-v2-pain') || 3);
@@ -2322,6 +2545,7 @@
     let currentUser = null;
     let currentProfile = null;
     let selectedDocCategory = 'irm';
+    let patientScans = [];
 
     const painHistory = [
       { label: "Auj.", score: currentPain },
@@ -2336,6 +2560,13 @@
       backStrength: true,
       core: false,
       rotation: false
+    };
+
+    const PATIENT_SCAN_STATUSES = {
+      new: { label: 'Envoyé', className: 'new' },
+      seen: { label: 'Vu par le kiné', className: 'seen' },
+      callback: { label: 'À rappeler', className: 'callback' },
+      handled: { label: 'Pris en charge', className: 'handled' }
     };
 
     let exerciseState = loadExerciseState();
@@ -2720,7 +2951,10 @@
       applySession(currentProfile);
       document.body.classList.add('is-authenticated');
       setTab(restoreTab ? location.hash.replace('#', '') || 'home' : 'home');
-      await loadDocuments();
+      await Promise.all([
+        loadDocuments(),
+        loadPatientScans()
+      ]);
     }
 
     function showLogin() {
@@ -2731,6 +2965,8 @@
       syncScanLinks();
       document.body.classList.remove('is-authenticated');
       renderDocuments([]);
+      patientScans = [];
+      renderPatientScans([], null);
       if (location.hash) {
         window.history.replaceState(null, '', location.pathname || 'app-v2.html');
       }
@@ -2967,11 +3203,197 @@
       }).join('');
     }
 
+    function answerList(value) {
+      if (Array.isArray(value)) {
+        return value.map(function(item) {
+          return String(item || '').trim();
+        }).filter(Boolean);
+      }
+
+      if (value === null || value === undefined) return [];
+
+      const raw = String(value).trim();
+      if (!raw) return [];
+
+      if (raw.charAt(0) === '[') {
+        try {
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed)) return answerList(parsed);
+        } catch (error) {}
+      }
+
+      return raw.split(/\s*,\s*/).map(function(item) {
+        return item.trim();
+      }).filter(Boolean);
+    }
+
+    function firstAnswer(value, fallback) {
+      return answerList(value)[0] || fallback;
+    }
+
+    function scanStatusInfo(scan) {
+      return PATIENT_SCAN_STATUSES[scan?.practitioner_status] || PATIENT_SCAN_STATUSES.new;
+    }
+
+    function scanTypeLabel(scan) {
+      const knownTypes = {
+        lombaires_sciatique: 'Lombaires / Sciatique',
+        cervicales: 'Cervicales',
+        epaule: 'Épaule',
+        genou: 'Genou',
+        cheville_entorse: 'Cheville / Entorse',
+        post_operatoire: 'Rééducation post-opératoire'
+      };
+
+      return scan?.scan_type_label
+        || knownTypes[scan?.scan_type]
+        || firstAnswer(scan?.zones, 'Physio Scan');
+    }
+
+    function renderScanTags(value, emptyText) {
+      const values = answerList(value);
+      if (!values.length) {
+        return '<div class="row-meta" style="margin-top:0;">' + escapeHtml(emptyText || 'Non renseigné') + '</div>';
+      }
+
+      return '<div class="scan-tags">' + values.map(function(item) {
+        return '<span class="scan-answer-tag">' + escapeHtml(item) + '</span>';
+      }).join('') + '</div>';
+    }
+
+    function scanScoreText(scan) {
+      const score = Number(scan?.score_douleur);
+      return Number.isFinite(score) ? score + '/10' : '-/10';
+    }
+
+    function renderPatientScans(scans, state) {
+      if (!patientScansList) return;
+
+      const loading = state === 'loading';
+      const error = state === 'error';
+      const safeScans = Array.isArray(scans) ? scans : [];
+
+      if (patientScansIntro) {
+        patientScansIntro.textContent = loading
+          ? 'Chargement de vos derniers scans...'
+          : safeScans.length
+            ? safeScans.length + ' scan' + (safeScans.length > 1 ? 's' : '') + ' lié' + (safeScans.length > 1 ? 's' : '') + ' à votre compte.'
+            : 'Vos prochains scans apparaîtront ici après envoi au praticien.';
+      }
+
+      if (refreshPatientScans) {
+        refreshPatientScans.disabled = loading;
+        refreshPatientScans.textContent = loading ? 'Chargement...' : 'Rafraîchir';
+      }
+
+      if (patientScansStats) {
+        patientScansStats.classList.toggle('is-hidden', !safeScans.length);
+        if (safeScans.length) {
+          const latest = safeScans[0];
+          patientScansStats.innerHTML = [
+            { label: 'Dernier scan', value: scanTypeLabel(latest) },
+            { label: 'Douleur', value: scanScoreText(latest) },
+            { label: 'Statut', value: scanStatusInfo(latest).label }
+          ].map(function(item) {
+            return '<div class="scan-mini-stat"><span>' + escapeHtml(item.label) + '</span><strong>' + escapeHtml(item.value) + '</strong></div>';
+          }).join('');
+        } else {
+          patientScansStats.innerHTML = '';
+        }
+      }
+
+      if (loading) {
+        patientScansList.innerHTML = '<div class="empty-docs">Chargement des Physio Scans...</div>';
+        return;
+      }
+
+      if (error) {
+        patientScansList.innerHTML = '<div class="empty-docs">Impossible de charger vos scans pour le moment.</div>';
+        return;
+      }
+
+      if (!safeScans.length) {
+        patientScansList.innerHTML = '<div class="empty-docs">Aucun Physio Scan rattaché à ce compte pour le moment.</div>';
+        return;
+      }
+
+      patientScansList.innerHTML = safeScans.map(function(scan) {
+        const status = scanStatusInfo(scan);
+        const date = scan.created_at ? formatDateTime(scan.created_at) : 'Date non renseignée';
+        const statusDate = scan.practitioner_status_updated_at
+          ? ' · mis à jour le ' + formatDate(scan.practitioner_status_updated_at)
+          : '';
+
+        return (
+          '<details class="patient-scan-item" role="listitem">' +
+            '<summary>' +
+              '<div class="scan-main">' +
+                '<div class="scan-title-line">' +
+                  '<span class="scan-title">' + escapeHtml(scanTypeLabel(scan)) + '</span>' +
+                  '<span class="scan-status ' + escapeHtml(status.className) + '">' + escapeHtml(status.label) + '</span>' +
+                '</div>' +
+                '<div class="row-meta">' + escapeHtml(date + statusDate) + '</div>' +
+              '</div>' +
+              '<div class="scan-score-pill">' + escapeHtml(scanScoreText(scan)) + '</div>' +
+            '</summary>' +
+            '<div class="scan-details">' +
+              '<div class="scan-detail-row"><div class="scan-detail-label">Depuis quand</div>' + renderScanTags(scan.douleur_depuis, 'Durée non renseignée') + '</div>' +
+              '<div class="scan-detail-row"><div class="scan-detail-label">Réponse spécifique</div>' + renderScanTags(scan.type_douleur, 'Non renseigné') + '</div>' +
+              '<div class="scan-detail-row"><div class="scan-detail-label">Gêne principale</div>' + renderScanTags(scan.gene, 'Non renseigné') + '</div>' +
+              '<div class="scan-detail-row"><div class="scan-detail-label">Soulagement / évolution</div>' + renderScanTags(scan.evolution, 'Non renseigné') + '</div>' +
+              '<div class="scan-detail-row"><div class="scan-detail-label">Objectifs</div>' + renderScanTags(scan.objectif, 'Non renseigné') + '</div>' +
+            '</div>' +
+          '</details>'
+        );
+      }).join('');
+    }
+
+    async function loadPatientScans() {
+      if (!currentUser) {
+        patientScans = [];
+        renderPatientScans([], null);
+        return;
+      }
+
+      renderPatientScans(patientScans, 'loading');
+
+      const { data, error } = await sb
+        .from('scans')
+        .select('id, created_at, scan_type, scan_type_label, zones, douleur_depuis, type_douleur, score_douleur, gene, evolution, objectif, practitioner_status, practitioner_status_updated_at')
+        .eq('patient_id', currentUser.id)
+        .order('created_at', { ascending: false })
+        .limit(10);
+
+      if (error) {
+        console.warn('Physio Scans patient indisponibles', error);
+        renderPatientScans([], 'error');
+        return;
+      }
+
+      patientScans = data || [];
+      renderPatientScans(patientScans, null);
+
+      const latestPain = Number(patientScans[0]?.score_douleur);
+      if (Number.isFinite(latestPain)) {
+        setPain(latestPain);
+      }
+    }
+
     function formatDate(value) {
       return new Intl.DateTimeFormat('fr-FR', {
         day: '2-digit',
         month: 'short',
         year: 'numeric'
+      }).format(new Date(value));
+    }
+
+    function formatDateTime(value) {
+      return new Intl.DateTimeFormat('fr-FR', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
       }).format(new Date(value));
     }
 
@@ -3199,6 +3621,10 @@
     document.getElementById('savePain')?.addEventListener('click', function() {
       setPain(currentPain);
       showToast('Douleur enregistrée.');
+    });
+
+    refreshPatientScans?.addEventListener('click', function() {
+      loadPatientScans();
     });
 
     loginForm?.addEventListener('submit', handleLogin);
