@@ -67,5 +67,22 @@ Pour rattacher les nouveaux Physio Scans aux comptes patients Supabase Auth, ex�
 
 Cette migration ajoute `patient_id`, `patient_email` et `patient_full_name` à `scans`, puis remplace les anciennes policies trop larges par des règles où un patient connecté lit et crée uniquement ses propres scans. Le dashboard praticien continue de passer par l’API admin sécurisée.
 
+## Finalisation accès patient / RLS
+Pour verrouiller le socle compte patient + historique des scans, exécuter ensuite :
+
+```sql
+-- migrations/20260610_patient_access_grants_and_tracking_lockdown.sql
+```
+
+Cette migration ajoute les `GRANT` explicites nécessaires à l’API Data Supabase, tout en gardant la RLS comme barrière de sécurité. Elle ferme aussi la lecture directe de `scan_events` aux patients connectés : le dashboard praticien continue de lire ces événements via l’API admin sécurisée.
+
+Tests à faire après exécution :
+- Créer ou connecter un compte patient dans `https://app.nesosante.com/`.
+- Lancer un Physio Scan depuis l’app patient, puis l’envoyer au kiné.
+- Revenir dans l’onglet `Suivi` : le scan doit apparaître dans `Mes Physio Scans`.
+- Se connecter avec un autre compte patient : ce second compte ne doit pas voir le scan du premier.
+- Ouvrir le dashboard praticien : le scan doit rester visible via l’API admin.
+- Vérifier qu’un scan public depuis `https://scan.nesosante.com/` fonctionne encore, mais n’apparaît pas dans un historique patient.
+
 ## Déploiement Vercel
 La page racine `index.html` sert de porte d'entrée. Les patients peuvent aller vers Physio Scan (`scan.html`) ou l'espace patient (`app-v2.html`), et les praticiens vers `dashboard-v2.html`.

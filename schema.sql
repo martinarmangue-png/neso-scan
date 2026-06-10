@@ -193,11 +193,6 @@ to anon
 with check (source = 'physio_scan_v1');
 
 drop policy if exists "Authenticated select scan events" on public.scan_events;
-create policy "Authenticated select scan events"
-on public.scan_events
-for select
-to authenticated
-using (true);
 
 -- NESO App V2 - comptes patients et documents sécurisés
 
@@ -383,3 +378,20 @@ using (
   bucket_id = 'patient-documents'
   and (storage.foldername(name))[1] = auth.uid()::text
 );
+
+-- Droits explicites pour l'API Data Supabase.
+-- Les GRANT exposent les operations necessaires, la RLS limite les lignes accessibles.
+grant usage on schema public to anon, authenticated;
+
+revoke all on table public.scans from anon, authenticated;
+grant insert on table public.scans to anon;
+grant select, insert, delete on table public.scans to authenticated;
+
+revoke all on table public.scan_events from anon, authenticated;
+grant insert on table public.scan_events to anon;
+
+revoke all on table public.patient_profiles from anon, authenticated;
+grant select, insert, update on table public.patient_profiles to authenticated;
+
+revoke all on table public.patient_documents from anon, authenticated;
+grant select, insert, update, delete on table public.patient_documents to authenticated;
