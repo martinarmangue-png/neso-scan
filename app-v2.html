@@ -1842,16 +1842,16 @@
 
       .auth-panel {
         width: 100%;
-        max-width: 1040px;
-        min-height: min(720px, calc(100svh - 48px));
+        max-width: none;
+        min-height: calc(100svh - 32px);
         display: grid;
-        grid-template-columns: minmax(0, 1fr) 460px;
+        grid-template-columns: minmax(0, 1fr) minmax(420px, 500px);
         border-radius: 32px;
       }
 
       .auth-hero {
         min-height: 100%;
-        padding: 46px;
+        padding: clamp(42px, 5vw, 76px);
         display: flex;
         flex-direction: column;
         justify-content: space-between;
@@ -1862,8 +1862,15 @@
         border: 0;
         border-radius: 0;
         box-shadow: none;
-        align-self: center;
-        padding: 40px;
+        align-self: stretch;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: clamp(40px, 4vw, 64px);
+      }
+
+      .suite-card {
+        display: none;
       }
 
       .app-shell {
