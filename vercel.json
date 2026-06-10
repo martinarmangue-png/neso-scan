@@ -1,17 +1,6 @@
 {
   "redirects": [
     {
-      "source": "/:path*",
-      "has": [
-        {
-          "type": "host",
-          "value": "www.nesosante.com"
-        }
-      ],
-      "destination": "https://nesosante.com/:path*",
-      "permanent": true
-    },
-    {
       "source": "/",
       "has": [
         {
