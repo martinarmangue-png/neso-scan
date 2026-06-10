@@ -8,7 +8,18 @@
           "value": "scan.nesosante.com"
         }
       ],
-      "destination": "/scan.html",
+      "destination": "https://www.nesosante.com/scan.html",
+      "permanent": false
+    },
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "scan.nesosante.com"
+        }
+      ],
+      "destination": "https://www.nesosante.com/:path*",
       "permanent": false
     },
     {
@@ -19,7 +30,18 @@
           "value": "app.nesosante.com"
         }
       ],
-      "destination": "/app-v2.html",
+      "destination": "https://www.nesosante.com/app-v2.html",
+      "permanent": false
+    },
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "app.nesosante.com"
+        }
+      ],
+      "destination": "https://www.nesosante.com/:path*",
       "permanent": false
     }
   ]
