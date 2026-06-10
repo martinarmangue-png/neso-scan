@@ -607,26 +607,37 @@
 
     .cta {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) auto;
+      grid-template-columns: 1fr;
       gap: 24px;
       align-items: center;
-      margin: 34px 0 74px;
+      justify-items: center;
+      margin: 34px auto 74px;
       border-radius: 34px;
       background: #fff;
       border: 1px solid var(--line);
       padding: 32px;
       box-shadow: var(--shadow);
+      text-align: center;
+    }
+
+    .cta > div:first-child {
+      max-width: 760px;
     }
 
     .cta h2 {
       margin-top: 0;
     }
 
+    .cta .section-copy {
+      margin-left: auto;
+      margin-right: auto;
+    }
+
     .cta-actions {
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
-      justify-content: flex-end;
+      justify-content: center;
     }
 
     .footer {
@@ -677,7 +688,8 @@
       }
 
       .cta-actions {
-        justify-content: stretch;
+        justify-content: center;
+        width: 100%;
       }
 
       .cta-actions .button {
