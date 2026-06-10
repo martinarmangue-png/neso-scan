@@ -1070,18 +1070,20 @@
     }
 
     .patient-scan-item {
+      position: relative;
       border: 1px solid #e4ebf5;
       border-radius: 20px;
-      background: #f8fbff;
+      background: #fff;
       overflow: hidden;
+      box-shadow: 0 14px 34px rgba(31, 63, 121, 0.05);
     }
 
     .patient-scan-item summary {
       list-style: none;
       display: grid;
-      grid-template-columns: minmax(0, 1fr) auto;
+      grid-template-columns: 18px minmax(0, 1fr) auto;
       gap: 12px;
-      align-items: center;
+      align-items: start;
       padding: 15px;
       cursor: pointer;
     }
@@ -1092,6 +1094,15 @@
 
     .scan-main {
       min-width: 0;
+    }
+
+    .scan-timeline-dot {
+      width: 13px;
+      height: 13px;
+      border-radius: 999px;
+      margin-top: 5px;
+      background: var(--green);
+      box-shadow: 0 0 0 5px #e9f8f2;
     }
 
     .scan-title-line {
@@ -1107,6 +1118,41 @@
       line-height: 1.2;
       font-weight: 800;
       overflow-wrap: anywhere;
+    }
+
+    .scan-primary-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 9px;
+    }
+
+    .scan-meta-pill {
+      min-height: 28px;
+      display: inline-flex;
+      align-items: center;
+      padding: 0 10px;
+      border-radius: 999px;
+      background: #f2f6fb;
+      color: #61718a;
+      font-size: 12px;
+      line-height: 1.2;
+      font-weight: 800;
+    }
+
+    .scan-meta-pill.good {
+      background: #eaf8ef;
+      color: #25835b;
+    }
+
+    .scan-meta-pill.warning {
+      background: #fff6df;
+      color: #b46c00;
+    }
+
+    .scan-meta-pill.neutral {
+      background: #edf4ff;
+      color: var(--blue-bright);
     }
 
     .scan-status {
@@ -1171,6 +1217,21 @@
       font-weight: 800;
       letter-spacing: 0.06em;
       text-transform: uppercase;
+    }
+
+    .scan-detail-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      padding-top: 14px;
+    }
+
+    .scan-detail-card {
+      border-radius: 16px;
+      background: #f8fbff;
+      border: 1px solid #e6edf6;
+      padding: 13px;
+      min-width: 0;
     }
 
     .scan-tags {
@@ -1721,6 +1782,19 @@
       }
 
       .scan-mini-stats {
+        grid-template-columns: 1fr;
+      }
+
+      .patient-scan-item summary {
+        grid-template-columns: 16px minmax(0, 1fr);
+      }
+
+      .scan-score-pill {
+        grid-column: 2;
+        justify-self: start;
+      }
+
+      .scan-detail-grid {
         grid-template-columns: 1fr;
       }
 
@@ -3266,6 +3340,48 @@
       return Number.isFinite(score) ? score + '/10' : '-/10';
     }
 
+    function scanPrimaryObjective(scan) {
+      const objectives = answerList(scan?.objectif);
+      if (!objectives.length) return 'Objectif non renseigné';
+      if (objectives.length === 1) return objectives[0];
+      return objectives[0] + ' +' + (objectives.length - 1);
+    }
+
+    function scanZonesText(scan) {
+      const zones = answerList(scan?.zones);
+      return zones.length ? zones.join(', ') : scanTypeLabel(scan);
+    }
+
+    function scanEvolutionInfo(scan, previousScan) {
+      const currentScore = Number(scan?.score_douleur);
+      const previousScore = Number(previousScan?.score_douleur);
+
+      if (!previousScan) {
+        return { label: 'Pas encore de comparaison', className: 'neutral' };
+      }
+
+      if (!Number.isFinite(currentScore) || !Number.isFinite(previousScore)) {
+        return { label: 'Comparaison indisponible', className: 'neutral' };
+      }
+
+      const delta = previousScore - currentScore;
+      if (delta > 0) {
+        return {
+          label: 'En baisse de ' + delta + ' point' + (delta > 1 ? 's' : ''),
+          className: 'good'
+        };
+      }
+      if (delta < 0) {
+        const increase = Math.abs(delta);
+        return {
+          label: 'En hausse de ' + increase + ' point' + (increase > 1 ? 's' : ''),
+          className: 'warning'
+        };
+      }
+
+      return { label: 'Stable depuis le précédent scan', className: 'neutral' };
+    }
+
     function renderPatientScans(scans, state) {
       if (!patientScansList) return;
 
@@ -3290,10 +3406,11 @@
         patientScansStats.classList.toggle('is-hidden', !safeScans.length);
         if (safeScans.length) {
           const latest = safeScans[0];
+          const evolution = scanEvolutionInfo(latest, safeScans[1]);
           patientScansStats.innerHTML = [
             { label: 'Dernier scan', value: scanTypeLabel(latest) },
             { label: 'Douleur', value: scanScoreText(latest) },
-            { label: 'Statut', value: scanStatusInfo(latest).label }
+            { label: 'Évolution', value: evolution.label }
           ].map(function(item) {
             return '<div class="scan-mini-stat"><span>' + escapeHtml(item.label) + '</span><strong>' + escapeHtml(item.value) + '</strong></div>';
           }).join('');
@@ -3317,31 +3434,48 @@
         return;
       }
 
-      patientScansList.innerHTML = safeScans.map(function(scan) {
+      patientScansList.innerHTML = safeScans.map(function(scan, index) {
         const status = scanStatusInfo(scan);
         const date = scan.created_at ? formatDateTime(scan.created_at) : 'Date non renseignée';
         const statusDate = scan.practitioner_status_updated_at
           ? ' · mis à jour le ' + formatDate(scan.practitioner_status_updated_at)
           : '';
+        const evolution = scanEvolutionInfo(scan, safeScans[index + 1]);
+        const score = scanScoreText(scan);
+        const scanType = scanTypeLabel(scan);
+        const zones = scanZonesText(scan);
+        const objective = scanPrimaryObjective(scan);
 
         return (
           '<details class="patient-scan-item" role="listitem">' +
             '<summary>' +
+              '<div class="scan-timeline-dot" aria-hidden="true"></div>' +
               '<div class="scan-main">' +
                 '<div class="scan-title-line">' +
-                  '<span class="scan-title">' + escapeHtml(scanTypeLabel(scan)) + '</span>' +
+                  '<span class="scan-title">' + escapeHtml(scanType) + '</span>' +
                   '<span class="scan-status ' + escapeHtml(status.className) + '">' + escapeHtml(status.label) + '</span>' +
                 '</div>' +
                 '<div class="row-meta">' + escapeHtml(date + statusDate) + '</div>' +
+                '<div class="scan-primary-meta">' +
+                  '<span class="scan-meta-pill neutral">' + escapeHtml(zones) + '</span>' +
+                  '<span class="scan-meta-pill">' + escapeHtml(objective) + '</span>' +
+                  '<span class="scan-meta-pill ' + escapeHtml(evolution.className) + '">' + escapeHtml(evolution.label) + '</span>' +
+                '</div>' +
               '</div>' +
-              '<div class="scan-score-pill">' + escapeHtml(scanScoreText(scan)) + '</div>' +
+              '<div class="scan-score-pill">' + escapeHtml(score) + '</div>' +
             '</summary>' +
             '<div class="scan-details">' +
+              '<div class="scan-detail-grid">' +
+                '<div class="scan-detail-card"><div class="scan-detail-label">Date du scan</div><div class="row-meta" style="margin-top:7px;">' + escapeHtml(date) + '</div></div>' +
+                '<div class="scan-detail-card"><div class="scan-detail-label">Douleur</div><div class="row-meta" style="margin-top:7px;">' + escapeHtml(score) + '</div></div>' +
+                '<div class="scan-detail-card"><div class="scan-detail-label">Type / zone</div>' + renderScanTags([scanType, zones].filter(function(item, itemIndex, items) { return item && items.indexOf(item) === itemIndex; }), 'Non renseigné') + '</div>' +
+                '<div class="scan-detail-card"><div class="scan-detail-label">Évolution</div><div class="scan-primary-meta"><span class="scan-meta-pill ' + escapeHtml(evolution.className) + '">' + escapeHtml(evolution.label) + '</span></div></div>' +
+              '</div>' +
+              '<div class="scan-detail-row"><div class="scan-detail-label">Objectifs</div>' + renderScanTags(scan.objectif, 'Non renseigné') + '</div>' +
               '<div class="scan-detail-row"><div class="scan-detail-label">Depuis quand</div>' + renderScanTags(scan.douleur_depuis, 'Durée non renseignée') + '</div>' +
               '<div class="scan-detail-row"><div class="scan-detail-label">Réponse spécifique</div>' + renderScanTags(scan.type_douleur, 'Non renseigné') + '</div>' +
               '<div class="scan-detail-row"><div class="scan-detail-label">Gêne principale</div>' + renderScanTags(scan.gene, 'Non renseigné') + '</div>' +
               '<div class="scan-detail-row"><div class="scan-detail-label">Soulagement / évolution</div>' + renderScanTags(scan.evolution, 'Non renseigné') + '</div>' +
-              '<div class="scan-detail-row"><div class="scan-detail-label">Objectifs</div>' + renderScanTags(scan.objectif, 'Non renseigné') + '</div>' +
             '</div>' +
           '</details>'
         );

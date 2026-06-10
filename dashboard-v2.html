@@ -458,6 +458,58 @@
       border-radius: 999px;
     }
 
+    .scan-overview-grid {
+      display: grid;
+      grid-template-columns: 1.25fr repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 22px;
+    }
+
+    .scan-overview-item {
+      min-width: 0;
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+      border-radius: 18px;
+      padding: 16px;
+    }
+
+    .scan-overview-item span {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .scan-overview-item strong {
+      display: block;
+      color: var(--text);
+      font-size: 16px;
+      line-height: 1.3;
+      font-weight: 800;
+      overflow-wrap: anywhere;
+    }
+
+    .scan-overview-item small {
+      display: block;
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .scan-overview-item.patient-linked {
+      border-color: rgba(7, 150, 111, 0.24);
+      background: linear-gradient(135deg, #ffffff 0%, #eef8f3 100%);
+    }
+
+    .scan-overview-item.patient-anonymous {
+      border-color: rgba(245, 158, 11, 0.26);
+      background: linear-gradient(135deg, #ffffff 0%, #fff7df 100%);
+    }
+
     .info-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -722,6 +774,7 @@
       .kpis,
       .inbox-board,
       .analytics-grid,
+      .scan-overview-grid,
       .info-grid {
         grid-template-columns: repeat(2, 1fr);
       }
@@ -864,6 +917,7 @@
       .kpis,
       .inbox-board,
       .analytics-grid,
+      .scan-overview-grid,
       .info-grid {
         grid-template-columns: 1fr;
       }
@@ -1058,6 +1112,29 @@
           </div>
 
           <div class="bar"><div class="bar-fill" id="painBar"></div></div>
+
+          <div class="scan-overview-grid" aria-label="Résumé du scan sélectionné">
+            <div class="scan-overview-item" id="scanPatientCard">
+              <span>Patient</span>
+              <strong id="scanPatientIdentity">Patient</strong>
+              <small id="scanPatientAccount">Compte non relié</small>
+            </div>
+            <div class="scan-overview-item">
+              <span>Date</span>
+              <strong id="scanDateSummary">-</strong>
+              <small id="scanDurationSummary">Durée non renseignée</small>
+            </div>
+            <div class="scan-overview-item">
+              <span>Scan / zone</span>
+              <strong id="scanZoneSummary">-</strong>
+              <small id="scanTypeSummary">-</small>
+            </div>
+            <div class="scan-overview-item">
+              <span>Historique</span>
+              <strong id="scanPreviousSummary">-</strong>
+              <small id="scanPreviousDetail">Aucun scan précédent connu</small>
+            </div>
+          </div>
 
           <div class="info-grid">
             <div class="info">
@@ -1379,6 +1456,7 @@
           document.getElementById('profileAccount').textContent = '-';
           document.getElementById('patientDocuments').innerHTML = '<div class="small-muted">Aucun document relié à ce patient.</div>';
           document.getElementById('patientNextAction').textContent = '-';
+          setScanOverviewEmpty();
           setClinicalEmpty();
           document.getElementById('painBar').style.width = '0%';
         }
@@ -1686,6 +1764,103 @@
       });
     }
 
+    function scanPatientIdentity(scan, profile) {
+      const hasLinkedAccount = Boolean(scan?.patient_id || scan?.patient_email || scan?.patient_full_name);
+      const fullName = hasLinkedAccount ? (profile?.full_name || scan?.patient_full_name || '') : '';
+      const email = hasLinkedAccount ? (profile?.email || scan?.patient_email || '') : '';
+
+      if (hasLinkedAccount) {
+        return {
+          title: fullName || email || scan?.prenom || 'Compte patient',
+          detail: email || (scan?.patient_id ? 'Compte patient relié' : 'Identité patient reliée'),
+          isAnonymous: false
+        };
+      }
+
+      return {
+        title: 'Scan anonyme',
+        detail: scan?.prenom ? 'Prénom saisi : ' + scan.prenom : 'Aucun compte patient relié',
+        isAnonymous: true
+      };
+    }
+
+    function scanPatientHistoryKey(scan, profile) {
+      if (scan?.patient_id) return 'id:' + scan.patient_id;
+
+      const email = normalized(scan?.patient_email);
+      if (email) return 'email:' + email;
+
+      const fullName = normalized(scan?.patient_full_name);
+      if (fullName) return 'name:' + fullName;
+
+      return null;
+    }
+
+    function previousScansForPatient(scan, profile) {
+      const key = scanPatientHistoryKey(scan, profile);
+      if (!key || !scan?.created_at) return [];
+
+      const currentTime = new Date(scan.created_at).getTime();
+      if (!Number.isFinite(currentTime)) return [];
+
+      return scans
+        .filter(function(candidate) {
+          if (candidate === scan || (candidate.id && candidate.id === scan.id)) return false;
+          const candidateTime = new Date(candidate.created_at).getTime();
+          if (!Number.isFinite(candidateTime) || candidateTime >= currentTime) return false;
+          return scanPatientHistoryKey(candidate, findProfileForScan(candidate)) === key;
+        })
+        .sort(function(a, b) {
+          return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+        });
+    }
+
+    function scanPreviousSummary(scan, profile) {
+      const identity = scanPatientIdentity(scan, profile);
+      if (identity.isAnonymous) {
+        return {
+          title: 'Scan anonyme',
+          detail: 'Historique non relié sans compte patient.'
+        };
+      }
+
+      const previous = previousScansForPatient(scan, profile);
+      if (!previous.length) {
+        return {
+          title: 'Aucun précédent',
+          detail: 'Premier scan identifié pour ce patient.'
+        };
+      }
+
+      const latest = previous[0];
+      return {
+        title: previous.length + ' scan' + (previous.length > 1 ? 's' : '') + ' précédent' + (previous.length > 1 ? 's' : ''),
+        detail: 'Dernier le ' + fmtDate(latest.created_at) + ' · douleur ' + (latest.score_douleur ?? '-') + '/10'
+      };
+    }
+
+    function scanDurationText(scan) {
+      const duration = Number(scan?.duration_ms);
+      return Number.isFinite(duration) && duration > 0
+        ? 'Durée ' + formatDuration(duration)
+        : 'Durée non renseignée';
+    }
+
+    function setScanOverviewEmpty() {
+      const patientCard = document.getElementById('scanPatientCard');
+      if (patientCard) {
+        patientCard.className = 'scan-overview-item';
+      }
+      document.getElementById('scanPatientIdentity').textContent = '-';
+      document.getElementById('scanPatientAccount').textContent = 'Aucun scan sélectionné';
+      document.getElementById('scanDateSummary').textContent = '-';
+      document.getElementById('scanDurationSummary').textContent = 'Durée non renseignée';
+      document.getElementById('scanZoneSummary').textContent = '-';
+      document.getElementById('scanTypeSummary').textContent = '-';
+      document.getElementById('scanPreviousSummary').textContent = '-';
+      document.getElementById('scanPreviousDetail').textContent = 'Aucun scan précédent connu';
+    }
+
     function categoryLabel(document) {
       if (document.category === 'ordonnance') return 'Ordonnance';
       if (document.category === 'irm') return 'IRM / imagerie';
@@ -1809,12 +1984,20 @@
       const documents = documentsForScan(scan, profile);
       const priority = scanPriority(scan);
       const nextAction = priority.action;
+      const identity = scanPatientIdentity(scan, profile);
+      const previousSummary = scanPreviousSummary(scan, profile);
+      const zoneText = arrayText(scan.zones) || scanTypeLabel(scan) || '-';
+      const patientCard = document.getElementById('scanPatientCard');
 
-      document.getElementById('patientName').textContent = scan.prenom || 'Patient';
+      if (patientCard) {
+        patientCard.className = 'scan-overview-item ' + (identity.isAnonymous ? 'patient-anonymous' : 'patient-linked');
+      }
+
+      document.getElementById('patientName').textContent = identity.title;
       document.getElementById('patientDate').textContent = `Scan reçu le ${fmtFullDate(scan.created_at)}`;
       document.getElementById('patientPain').textContent = scan.score_douleur ?? '-';
       document.getElementById('patientScanType').textContent = scanTypeLabel(scan);
-      document.getElementById('patientZone').textContent = arrayText(scan.zones) || '-';
+      document.getElementById('patientZone').textContent = zoneText;
       document.getElementById('patientSince').textContent = scan.douleur_depuis || scan.duree || '-';
       document.getElementById('patientEvolution').textContent = arrayText(scan.evolution) || '-';
       document.getElementById('patientProblem').textContent = arrayText(scan.gene) || '-';
@@ -1823,7 +2006,15 @@
       document.getElementById('profilePractitioner').textContent = profile?.practitioner_name || 'À associer';
       document.getElementById('profileCondition').textContent = profile?.condition_label || scanTypeLabel(scan) || 'À préciser';
       document.getElementById('profileGoal').textContent = profile?.recovery_goal || arrayText(scan.objectif) || 'À définir';
-      document.getElementById('profileAccount').textContent = profile?.email || scan.patient_email || scan.patient_full_name || (scan.patient_id ? 'Compte relié' : 'Non relié');
+      document.getElementById('profileAccount').textContent = identity.detail;
+      document.getElementById('scanPatientIdentity').textContent = identity.title;
+      document.getElementById('scanPatientAccount').textContent = identity.detail;
+      document.getElementById('scanDateSummary').textContent = fmtFullDate(scan.created_at);
+      document.getElementById('scanDurationSummary').textContent = scanDurationText(scan);
+      document.getElementById('scanZoneSummary').textContent = zoneText;
+      document.getElementById('scanTypeSummary').textContent = scanTypeLabel(scan);
+      document.getElementById('scanPreviousSummary').textContent = previousSummary.title;
+      document.getElementById('scanPreviousDetail').textContent = previousSummary.detail;
       document.getElementById('patientNextAction').textContent = nextAction;
       renderStatusControls(scan);
       renderPatientReading(scan, priority, documents);
@@ -1976,6 +2167,7 @@
           document.getElementById('profileAccount').textContent = '-';
           document.getElementById('patientDocuments').innerHTML = '<div class="small-muted">Aucun document relié à ce patient.</div>';
           document.getElementById('patientNextAction').textContent = '-';
+          setScanOverviewEmpty();
           setClinicalEmpty();
           document.getElementById('painBar').style.width = '0%';
         }
