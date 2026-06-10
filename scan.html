@@ -537,7 +537,7 @@
 
     <div class="page" id="p8">
       <button class="back" onclick="go('p7')">← retour</button>
-      <p class="question" id="question-q6">Quel est votre objectif principal ?</p>
+      <p class="question" id="question-q6">Quel est votre objectif principal pour cette prise en charge ?</p>
       <p class="question-helper" id="helper-q6"></p>
       <div class="grid" id="grid-q6"></div>
       <button class="btn btn-off" id="cta-p8" onclick="goRecap()">Voir mon Physio Scan <div class="ac"><i class="ti ti-arrow-right"></i></div></button>
@@ -607,6 +607,15 @@
   const S = { scanType:'', scanTypeLabel:'', prenom:'', zones:[], q1:[], q2:[], q3:'5', q4:[], q5:[], q6:[] };
   const SCAN_PATIENT_CONTEXT_KEY = 'neso-scan-patient-context';
   const QUESTION_PAGE = { q1: 'p3', q2: 'p4', q4: 'p6', q5: 'p7', q6: 'p8' };
+  const OBJECTIVE_OPTIONS = [
+    'Reprendre une activité sportive',
+    'Reprendre le travail ou les activités quotidiennes',
+    'Comprendre l’origine de la gêne',
+    'Être rassuré sur l’évolution',
+    'Gagner en mobilité',
+    'Retrouver de la force ou de la confiance',
+    'Préparer une reprise progressive'
+  ];
   const SCAN_TYPES = {
     lombaires_sciatique: {
       label: 'Lombaires / Sciatique',
@@ -634,12 +643,9 @@
           options: ['Repos', 'Mouvement doux', 'Chaleur', 'Étirements', 'Rien pour le moment']
         },
         q6: {
-          label: 'Quel est votre objectif principal ?',
+          label: 'Quel est votre objectif principal pour cette prise en charge ?',
           recap: 'Objectif',
-          multiple: true,
-          maxChoices: 2,
-          helper: 'Vous pouvez choisir jusqu’à 2 réponses.',
-          options: ['Ne plus avoir mal', 'Reprendre le sport', 'Reprendre le travail', 'Mieux bouger', 'Comprendre le problème']
+          options: OBJECTIVE_OPTIONS
         }
       }
     },
@@ -657,9 +663,10 @@
           options: ['Non', 'Vers l’épaule', 'Vers le bras', 'Vers la main']
         },
         q4: {
-          label: 'Quel mouvement est le plus gênant ?',
-          recap: 'Mouvement gênant',
-          options: ['Tourner la tête', 'Regarder en haut', 'Regarder en bas', 'Rester immobile', 'Conduire']
+          label: 'Quels mouvements ou positions gênent le plus ?',
+          recap: 'Mouvements ou positions gênants',
+          multiple: true,
+          options: ['Tourner la tête', 'Regarder vers le haut', 'Regarder vers le bas', 'Incliner la tête', 'Rester longtemps dans la même position']
         },
         q5: {
           label: 'Votre gêne est-elle liée à l’écran ou à une posture prolongée ?',
@@ -667,12 +674,9 @@
           options: ['Non', 'Oui, écran', 'Oui, posture', 'Oui, les deux']
         },
         q6: {
-          label: 'Quel est votre objectif principal ?',
+          label: 'Quel est votre objectif principal pour cette prise en charge ?',
           recap: 'Objectif',
-          multiple: true,
-          maxChoices: 2,
-          helper: 'Vous pouvez choisir jusqu’à 2 réponses.',
-          options: ['Moins de tension', 'Travailler sans gêne', 'Tourner la tête', 'Reprendre le sport', 'Mieux dormir']
+          options: OBJECTIVE_OPTIONS
         }
       }
     },
@@ -701,12 +705,9 @@
           options: ['Non', 'Parfois', 'Souvent', 'Toutes les nuits']
         },
         q6: {
-          label: 'Quel est votre objectif principal ?',
+          label: 'Quel est votre objectif principal pour cette prise en charge ?',
           recap: 'Objectif',
-          multiple: true,
-          maxChoices: 2,
-          helper: 'Vous pouvez choisir jusqu’à 2 réponses.',
-          options: ['Lever le bras', 'Dormir sans gêne', 'Reprendre le sport', 'Porter sans gêne', 'Retrouver la mobilité']
+          options: OBJECTIVE_OPTIONS
         }
       }
     },
@@ -735,12 +736,9 @@
           options: ['Non', 'Instabilité', 'Blocage', 'Les deux']
         },
         q6: {
-          label: 'Quel est votre objectif principal ?',
+          label: 'Quel est votre objectif principal pour cette prise en charge ?',
           recap: 'Objectif',
-          multiple: true,
-          maxChoices: 2,
-          helper: 'Vous pouvez choisir jusqu’à 2 réponses.',
-          options: ['Marcher sans gêne', 'Monter les escaliers', 'Reprendre le sport', 'Courir', 'Gagner en stabilité']
+          options: OBJECTIVE_OPTIONS
         }
       }
     },
@@ -769,12 +767,9 @@
           options: ['Appui simple', 'Marcher vite', 'Escaliers', 'Terrain irrégulier', 'Sauter']
         },
         q6: {
-          label: 'Quel est votre objectif principal ?',
+          label: 'Quel est votre objectif principal pour cette prise en charge ?',
           recap: 'Objectif',
-          multiple: true,
-          maxChoices: 2,
-          helper: 'Vous pouvez choisir jusqu’à 2 réponses.',
-          options: ['Marcher normalement', 'Reprendre le sport', 'Retrouver la stabilité', 'Ne plus gonfler', 'Reprendre la course']
+          options: OBJECTIVE_OPTIONS
         }
       }
     },
@@ -792,7 +787,7 @@
           options: ['Moins de 2 semaines', '2 à 6 semaines', '1 à 3 mois', 'Plus de 3 mois', 'Plus d’un an']
         },
         q4: {
-          label: 'Utilisez-vous une aide pour marcher ou vous déplacer ?',
+          label: 'Utilisez-vous une aide pour bouger ou vous déplacer ?',
           recap: 'Aide actuelle',
           options: ['Non', 'Canne', 'Béquilles', 'Attelle', 'Autre aide']
         },
@@ -802,12 +797,9 @@
           options: ['Diminue', 'Stable', 'Augmente', 'Variable selon les jours']
         },
         q6: {
-          label: 'Quel est votre objectif principal ?',
+          label: 'Quel est votre objectif principal pour cette prise en charge ?',
           recap: 'Objectif',
-          multiple: true,
-          maxChoices: 2,
-          helper: 'Vous pouvez choisir jusqu’à 2 réponses.',
-          options: ['Marcher sans aide', 'Récupérer la mobilité', 'Reprendre le travail', 'Reprendre le sport', 'Reprendre confiance']
+          options: OBJECTIVE_OPTIONS
         }
       }
     }
