@@ -1,13 +1,13 @@
 {
-  "name": "NESO Santé",
-  "short_name": "NESO",
-  "description": "Application patient NESO Santé avec suivi, exercices, Physio Scan et dossier sécurisé.",
-  "id": "/app-v2.html",
-  "start_url": "/app-v2.html",
+  "name": "NESO Santé Dashboard",
+  "short_name": "NESO Pro",
+  "description": "Dashboard praticien NESO Santé pour consulter les Physio Scans patients.",
+  "id": "/dashboard-v2.html",
+  "start_url": "/dashboard-v2.html",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#f2f6fc",
+  "background_color": "#f3f7fc",
   "theme_color": "#21498f",
   "icons": [
     {

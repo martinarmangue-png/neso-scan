@@ -1,4 +1,4 @@
-const CACHE_NAME = 'neso-sante-20260608-v4';
+const CACHE_NAME = 'neso-sante-20260610-v5';
 const APP_SHELL = [
   './',
   './index.html',
@@ -7,7 +7,11 @@ const APP_SHELL = [
   './app-v2.html',
   './manifest.webmanifest',
   './manifest-v2.webmanifest',
-  './neso-icon.svg'
+  './dashboard.webmanifest',
+  './neso-icon.svg',
+  './icons/neso-icon-192.png',
+  './icons/neso-icon-512.png',
+  './icons/apple-touch-icon.png'
 ];
 
 const NAVIGATION_FALLBACKS = new Map([

@@ -1,17 +1,29 @@
 {
-  "name": "Neso Santé",
-  "short_name": "Neso",
-  "description": "Web app Neso Santé avec Physio Scan, espace patient et dashboard praticien.",
-  "id": "./",
-  "start_url": "index.html",
-  "scope": "./",
+  "name": "NESO Santé",
+  "short_name": "NESO",
+  "description": "Application patient NESO Santé avec suivi, exercices, Physio Scan et dossier sécurisé.",
+  "id": "/app-v2.html",
+  "start_url": "/app-v2.html",
+  "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#f2f6fc",
   "theme_color": "#21498f",
   "icons": [
     {
-      "src": "neso-icon.svg",
+      "src": "/icons/neso-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/neso-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/neso-icon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any maskable"
