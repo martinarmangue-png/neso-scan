@@ -2,536 +2,952 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#15558a" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#21498f" />
+  <meta name="description" content="NESO Santé aide les patients et les praticiens à préparer les séances de rééducation, suivre l'évolution et améliorer la continuité des soins." />
   <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="neso-icon.svg" type="image/svg+xml" />
   <link rel="apple-touch-icon" href="neso-icon.svg" />
-  <title>Neso Santé</title>
-
-  <script src="https://cdn.tailwindcss.com"></script>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-
+  <link rel="canonical" href="https://www.nesosante.com/" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&display=swap" rel="stylesheet" />
+  <title>NESO Santé</title>
   <style>
-    body {
-      font-family: 'Inter', sans-serif;
-      background: #f5f7fb;
-    }
-
     :root {
-      --neso-blue: #15558a;
-      --neso-blue-dark: #0f416b;
-      --neso-blue-soft: #e8f1f8;
-      --neso-teal: #0f766e;
-      --neso-teal-soft: #e6f3f1;
-      --neso-bg: #f5f7fb;
-      --neso-paper: #ffffff;
-      --neso-ink: #17212b;
-      --neso-muted: #64748b;
-      --neso-border: #dbe5f0;
+      --blue: #21498f;
+      --blue-strong: #173a75;
+      --blue-soft: #edf4ff;
+      --teal: #079b72;
+      --green: #069a6f;
+      --ink: #172033;
+      --muted: #67768e;
+      --soft-muted: #97a5b9;
+      --line: #e1e8f2;
+      --bg: #f3f7fc;
+      --card: #ffffff;
+      --shadow: 0 22px 70px rgba(28, 56, 96, 0.11);
+      --radius: 28px;
     }
 
-    .gradient {
-      background: linear-gradient(180deg, #f5f7fb 0%, #ffffff 46%, #f5f7fb 100%);
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
-    .soft-surface {
-      background: #ffffff;
+    html {
+      color: var(--ink);
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      -webkit-font-smoothing: antialiased;
+      scroll-behavior: smooth;
     }
 
-    .identity-surface {
-      background: linear-gradient(135deg, #ffffff 0%, #f1f6fb 100%);
+    body {
+      min-height: 100svh;
+      background:
+        linear-gradient(180deg, #eaf1fb 0%, #f7faff 42%, #f3f7fc 100%);
+      overflow-x: hidden;
     }
 
-    .phone-shadow {
-      box-shadow: 0 24px 60px rgba(21, 85, 138, 0.12);
+    a,
+    button {
+      font: inherit;
+      color: inherit;
+      -webkit-tap-highlight-color: transparent;
     }
 
-    .neso-gradient-button {
-      background: linear-gradient(135deg, var(--neso-blue) 0%, #157f8f 55%, var(--neso-teal) 100%);
-      box-shadow: 0 16px 38px rgba(21, 85, 138, 0.16), 0 10px 26px rgba(15, 118, 110, 0.10);
-      transform: translateY(0);
+    a {
+      text-decoration: none;
     }
 
-    .neso-gradient-button:hover {
-      filter: saturate(1.1) brightness(0.98);
+    .page {
+      min-height: 100svh;
+    }
+
+    .shell {
+      width: min(1120px, calc(100% - 40px));
+      margin: 0 auto;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(243, 247, 252, 0.88);
+      border-bottom: 1px solid rgba(225, 232, 242, 0.82);
+      backdrop-filter: blur(18px);
+    }
+
+    .topbar-inner {
+      min-height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 22px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .brand-mark {
+      width: 44px;
+      height: 44px;
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, var(--blue), var(--teal));
+      box-shadow: 0 14px 32px rgba(33, 73, 143, 0.18);
+      overflow: hidden;
+    }
+
+    .brand-mark img {
+      width: 28px;
+      height: 28px;
+      display: block;
+    }
+
+    .brand-name {
+      display: grid;
+      gap: 1px;
+      min-width: 0;
+    }
+
+    .brand-name strong {
+      color: var(--ink);
+      font-size: 17px;
+      line-height: 1;
+      font-weight: 900;
+      letter-spacing: 0;
+      white-space: nowrap;
+    }
+
+    .brand-name span {
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.2;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      color: #53647a;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .nav a:hover {
+      color: var(--blue);
+    }
+
+    .nav-action {
+      min-height: 42px;
+      padding: 0 16px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      background: linear-gradient(135deg, var(--blue), var(--teal));
+      box-shadow: 0 12px 28px rgba(7, 143, 106, 0.16);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(340px, 0.95fr);
+      gap: 58px;
+      align-items: center;
+      padding: 86px 0 74px;
+    }
+
+    .eyebrow {
+      width: fit-content;
+      min-height: 36px;
+      padding: 0 14px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      background: #fff;
+      border: 1px solid var(--line);
+      color: var(--blue);
+      font-size: 13px;
+      font-weight: 800;
+      box-shadow: 0 12px 32px rgba(28, 56, 96, 0.06);
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--teal);
+    }
+
+    h1 {
+      max-width: 720px;
+      margin-top: 28px;
+      color: var(--ink);
+      font-size: clamp(46px, 7vw, 78px);
+      line-height: 0.98;
+      font-weight: 900;
+      letter-spacing: 0;
+    }
+
+    .hero-copy {
+      max-width: 630px;
+      margin-top: 26px;
+      color: var(--muted);
+      font-size: 20px;
+      line-height: 1.7;
+      font-weight: 600;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 34px;
+    }
+
+    .button {
+      min-height: 56px;
+      padding: 0 22px;
+      border-radius: 18px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid transparent;
+      font-size: 15px;
+      font-weight: 900;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+    }
+
+    .button:hover {
       transform: translateY(-1px);
     }
 
-    .neso-gradient-button:active {
-      transform: translateY(1px) scale(0.98);
-      box-shadow: 0 8px 24px rgba(15, 79, 127, 0.18), 0 6px 18px rgba(0, 122, 109, 0.14);
+    .button.primary {
+      color: #fff;
+      background: linear-gradient(135deg, var(--blue), var(--teal));
+      box-shadow: 0 18px 42px rgba(7, 143, 106, 0.2);
     }
 
-    .glass-button {
-      background: #ffffff;
-      box-shadow: 0 10px 26px rgba(21, 85, 138, 0.08);
+    .button.secondary {
+      color: var(--blue);
+      background: #fff;
+      border-color: var(--line);
+      box-shadow: 0 12px 30px rgba(28, 56, 96, 0.07);
     }
 
-    .glass-button:active {
-      transform: scale(0.98);
+    .trust-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 26px;
     }
-    
 
-    .brand-serif {
-      font-family: Georgia, 'Times New Roman', serif;
-      letter-spacing: -0.035em;
+    .trust-pill {
+      min-height: 34px;
+      padding: 0 12px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.76);
+      border: 1px solid var(--line);
+      color: #5c6c83;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .product-preview {
+      position: relative;
+      min-height: 520px;
+      display: grid;
+      place-items: center;
+    }
+
+    .preview-panel {
+      width: min(100%, 430px);
+      border-radius: 34px;
+      background: #fff;
+      border: 1px solid rgba(225, 232, 242, 0.92);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .preview-header {
+      min-height: 148px;
+      padding: 26px;
+      color: #fff;
+      background: linear-gradient(135deg, var(--blue-strong), #2f66f3 48%, var(--teal));
+    }
+
+    .preview-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .preview-label {
+      color: rgba(255, 255, 255, 0.72);
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .preview-badge {
+      min-height: 32px;
+      padding: 0 11px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.16);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: rgba(255, 255, 255, 0.86);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .preview-title {
+      max-width: 320px;
+      font-size: 31px;
+      line-height: 1.08;
+      font-weight: 900;
+    }
+
+    .preview-body {
+      display: grid;
+      gap: 14px;
+      padding: 20px;
+      background: #f7faff;
+    }
+
+    .preview-card {
+      border-radius: 22px;
+      background: #fff;
+      border: 1px solid var(--line);
+      padding: 18px;
+    }
+
+    .preview-card-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+
+    .preview-card-title {
+      color: var(--ink);
+      font-size: 17px;
+      line-height: 1.2;
+      font-weight: 900;
+    }
+
+    .preview-card-meta {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .score {
+      color: var(--green);
+      font-size: 28px;
+      line-height: 1;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .chart {
+      width: 100%;
+      min-height: 104px;
+      display: block;
+    }
+
+    .chart-grid {
+      stroke: #e9eef7;
+      stroke-width: 2;
+      stroke-dasharray: 6 8;
+    }
+
+    .chart-line {
+      fill: none;
+      stroke: #2f66f3;
+      stroke-width: 5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .chart-point {
+      fill: #2f66f3;
+      stroke: #fff;
+      stroke-width: 4;
+    }
+
+    .chart-point.current {
+      fill: var(--green);
+      stroke: var(--green);
+    }
+
+    .preview-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .mini-row {
+      display: grid;
+      grid-template-columns: 44px minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: center;
+      border-radius: 18px;
+      background: #fff;
+      border: 1px solid var(--line);
+      padding: 12px;
+    }
+
+    .mini-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 15px;
+      display: grid;
+      place-items: center;
+      background: var(--blue-soft);
+      color: var(--blue);
+      font-size: 15px;
+      font-weight: 900;
+    }
+
+    .mini-title {
+      color: var(--ink);
+      font-size: 14px;
+      line-height: 1.25;
+      font-weight: 900;
+    }
+
+    .mini-meta {
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.3;
+      font-weight: 700;
+    }
+
+    .mini-status {
+      min-height: 28px;
+      padding: 0 9px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      background: #ebf8f2;
+      color: #25835b;
+      font-size: 11px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .section {
+      padding: 34px 0;
+    }
+
+    .section-head {
+      max-width: 710px;
+      margin-bottom: 28px;
+    }
+
+    .section-kicker {
+      color: var(--blue);
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 0.11em;
+      text-transform: uppercase;
+    }
+
+    h2 {
+      margin-top: 10px;
+      color: var(--ink);
+      font-size: clamp(32px, 4vw, 48px);
+      line-height: 1.08;
+      font-weight: 900;
+      letter-spacing: 0;
+    }
+
+    .section-copy {
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.65;
+      font-weight: 600;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .feature-card {
+      min-height: 250px;
+      display: grid;
+      align-content: start;
+      gap: 18px;
+      border-radius: var(--radius);
+      background: #fff;
+      border: 1px solid var(--line);
+      padding: 26px;
+      box-shadow: 0 16px 46px rgba(28, 56, 96, 0.07);
+    }
+
+    .feature-number {
+      width: 42px;
+      height: 42px;
+      border-radius: 15px;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      background: linear-gradient(135deg, var(--blue), var(--teal));
+      font-size: 14px;
+      font-weight: 900;
+    }
+
+    .feature-card h3 {
+      color: var(--ink);
+      font-size: 22px;
+      line-height: 1.18;
+      font-weight: 900;
+      letter-spacing: 0;
+    }
+
+    .feature-card p {
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.58;
+      font-weight: 600;
+    }
+
+    .security-band {
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 32px;
+      align-items: center;
+      border-radius: 34px;
+      background: linear-gradient(135deg, #1e3f7c 0%, #2a5fcf 50%, #078b69 100%);
+      color: #fff;
+      padding: 34px;
+      box-shadow: var(--shadow);
+    }
+
+    .security-band h2 {
+      color: #fff;
+    }
+
+    .security-band .section-copy {
+      color: rgba(255, 255, 255, 0.76);
+    }
+
+    .security-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .security-item {
+      min-height: 78px;
+      display: grid;
+      grid-template-columns: 42px minmax(0, 1fr);
+      gap: 14px;
+      align-items: center;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.13);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      padding: 14px;
+    }
+
+    .security-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 15px;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      background: rgba(255, 255, 255, 0.12);
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .security-item strong {
+      display: block;
+      color: #fff;
+      font-size: 16px;
+      line-height: 1.2;
+      font-weight: 900;
+    }
+
+    .security-item span {
+      display: block;
+      margin-top: 4px;
+      color: rgba(255, 255, 255, 0.72);
+      font-size: 13px;
+      line-height: 1.35;
+      font-weight: 700;
+    }
+
+    .cta {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 24px;
+      align-items: center;
+      margin: 34px 0 74px;
+      border-radius: 34px;
+      background: #fff;
+      border: 1px solid var(--line);
+      padding: 32px;
+      box-shadow: var(--shadow);
+    }
+
+    .cta h2 {
+      margin-top: 0;
+    }
+
+    .cta-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: flex-end;
+    }
+
+    .footer {
+      border-top: 1px solid var(--line);
+      padding: 28px 0;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    .footer-links a:hover {
+      color: var(--blue);
+    }
+
+    @media (max-width: 920px) {
+      .nav {
+        display: none;
+      }
+
+      .hero {
+        grid-template-columns: 1fr;
+        gap: 38px;
+        padding-top: 58px;
+      }
+
+      .product-preview {
+        min-height: auto;
+      }
+
+      .feature-grid,
+      .security-band,
+      .cta {
+        grid-template-columns: 1fr;
+      }
+
+      .cta-actions {
+        justify-content: stretch;
+      }
+
+      .cta-actions .button {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .shell {
+        width: min(1120px, calc(100% - 28px));
+      }
+
+      .topbar-inner {
+        min-height: 70px;
+      }
+
+      .brand-name span {
+        display: none;
+      }
+
+      .nav-action {
+        min-height: 38px;
+        padding: 0 12px;
+        font-size: 12px;
+      }
+
+      .hero {
+        padding-top: 44px;
+        padding-bottom: 48px;
+      }
+
+      h1 {
+        font-size: 42px;
+      }
+
+      .hero-copy {
+        font-size: 17px;
+        line-height: 1.58;
+      }
+
+      .hero-actions .button {
+        width: 100%;
+      }
+
+      .preview-panel {
+        border-radius: 26px;
+      }
+
+      .preview-header,
+      .preview-body,
+      .feature-card,
+      .security-band,
+      .cta {
+        padding: 20px;
+      }
+
+      .preview-title {
+        font-size: 25px;
+      }
+
+      .feature-grid {
+        gap: 12px;
+      }
+
+      .feature-card {
+        min-height: 0;
+      }
     }
   </style>
 </head>
-
-<body class="text-slate-900 overflow-x-hidden">
-
-  <section class="gradient min-h-screen">
-
-    <header class="bg-[var(--neso-blue)] border-b border-[#2a6798]">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 py-5 flex justify-between items-center gap-4">
-
-        <div class="text-xl sm:text-2xl font-semibold whitespace-nowrap text-white tracking-tight">
-          Neso Santé
-        </div>
-
-        <nav class="hidden md:flex items-center gap-7 text-sm font-medium text-blue-100">
-          <a href="#fonctionnement" class="hover:text-white transition">Fonctionnement</a>
-          <a href="#securite" class="hover:text-white transition">Sécurité</a>
-          <a href="#praticiens" class="hover:text-white transition">Praticiens</a>
-        </nav>
-
-        <a href="dashboard-v2.html"
-                class="bg-white/10 border border-white/20 px-4 sm:px-5 py-2 rounded-2xl text-xs sm:text-sm font-medium text-white hover:bg-white/20 transition whitespace-nowrap">
-          Espace praticien
+<body>
+  <div class="page">
+    <header class="topbar">
+      <div class="shell topbar-inner">
+        <a class="brand" href="https://www.nesosante.com/" aria-label="Accueil NESO Santé">
+          <span class="brand-mark" aria-hidden="true">
+            <img src="neso-icon.svg" alt="" />
+          </span>
+          <span class="brand-name">
+            <strong>NESO Santé</strong>
+            <span>Rééducation connectée</span>
+          </span>
         </a>
-
+        <nav class="nav" aria-label="Navigation principale">
+          <a href="#patients">Patients</a>
+          <a href="#praticiens">Praticiens</a>
+          <a href="#securite">Sécurité</a>
+        </nav>
+        <a class="nav-action" href="https://www.nesosante.com/dashboard-v2.html">Espace praticien</a>
       </div>
     </header>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 pt-14 sm:pt-20 pb-20 sm:pb-28 grid lg:grid-cols-2 gap-14 lg:gap-20 items-center">
-
-      <div>
-
-        <div class="inline-flex items-center gap-2 bg-white border border-[var(--neso-border)] rounded-full px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium text-[var(--neso-blue)] mb-6 sm:mb-8 shadow-sm">
-          <div class="w-2 h-2 rounded-full bg-[var(--neso-blue)]"></div>
-          Suite patient et praticien
+    <main>
+      <section class="shell hero">
+        <div>
+          <div class="eyebrow">Plateforme patient et praticien</div>
+          <h1>Préparez et prolongez vos séances de rééducation.</h1>
+          <p class="hero-copy">
+            Un espace simple pour préparer la séance, suivre l’évolution du patient et améliorer la continuité des soins.
+          </p>
+          <div class="hero-actions" aria-label="Accès rapides">
+            <a class="button primary" href="https://scan.nesosante.com/">Commencer un Physio Scan</a>
+            <a class="button secondary" href="https://app.nesosante.com/">Accéder à mon espace patient</a>
+            <a class="button secondary" href="https://www.nesosante.com/dashboard-v2.html">Espace praticien</a>
+          </div>
+          <div class="trust-row" aria-label="Garanties">
+            <span class="trust-pill">Données sécurisées</span>
+            <span class="trust-pill">Accès personnel</span>
+            <span class="trust-pill">Dashboard protégé</span>
+          </div>
         </div>
 
-        <h1 class="text-4xl sm:text-5xl lg:text-[5rem] leading-[0.98] tracking-[-0.06em] font-semibold max-w-2xl text-[var(--neso-ink)]">
-          Un scan, un suivi patient, un dashboard praticien.
-        </h1>
-
-        <p class="mt-7 sm:mt-9 text-base sm:text-[1.18rem] leading-8 sm:leading-9 text-slate-600 max-w-xl">
-          Neso Santé rassemble le Physio Scan, l’espace patient mobile et le dashboard praticien dans une même expérience.
-        </p>
-
-        <div class="mt-8 sm:mt-10 flex flex-col sm:flex-row gap-3 sm:gap-4 flex-wrap">
-
-          <a href="scan.html"
-             class="neso-gradient-button text-white px-7 py-4 rounded-full font-semibold transition inline-flex items-center justify-center w-full sm:w-auto">
-            Lancer Physio Scan
-          </a>
-
-          <a href="app-v2.html"
-             class="glass-button border border-[var(--neso-border)] px-7 py-4 rounded-full font-semibold transition hover:border-[var(--neso-blue)] hover:text-[var(--neso-blue)] text-center w-full sm:w-auto">
-            Je suis patient
-          </a>
-
-          <a href="dashboard-v2.html"
-             class="glass-button border border-[var(--neso-border)] px-7 py-4 rounded-full font-semibold transition hover:border-[var(--neso-blue)] hover:text-[var(--neso-blue)] text-center w-full sm:w-auto">
-            Je suis praticien
-          </a>
-
-        </div>
-
-        <div class="mt-6 sm:mt-8 flex gap-4 sm:gap-6 text-sm text-slate-500 flex-wrap">
-          <div class="text-[var(--neso-blue)]">🔒 Données sécurisées</div>
-          <div>✓ Simple et rapide</div>
-        </div>
-
-      </div>
-
-      <div class="flex justify-center overflow-hidden px-2 sm:px-0">
-
-        <div class="bg-[#8fb5d2] border border-[#79a7cb] rounded-[40px] p-2 phone-shadow scale-[0.94] origin-center">
-
-          <div class="bg-white rounded-[34px] p-4 sm:p-5 w-[286px] sm:w-[320px]">
-
-            <div class="w-20 h-1.5 bg-slate-300 rounded-full mx-auto mb-6"></div>
-
-            <div class="bg-white rounded-3xl p-5 shadow-sm">
-
-              <div class="flex justify-between items-center mb-5">
-
-                <div>
-                  <div class="text-sm text-[var(--neso-blue)] font-medium">
-                    Physio Scan
-                  </div>
-
-                  <div class="brand-serif text-xl font-semibold mt-1 text-[var(--neso-ink)]">
-                    Préparez votre séance
-                  </div>
-                </div>
-
-                <div class="bg-[#d9f2ec] w-11 h-11 rounded-2xl flex items-center justify-center text-[var(--neso-teal)]">
-                  🩺
-                </div>
-
+        <div class="product-preview" aria-label="Aperçu de NESO Santé">
+          <div class="preview-panel">
+            <div class="preview-header">
+              <div class="preview-top">
+                <div class="preview-label">Suivi patient</div>
+                <div class="preview-badge">Connecté</div>
               </div>
-
-              <div class="h-2 bg-slate-100 rounded-full mb-6">
-                <div class="h-2 w-2/3 rounded-full bg-gradient-to-r from-[var(--neso-blue)] to-[var(--neso-teal)]"></div>
-              </div>
-
-              <div class="border border-slate-100 rounded-3xl p-4 bg-[#f8fbfa]">
-                <div class="flex items-center justify-between mb-5">
+              <div class="preview-title">Douleur, objectifs et scans au même endroit.</div>
+            </div>
+            <div class="preview-body">
+              <article class="preview-card">
+                <div class="preview-card-head">
                   <div>
-                    <div class="text-xs uppercase tracking-wide text-slate-400">Question</div>
-                    <div class="mt-1 font-semibold text-slate-950">Votre douleur aujourd’hui ?</div>
+                    <div class="preview-card-title">Courbe de douleur</div>
+                    <div class="preview-card-meta">Semaine 4 · Lombalgie</div>
                   </div>
+                  <div class="score">3/10</div>
                 </div>
-
-                <div class="flex items-center gap-3">
-                  <div class="text-4xl font-semibold tracking-tight text-[var(--neso-blue)]">7</div>
-                  <div class="flex-1">
-                    <div class="h-2 rounded-full bg-slate-100 overflow-hidden">
-                      <div class="h-2 w-[70%] rounded-full bg-gradient-to-r from-[var(--neso-blue)] to-[var(--neso-teal)]"></div>
-                    </div>
-                    <div class="mt-2 flex justify-between text-[10px] text-slate-400">
-                      <span>Faible</span>
-                      <span>Forte</span>
-                    </div>
+                <svg class="chart" viewBox="0 0 320 120" role="img" aria-label="Courbe de douleur descendante">
+                  <line class="chart-grid" x1="12" y1="20" x2="308" y2="20" />
+                  <line class="chart-grid" x1="12" y1="58" x2="308" y2="58" />
+                  <line class="chart-grid" x1="12" y1="96" x2="308" y2="96" />
+                  <polyline class="chart-line" points="18,20 58,36 98,36 138,56 178,72 218,84 258,96 302,96" />
+                  <circle class="chart-point" cx="18" cy="20" r="6" />
+                  <circle class="chart-point" cx="98" cy="36" r="6" />
+                  <circle class="chart-point" cx="178" cy="72" r="6" />
+                  <circle class="chart-point current" cx="302" cy="96" r="8" />
+                </svg>
+              </article>
+              <div class="preview-list">
+                <div class="mini-row">
+                  <div class="mini-icon">PS</div>
+                  <div>
+                    <div class="mini-title">Physio Scan reçu</div>
+                    <div class="mini-meta">Genou · objectif reprise sport</div>
                   </div>
+                  <div class="mini-status">Vu</div>
                 </div>
-
-                <div class="mt-5 space-y-2">
-                  <div class="rounded-2xl bg-white border border-slate-100 px-4 py-3">
-                    <div class="text-sm font-medium text-slate-900">Localisation</div>
-                    <div class="mt-1 text-sm font-semibold text-[var(--neso-blue)]">Genou droit</div>
+                <div class="mini-row">
+                  <div class="mini-icon">DP</div>
+                  <div>
+                    <div class="mini-title">Dossier patient</div>
+                    <div class="mini-meta">Documents et historique reliés</div>
                   </div>
-                  <div class="rounded-2xl bg-white border border-slate-100 px-4 py-3">
-                    <div class="text-sm font-medium text-slate-900">Depuis quand ?</div>
-                    <div class="mt-1 text-sm font-semibold text-[var(--neso-blue)]">3 semaines</div>
-                  </div>
+                  <div class="mini-status">Sécurisé</div>
                 </div>
               </div>
-
-              <div class="bg-gradient-to-br from-[var(--neso-blue)] to-[#1b6aa4] rounded-2xl p-4 text-white mt-5">
-
-                <div class="font-medium text-[15px]">
-                  🔒 Données confidentielles
-                </div>
-
-                <div class="text-[13px] leading-6 text-blue-100 mt-2">
-                  Partagées uniquement avec votre praticien.
-                </div>
-
-              </div>
-
             </div>
-
           </div>
-
         </div>
+      </section>
 
-      </div>
-
-    </div>
-
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 pb-20 sm:pb-24">
-      <div class="grid lg:grid-cols-3 gap-5">
-        <a href="scan.html" class="bg-white border border-[var(--neso-border)] rounded-[32px] p-7 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition duration-300">
-          <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-[var(--neso-blue)] to-[var(--neso-teal)] text-white flex items-center justify-center text-2xl shadow-sm">🩺</div>
-          <h2 class="mt-7 text-2xl font-semibold tracking-tight text-slate-950">Lancer Physio Scan</h2>
-          <p class="mt-4 text-slate-600 leading-7">Questionnaire rapide avant rendez-vous, avec envoi des réponses au praticien.</p>
-          <div class="mt-6 text-[var(--neso-blue)] font-semibold">Ouvrir Physio Scan →</div>
-        </a>
-
-        <a href="app-v2.html" class="bg-white border border-[var(--neso-border)] rounded-[32px] p-7 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition duration-300">
-          <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-[var(--neso-blue)] to-[var(--neso-teal)] text-white flex items-center justify-center text-2xl shadow-sm">📱</div>
-          <h2 class="mt-7 text-2xl font-semibold tracking-tight text-slate-950">Je suis patient</h2>
-          <p class="mt-4 text-slate-600 leading-7">Compte sécurisé, exercices, suivi douleur et dossier médical avec documents scannés.</p>
-          <div class="mt-6 text-[var(--neso-blue)] font-semibold">Se connecter →</div>
-        </a>
-
-        <a href="dashboard-v2.html" class="bg-white border border-[var(--neso-border)] rounded-[32px] p-7 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition duration-300 text-left">
-          <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-[var(--neso-blue)] to-[var(--neso-teal)] text-white flex items-center justify-center text-2xl shadow-sm">📊</div>
-          <h2 class="mt-7 text-2xl font-semibold tracking-tight text-slate-950">Je suis praticien</h2>
-          <p class="mt-4 text-slate-600 leading-7">Liste des scans, détails patient, priorités et analytics de parcours.</p>
-          <div class="mt-6 text-[var(--neso-blue)] font-semibold">Accéder au dashboard →</div>
-        </a>
-      </div>
-    </section>
-
-    <section id="fonctionnement" class="max-w-7xl mx-auto px-4 sm:px-6 pb-20 sm:pb-28">
-
-      <div class="text-center max-w-3xl mx-auto">
-
-        <div class="inline-flex items-center gap-2 bg-white border border-[var(--neso-border)] rounded-full px-4 py-2 text-xs sm:text-sm font-medium text-[var(--neso-blue)] shadow-sm">
-          <div class="w-2 h-2 rounded-full bg-[var(--neso-blue)]"></div>
-          Fonctionnement
-        </div>
-
-        <h2 class="mt-6 text-4xl sm:text-5xl tracking-[-0.04em] font-semibold leading-[1.05]">
-          Un parcours simple avant votre séance.
-        </h2>
-
-        <p class="mt-6 text-base sm:text-xl leading-7 sm:leading-9 text-slate-600">
-          Physio Scan aide les patients à transmettre les informations importantes avant leur rendez-vous, puis à poursuivre leur suivi dans un espace mobile sécurisé.
-        </p>
-
-      </div>
-
-      <div class="grid lg:grid-cols-3 gap-5 mt-14">
-
-        <div class="bg-white border border-[var(--neso-border)] rounded-[32px] p-7 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition duration-300">
-
-          <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-[var(--neso-blue)] to-[var(--neso-teal)] text-white flex items-center justify-center text-xl font-semibold shadow-sm">
-            1
-          </div>
-
-          <h3 class="mt-7 text-2xl font-semibold tracking-tight text-slate-950">
-            Répondez aux questions
-          </h3>
-
-          <p class="mt-4 text-slate-600 leading-7">
-            Un questionnaire simple et intuitif permet au patient d’expliquer sa douleur, ses symptômes et son contexte.
-          </p>
-
-        </div>
-
-        <div class="bg-white border border-[var(--neso-border)] rounded-[32px] p-7 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition duration-300">
-
-          <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-[var(--neso-blue)] to-[var(--neso-teal)] text-white flex items-center justify-center text-xl font-semibold shadow-sm">
-            2
-          </div>
-
-          <h3 class="mt-7 text-2xl font-semibold tracking-tight text-slate-950">
-            Le praticien reçoit un pré-bilan
-          </h3>
-
-          <p class="mt-4 text-slate-600 leading-7">
-            Les informations importantes sont organisées clairement avant le rendez-vous afin de gagner du temps en séance.
-          </p>
-
-        </div>
-
-        <div class="bg-white border border-[var(--neso-border)] rounded-[32px] p-7 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition duration-300">
-
-          <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-[var(--neso-blue)] to-[var(--neso-teal)] text-white flex items-center justify-center text-xl font-semibold shadow-sm">
-            3
-          </div>
-
-          <h3 class="mt-7 text-2xl font-semibold tracking-tight text-slate-950">
-            Une séance mieux préparée
-          </h3>
-
-          <p class="mt-4 text-slate-600 leading-7">
-            Le praticien peut mieux comprendre la situation du patient dès la première consultation.
-          </p>
-
-        </div>
-
-      </div>
-
-    </section>
-
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 pb-20 sm:pb-28">
-
-      <div class="grid lg:grid-cols-3 gap-5">
-
-        <div class="bg-white border border-[var(--neso-border)] rounded-[32px] p-7 shadow-sm">
-          <div class="w-12 h-12 rounded-2xl bg-blue-50 flex items-center justify-center text-2xl mb-6">⚡️</div>
-          <h3 class="text-2xl font-semibold tracking-tight text-slate-950">Rapide</h3>
-          <p class="mt-4 text-slate-600 leading-7">
-            Quelques minutes suffisent pour préparer les informations utiles avant votre rendez-vous.
+      <section class="shell section" id="patients">
+        <div class="section-head">
+          <div class="section-kicker">Pour les patients</div>
+          <h2>Un suivi plus lisible entre deux séances.</h2>
+          <p class="section-copy">
+            Le patient prépare son rendez-vous, retrouve ses réponses et suit l’évolution de sa rééducation dans un espace personnel.
           </p>
         </div>
+        <div class="feature-grid">
+          <article class="feature-card">
+            <div class="feature-number">01</div>
+            <h3>Répondez à quelques questions avant la séance</h3>
+            <p>Le Physio Scan aide à transmettre les informations utiles au praticien en moins d’une minute.</p>
+          </article>
+          <article class="feature-card">
+            <div class="feature-number">02</div>
+            <h3>Retrouvez vos Physio Scans</h3>
+            <p>Chaque scan lié au compte patient reste disponible dans l’historique personnel.</p>
+          </article>
+          <article class="feature-card">
+            <div class="feature-number">03</div>
+            <h3>Suivez l’évolution de votre rééducation</h3>
+            <p>Douleur, objectifs, exercices et dossier patient sont réunis dans une web app mobile.</p>
+          </article>
+        </div>
+      </section>
 
-        <div class="bg-white border border-[var(--neso-border)] rounded-[32px] p-7 shadow-sm">
-          <div class="w-12 h-12 rounded-2xl bg-blue-50 flex items-center justify-center text-2xl mb-6">🎯</div>
-          <h3 class="text-2xl font-semibold tracking-tight text-slate-950">Plus clair</h3>
-          <p class="mt-4 text-slate-600 leading-7">
-            Vos douleurs, votre contexte et vos objectifs sont mieux structurés pour votre praticien.
+      <section class="shell section" id="praticiens">
+        <div class="section-head">
+          <div class="section-kicker">Pour les praticiens</div>
+          <h2>Des informations clés avant la séance.</h2>
+          <p class="section-copy">
+            Le dashboard praticien centralise les scans, les statuts et les éléments importants pour mieux préparer la prise en charge.
           </p>
         </div>
-
-        <div class="bg-white border border-[var(--neso-border)] rounded-[32px] p-7 shadow-sm">
-          <div class="w-12 h-12 rounded-2xl bg-blue-50 flex items-center justify-center text-2xl mb-6">🔒</div>
-          <h3 class="text-2xl font-semibold tracking-tight text-slate-950">Confidentiel</h3>
-          <p class="mt-4 text-slate-600 leading-7">
-            Les informations sont pensées pour rester dans un cadre clair, sécurisé et professionnel.
-          </p>
+        <div class="feature-grid">
+          <article class="feature-card">
+            <div class="feature-number">01</div>
+            <h3>Recevez les informations clés avant la séance</h3>
+            <p>Zone évaluée, douleur, gêne principale et objectifs sont structurés avant le rendez-vous.</p>
+          </article>
+          <article class="feature-card">
+            <div class="feature-number">02</div>
+            <h3>Gagnez du temps sur l’interrogatoire</h3>
+            <p>Le praticien arrive avec une première lecture claire du contexte patient.</p>
+          </article>
+          <article class="feature-card">
+            <div class="feature-number">03</div>
+            <h3>Suivez plus facilement l’évolution des patients</h3>
+            <p>Les statuts et l’historique aident à prioriser les patients et à prolonger le suivi.</p>
+          </article>
         </div>
+      </section>
 
-      </div>
-
-    </section>
-
-    <section id="securite" class="max-w-7xl mx-auto px-4 sm:px-6 pb-20 sm:pb-28">
-
-      <div class="rounded-[40px] border border-[var(--neso-border)] bg-white overflow-hidden shadow-sm">
-        <div class="grid lg:grid-cols-2 gap-10 items-center p-8 sm:p-12 lg:p-16">
-
+      <section class="shell section" id="securite">
+        <div class="security-band">
           <div>
-            <div class="inline-flex items-center gap-2 bg-[var(--neso-blue-soft)] border border-[var(--neso-border)] rounded-full px-4 py-2 text-xs sm:text-sm font-medium text-[var(--neso-blue)] mb-7">
-              Sécurité & confidentialité
-            </div>
-
-            <h2 class="text-4xl sm:text-5xl tracking-[-0.04em] font-semibold leading-[1.05] text-slate-950">
-              Vos données restent confidentielles.
-            </h2>
-
-            <p class="mt-6 text-base sm:text-xl leading-8 text-slate-600">
-              Physio Scan est conçu pour transmettre uniquement les informations utiles à votre prise en charge, dans une expérience simple et rassurante.
+            <div class="section-kicker" style="color:rgba(255,255,255,0.68);">Sécurité</div>
+            <h2>Un cadre clair pour des données sensibles.</h2>
+            <p class="section-copy">
+              NESO Santé sépare les accès patient et praticien, avec un dashboard protégé et des données patient isolées par compte.
             </p>
           </div>
-
-          <div class="grid gap-4">
-
-            <div class="relative overflow-hidden bg-[#f8fbfa] border border-[var(--neso-border)] rounded-3xl p-5 shadow-sm">
-              <div class="absolute left-0 top-0 h-full w-1 bg-[var(--neso-blue)]"></div>
-              <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-2xl bg-[var(--neso-blue-soft)] flex items-center justify-center text-[var(--neso-blue)]">🔐</div>
-                <div class="font-semibold text-slate-950">Partage maîtrisé</div>
-              </div>
-              <div class="text-slate-600 mt-3 leading-7 pl-[52px]">Les informations sont destinées au praticien concerné par votre prise en charge.</div>
+          <div class="security-list">
+            <div class="security-item">
+              <div class="security-icon">01</div>
+              <div><strong>Données sécurisées</strong><span>Les informations patient sont liées au compte et protégées par les règles d’accès.</span></div>
             </div>
-
-            <div class="relative overflow-hidden bg-[#f8fbfa] border border-[var(--neso-border)] rounded-3xl p-5 shadow-sm">
-              <div class="absolute left-0 top-0 h-full w-1 bg-[var(--neso-teal)]"></div>
-              <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-2xl bg-[var(--neso-teal-soft)] flex items-center justify-center text-[var(--neso-teal)]">✓</div>
-                <div class="font-semibold text-slate-950">Expérience sécurisée</div>
-              </div>
-              <div class="text-slate-600 mt-3 leading-7 pl-[52px]">Le parcours est pensé pour limiter les informations inutiles et garder un cadre professionnel.</div>
+            <div class="security-item">
+              <div class="security-icon">02</div>
+              <div><strong>Accès personnel</strong><span>Chaque patient retrouve uniquement ses propres scans et documents.</span></div>
             </div>
-
-            <div class="relative overflow-hidden bg-[#f8fbfa] border border-[var(--neso-border)] rounded-3xl p-5 shadow-sm">
-              <div class="absolute left-0 top-0 h-full w-1 bg-[var(--neso-blue)]"></div>
-              <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-2xl bg-[var(--neso-blue-soft)] flex items-center justify-center text-[var(--neso-blue)]">☑</div>
-                <div class="font-semibold text-slate-950">Clarté pour le patient</div>
-              </div>
-              <div class="text-slate-600 mt-3 leading-7 pl-[52px]">Le patient comprend pourquoi il répond aux questions et à quoi elles servent.</div>
+            <div class="security-item">
+              <div class="security-icon">03</div>
+              <div><strong>Dashboard praticien protégé</strong><span>L’espace praticien reste derrière le contrôle d’accès existant.</span></div>
             </div>
-
           </div>
-
         </div>
-      </div>
+      </section>
 
-    </section>
-
-    <section id="praticiens" class="max-w-7xl mx-auto px-4 sm:px-6 pb-20 sm:pb-28">
-
-      <div class="rounded-[40px] border border-[var(--neso-border)] bg-white p-8 sm:p-12 shadow-sm">
-        <div class="grid lg:grid-cols-[1.1fr_0.9fr] gap-10 items-center">
-
-          <div>
-            <div class="inline-flex items-center gap-2 bg-[var(--neso-blue-soft)] border border-[var(--neso-border)] rounded-full px-4 py-2 text-xs sm:text-sm font-medium text-[var(--neso-blue)] mb-7">
-              Pour les praticiens
-            </div>
-
-            <h2 class="text-4xl sm:text-5xl tracking-[-0.04em] font-semibold leading-[1.05]">
-              Un pré-bilan plus clair avant la séance.
-            </h2>
-
-            <p class="mt-6 text-base sm:text-xl leading-8 text-slate-600">
-              L’espace praticien permet de consulter les scans patients, de retrouver les informations importantes et de mieux préparer les rendez-vous.
-            </p>
-          </div>
-
-          <div class="bg-[#f8fbfa] border border-slate-100 rounded-[32px] p-6 shadow-sm">
-
-            <div class="flex items-center justify-between mb-6">
-              <div>
-                <div class="text-sm text-[var(--neso-blue)] font-medium">Dashboard</div>
-                <div class="text-2xl font-semibold tracking-tight mt-1">Aperçu praticien</div>
-              </div>
-              <div class="w-11 h-11 rounded-2xl bg-[var(--neso-blue)] flex items-center justify-center text-white">📊</div>
-            </div>
-
-            <div class="space-y-3">
-              <div class="bg-white border border-slate-100 rounded-2xl p-4">
-                <div class="flex items-center justify-between">
-                  <div>
-                    <div class="font-medium">Zone la plus déclarée</div>
-                    <div class="text-sm text-slate-500 mt-1">Sur les scans récents</div>
-                  </div>
-                  <div class="text-[var(--neso-blue)] font-semibold">Genou</div>
-                </div>
-                <div class="mt-4 h-2 rounded-full bg-slate-100">
-                  <div class="h-2 w-[68%] rounded-full bg-[var(--neso-blue)]"></div>
-                </div>
-              </div>
-
-              <div class="grid grid-cols-2 gap-3">
-                <div class="bg-white border border-slate-100 rounded-2xl p-4">
-                  <div class="text-2xl font-semibold text-[var(--neso-blue)]">7,2/10</div>
-                  <div class="text-sm text-slate-500 mt-1">Douleur moyenne</div>
-                </div>
-
-                <div class="bg-white border border-slate-100 rounded-2xl p-4">
-                  <div class="text-2xl font-semibold text-[var(--neso-blue)]">5</div>
-                  <div class="text-sm text-slate-500 mt-1">Patients à préparer</div>
-                </div>
-              </div>
-
-              <div class="bg-[var(--neso-blue-soft)] border border-[var(--neso-border)] rounded-2xl p-4">
-                <div class="font-medium text-[var(--neso-blue)]">Priorité du jour</div>
-                <div class="text-sm text-slate-600 mt-1">2 patients avec douleur élevée et gêne fonctionnelle importante.</div>
-              </div>
-
-              <a href="dashboard-v2.html" class="neso-gradient-button w-full text-white px-6 py-4 rounded-full font-semibold transition mt-4 inline-flex items-center justify-center">
-                Accéder à l’espace praticien
-              </a>
-            </div>
-
-          </div>
-
+      <section class="shell cta">
+        <div>
+          <h2>Choisissez votre accès NESO Santé.</h2>
+          <p class="section-copy">
+            Physio Scan pour préparer une séance, espace patient pour suivre votre parcours, dashboard pour les praticiens.
+          </p>
         </div>
-      </div>
-
-    </section>
-
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 pb-20 sm:pb-28">
-
-      <div class="text-center max-w-3xl mx-auto">
-        <h2 class="text-4xl sm:text-5xl tracking-[-0.04em] font-semibold leading-[1.05]">
-          Prêt à préparer votre séance ?
-        </h2>
-
-        <p class="mt-6 text-base sm:text-xl leading-8 text-slate-600">
-          Quelques questions simples pour aider votre praticien à mieux comprendre votre situation avant votre rendez-vous.
-        </p>
-
-        <div class="mt-9 flex flex-col sm:flex-row justify-center gap-3 sm:gap-4">
-          <a href="scan.html" class="neso-gradient-button text-white px-8 py-4 rounded-full font-semibold transition inline-flex items-center justify-center">
-            Lancer Physio Scan
-          </a>
-
-          <a href="app-v2.html" class="glass-button border border-[var(--neso-border)] px-8 py-4 rounded-full font-semibold transition hover:border-[var(--neso-blue)] hover:text-[var(--neso-blue)] inline-flex items-center justify-center">
-            Je suis patient
-          </a>
-
-          <a href="dashboard-v2.html" class="glass-button border border-[var(--neso-border)] px-8 py-4 rounded-full font-semibold transition hover:border-[var(--neso-blue)] hover:text-[var(--neso-blue)] inline-flex items-center justify-center">
-            Je suis praticien
-          </a>
+        <div class="cta-actions">
+          <a class="button primary" href="https://scan.nesosante.com/">Commencer un Physio Scan</a>
+          <a class="button secondary" href="https://app.nesosante.com/">Espace patient</a>
+          <a class="button secondary" href="https://www.nesosante.com/dashboard-v2.html">Espace praticien</a>
         </div>
-      </div>
+      </section>
+    </main>
 
-    </section>
-
-    <footer class="max-w-7xl mx-auto px-4 sm:px-6 py-8 border-t border-slate-200/70 flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center text-sm text-slate-500">
-      <div class="brand-serif font-semibold text-[var(--neso-blue)]">Neso <span class="font-normal text-slate-700">Santé</span></div>
-
-      <div class="flex flex-wrap gap-5">
-        <a href="mailto:contact@nesosante.fr" class="hover:text-[var(--neso-blue)] transition">Contact</a>
-        <a href="#" class="hover:text-[var(--neso-blue)] transition">Mentions légales</a>
-        <a href="#" class="hover:text-[var(--neso-blue)] transition">Confidentialité</a>
+    <footer class="footer">
+      <div class="shell footer-inner">
+        <div>NESO Santé · Rééducation connectée</div>
+        <div class="footer-links">
+          <a href="mailto:contact@nesosante.com">Contact</a>
+          <a href="https://scan.nesosante.com/">Physio Scan</a>
+          <a href="https://app.nesosante.com/">Espace patient</a>
+          <a href="https://www.nesosante.com/dashboard-v2.html">Espace praticien</a>
+        </div>
       </div>
     </footer>
-
-  </section>
-
+  </div>
 </body>
 </html>
