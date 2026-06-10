@@ -98,9 +98,11 @@
       align-items: center;
       gap: 12px;
       min-width: 0;
+      flex: 0 1 auto;
     }
 
     .brand-mark {
+      flex: 0 0 auto;
       width: 44px;
       height: 44px;
       border-radius: 16px;
@@ -164,6 +166,7 @@
       color: #fff;
       background: linear-gradient(135deg, var(--blue), var(--teal));
       box-shadow: 0 12px 28px rgba(7, 143, 106, 0.16);
+      white-space: nowrap;
     }
 
     .hero {
@@ -233,6 +236,8 @@
       justify-content: center;
       border: 1px solid transparent;
       font-size: 15px;
+      line-height: 1.15;
+      text-align: center;
       font-weight: 900;
       transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease, color 0.18s ease;
     }
@@ -704,11 +709,32 @@
 
     @media (max-width: 560px) {
       .shell {
-        width: min(1120px, calc(100% - 28px));
+        width: min(1120px, calc(100% - 32px));
       }
 
       .topbar-inner {
-        min-height: 70px;
+        min-height: calc(66px + env(safe-area-inset-top));
+        padding-top: env(safe-area-inset-top);
+        gap: 10px;
+      }
+
+      .brand {
+        gap: 9px;
+      }
+
+      .brand-mark {
+        width: 38px;
+        height: 38px;
+        border-radius: 14px;
+      }
+
+      .brand-mark img {
+        width: 24px;
+        height: 24px;
+      }
+
+      .brand-name strong {
+        font-size: 16px;
       }
 
       .brand-name span {
@@ -716,27 +742,60 @@
       }
 
       .nav-action {
-        min-height: 38px;
-        padding: 0 12px;
-        font-size: 12px;
+        min-height: 36px;
+        padding: 0 11px;
+        font-size: 11px;
+        border-radius: 13px;
       }
 
       .hero {
-        padding-top: 44px;
-        padding-bottom: 48px;
+        gap: 28px;
+        padding-top: 30px;
+        padding-bottom: 38px;
+      }
+
+      .eyebrow {
+        min-height: 32px;
+        padding: 0 12px;
+        font-size: 11px;
       }
 
       h1 {
-        font-size: 42px;
+        margin-top: 20px;
+        font-size: clamp(32px, 9.6vw, 38px);
+        line-height: 1.04;
       }
 
       .hero-copy {
-        font-size: 17px;
-        line-height: 1.58;
+        margin-top: 18px;
+        font-size: 16px;
+        line-height: 1.55;
+      }
+
+      .hero-actions {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 9px;
+        margin-top: 24px;
       }
 
       .hero-actions .button {
         width: 100%;
+      }
+
+      .hero-actions .button.primary {
+        grid-column: 1 / -1;
+      }
+
+      .button {
+        min-height: 50px;
+        padding: 0 16px;
+        border-radius: 16px;
+        font-size: 14px;
+      }
+
+      .trust-row {
+        display: none;
       }
 
       .preview-panel {
@@ -748,11 +807,83 @@
       .feature-card,
       .security-band,
       .cta {
-        padding: 20px;
+        padding: 18px;
+      }
+
+      .preview-header {
+        min-height: 96px;
+      }
+
+      .preview-top {
+        gap: 10px;
+        margin-bottom: 14px;
+      }
+
+      .preview-label {
+        font-size: 10px;
+      }
+
+      .preview-badge {
+        min-height: 28px;
+        padding: 0 9px;
+        font-size: 11px;
       }
 
       .preview-title {
-        font-size: 25px;
+        font-size: 21px;
+        line-height: 1.12;
+      }
+
+      .preview-body {
+        display: none;
+      }
+
+      .preview-card {
+        padding: 14px;
+        border-radius: 19px;
+      }
+
+      .preview-card-head {
+        gap: 10px;
+        margin-bottom: 8px;
+      }
+
+      .preview-card-title {
+        font-size: 15px;
+      }
+
+      .preview-card-meta {
+        font-size: 12px;
+      }
+
+      .score {
+        font-size: 22px;
+      }
+
+      .chart {
+        height: 74px;
+        min-height: 0;
+      }
+
+      .mini-row {
+        grid-template-columns: 40px minmax(0, 1fr);
+        gap: 10px;
+        padding: 11px;
+      }
+
+      .mini-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 14px;
+      }
+
+      .mini-status {
+        grid-column: 2;
+        width: fit-content;
+      }
+
+      .preview-list {
+        display: none;
       }
 
       .feature-grid {
@@ -761,6 +892,93 @@
 
       .feature-card {
         min-height: 0;
+      }
+
+      .section {
+        padding: 26px 0;
+      }
+
+      h2 {
+        font-size: 30px;
+        line-height: 1.12;
+      }
+
+      .section-copy {
+        font-size: 15px;
+        line-height: 1.55;
+      }
+
+      .feature-card h3 {
+        font-size: 20px;
+      }
+
+      .feature-card p {
+        font-size: 15px;
+      }
+
+      .security-band {
+        border-radius: 26px;
+        gap: 22px;
+      }
+
+      .security-item {
+        grid-template-columns: 38px minmax(0, 1fr);
+        gap: 12px;
+        padding: 13px;
+      }
+
+      .security-icon {
+        width: 38px;
+        height: 38px;
+        border-radius: 14px;
+      }
+
+      .cta {
+        gap: 18px;
+        margin-top: 26px;
+        margin-bottom: 46px;
+        border-radius: 26px;
+      }
+
+      .footer {
+        padding: 24px 0 calc(24px + env(safe-area-inset-bottom));
+      }
+
+      .footer-inner,
+      .footer-links {
+        justify-content: center;
+        text-align: center;
+      }
+    }
+
+    @media (max-width: 380px) {
+      .shell {
+        width: min(1120px, calc(100% - 24px));
+      }
+
+      .brand-name strong {
+        font-size: 15px;
+      }
+
+      .nav-action {
+        padding: 0 9px;
+        font-size: 10.5px;
+      }
+
+      h1 {
+        font-size: 30px;
+      }
+
+      .hero-copy {
+        font-size: 15px;
+      }
+
+      .preview-header,
+      .preview-body,
+      .feature-card,
+      .security-band,
+      .cta {
+        padding: 16px;
       }
     }
   </style>
@@ -797,7 +1015,7 @@
           </p>
           <div class="hero-actions" aria-label="Accès rapides">
             <a class="button primary" href="/scan.html">Commencer un Physio Scan</a>
-            <a class="button secondary" href="/app-v2.html">Accéder à mon espace patient</a>
+            <a class="button secondary" href="/app-v2.html">Espace patient</a>
             <a class="button secondary" href="/dashboard-v2.html">Espace praticien</a>
           </div>
           <div class="trust-row" aria-label="Garanties">
