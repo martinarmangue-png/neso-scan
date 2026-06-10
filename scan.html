@@ -537,7 +537,7 @@
 
     <div class="page" id="p8">
       <button class="back" onclick="go('p7')">← retour</button>
-      <p class="question" id="question-q6">Quel est votre objectif principal pour cette prise en charge ?</p>
+      <p class="question" id="question-q6">Quels sont vos objectifs principaux pour cette prise en charge ?</p>
       <p class="question-helper" id="helper-q6"></p>
       <div class="grid" id="grid-q6"></div>
       <button class="btn btn-off" id="cta-p8" onclick="goRecap()">Voir mon Physio Scan <div class="ac"><i class="ti ti-arrow-right"></i></div></button>
@@ -564,7 +564,7 @@
       <div class="rd"></div>
       <div class="rb"><p class="rl" id="recap-label-q5">Question spécifique</p><div class="rt" id="r-q5"></div></div>
       <div class="rd"></div>
-      <div class="rb" style="margin-bottom:18px;"><p class="rl" id="recap-label-q6">Objectif</p><div class="rt" id="r-q6"></div></div>
+      <div class="rb" style="margin-bottom:18px;"><p class="rl" id="recap-label-q6">Objectifs</p><div class="rt" id="r-q6"></div></div>
 
       <label class="consent">
         <input type="checkbox" id="consent" onchange="toggleSend()" />
@@ -643,8 +643,9 @@
           options: ['Repos', 'Mouvement doux', 'Chaleur', 'Étirements', 'Rien pour le moment']
         },
         q6: {
-          label: 'Quel est votre objectif principal pour cette prise en charge ?',
-          recap: 'Objectif',
+          label: 'Quels sont vos objectifs principaux pour cette prise en charge ?',
+          recap: 'Objectifs',
+          multiple: true,
           options: OBJECTIVE_OPTIONS
         }
       }
@@ -674,8 +675,9 @@
           options: ['Non', 'Oui, écran', 'Oui, posture', 'Oui, les deux']
         },
         q6: {
-          label: 'Quel est votre objectif principal pour cette prise en charge ?',
-          recap: 'Objectif',
+          label: 'Quels sont vos objectifs principaux pour cette prise en charge ?',
+          recap: 'Objectifs',
+          multiple: true,
           options: OBJECTIVE_OPTIONS
         }
       }
@@ -705,8 +707,9 @@
           options: ['Non', 'Parfois', 'Souvent', 'Toutes les nuits']
         },
         q6: {
-          label: 'Quel est votre objectif principal pour cette prise en charge ?',
-          recap: 'Objectif',
+          label: 'Quels sont vos objectifs principaux pour cette prise en charge ?',
+          recap: 'Objectifs',
+          multiple: true,
           options: OBJECTIVE_OPTIONS
         }
       }
@@ -736,8 +739,9 @@
           options: ['Non', 'Instabilité', 'Blocage', 'Les deux']
         },
         q6: {
-          label: 'Quel est votre objectif principal pour cette prise en charge ?',
-          recap: 'Objectif',
+          label: 'Quels sont vos objectifs principaux pour cette prise en charge ?',
+          recap: 'Objectifs',
+          multiple: true,
           options: OBJECTIVE_OPTIONS
         }
       }
@@ -767,8 +771,9 @@
           options: ['Appui simple', 'Marcher vite', 'Escaliers', 'Terrain irrégulier', 'Sauter']
         },
         q6: {
-          label: 'Quel est votre objectif principal pour cette prise en charge ?',
-          recap: 'Objectif',
+          label: 'Quels sont vos objectifs principaux pour cette prise en charge ?',
+          recap: 'Objectifs',
+          multiple: true,
           options: OBJECTIVE_OPTIONS
         }
       }
@@ -797,8 +802,9 @@
           options: ['Diminue', 'Stable', 'Augmente', 'Variable selon les jours']
         },
         q6: {
-          label: 'Quel est votre objectif principal pour cette prise en charge ?',
-          recap: 'Objectif',
+          label: 'Quels sont vos objectifs principaux pour cette prise en charge ?',
+          recap: 'Objectifs',
+          multiple: true,
           options: OBJECTIVE_OPTIONS
         }
       }
