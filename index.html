@@ -5,6 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#21498f" />
   <meta name="description" content="NESO Santé aide les patients et les praticiens à préparer les séances de rééducation, suivre l'évolution et améliorer la continuité des soins." />
+  <meta name="application-name" content="NESO Santé" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="NESO Santé" />
+  <link rel="manifest" href="/manifest.webmanifest" />
   <link rel="icon" href="neso-icon.svg" type="image/svg+xml" />
   <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
   <link rel="canonical" href="https://www.nesosante.com/" />
@@ -763,7 +769,7 @@
   <div class="page">
     <header class="topbar">
       <div class="shell topbar-inner">
-        <a class="brand" href="https://www.nesosante.com/" aria-label="Accueil NESO Santé">
+        <a class="brand" href="/" aria-label="Accueil NESO Santé">
           <span class="brand-mark" aria-hidden="true">
             <img src="neso-icon.svg" alt="" />
           </span>
@@ -777,7 +783,7 @@
           <a href="#praticiens">Praticiens</a>
           <a href="#securite">Sécurité</a>
         </nav>
-        <a class="nav-action" href="https://www.nesosante.com/dashboard-v2.html">Espace praticien</a>
+        <a class="nav-action" href="/dashboard-v2.html">Espace praticien</a>
       </div>
     </header>
 
@@ -790,9 +796,9 @@
             Un espace simple pour préparer la séance, suivre l’évolution du patient et améliorer la continuité des soins.
           </p>
           <div class="hero-actions" aria-label="Accès rapides">
-            <a class="button primary" href="https://scan.nesosante.com/">Commencer un Physio Scan</a>
-            <a class="button secondary" href="https://app.nesosante.com/">Accéder à mon espace patient</a>
-            <a class="button secondary" href="https://www.nesosante.com/dashboard-v2.html">Espace praticien</a>
+            <a class="button primary" href="/scan.html">Commencer un Physio Scan</a>
+            <a class="button secondary" href="/app-v2.html">Accéder à mon espace patient</a>
+            <a class="button secondary" href="/dashboard-v2.html">Espace praticien</a>
           </div>
           <div class="trust-row" aria-label="Garanties">
             <span class="trust-pill">Données sécurisées</span>
@@ -941,9 +947,9 @@
           </p>
         </div>
         <div class="cta-actions">
-          <a class="button primary" href="https://scan.nesosante.com/">Commencer un Physio Scan</a>
-          <a class="button secondary" href="https://app.nesosante.com/">Espace patient</a>
-          <a class="button secondary" href="https://www.nesosante.com/dashboard-v2.html">Espace praticien</a>
+          <a class="button primary" href="/scan.html">Commencer un Physio Scan</a>
+          <a class="button secondary" href="/app-v2.html">Espace patient</a>
+          <a class="button secondary" href="/dashboard-v2.html">Espace praticien</a>
         </div>
       </section>
     </main>
@@ -953,12 +959,19 @@
         <div>NESO Santé · Rééducation connectée</div>
         <div class="footer-links">
           <a href="mailto:contact@nesosante.com">Contact</a>
-          <a href="https://scan.nesosante.com/">Physio Scan</a>
-          <a href="https://app.nesosante.com/">Espace patient</a>
-          <a href="https://www.nesosante.com/dashboard-v2.html">Espace praticien</a>
+          <a href="/scan.html">Physio Scan</a>
+          <a href="/app-v2.html">Espace patient</a>
+          <a href="/dashboard-v2.html">Espace praticien</a>
         </div>
       </div>
     </footer>
   </div>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('/sw.js').catch(function() {});
+      });
+    }
+  </script>
 </body>
 </html>

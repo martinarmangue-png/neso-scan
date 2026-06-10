@@ -28,5 +28,46 @@
       "type": "image/svg+xml",
       "purpose": "any maskable"
     }
+  ],
+  "shortcuts": [
+    {
+      "name": "Espace patient",
+      "short_name": "Patient",
+      "description": "Ouvrir l'espace patient NESO Santé.",
+      "url": "/app-v2.html",
+      "icons": [
+        {
+          "src": "/icons/neso-icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Physio Scan",
+      "short_name": "Scan",
+      "description": "Commencer un Physio Scan.",
+      "url": "/scan.html",
+      "icons": [
+        {
+          "src": "/icons/neso-icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Espace praticien",
+      "short_name": "Praticien",
+      "description": "Ouvrir le dashboard praticien protégé.",
+      "url": "/dashboard-v2.html",
+      "icons": [
+        {
+          "src": "/icons/neso-icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    }
   ]
 }
