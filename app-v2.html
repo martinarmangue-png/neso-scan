@@ -3331,11 +3331,15 @@
     }
 
     function painTrendLabel(firstScore, latestScore) {
-      const diff = firstScore - latestScore;
-      if (diff > 0) return 'En baisse de ' + diff + ' point' + (diff > 1 ? 's' : '');
-      if (diff < 0) {
-        const increase = Math.abs(diff);
-        return 'En hausse de ' + increase + ' point' + (increase > 1 ? 's' : '');
+      const initial = Number(firstScore);
+      const latest = Number(latestScore);
+      if (!Number.isFinite(initial) || !Number.isFinite(latest)) return 'Aucune comparaison disponible';
+      if (initial === 0) return 'Comparaison non disponible';
+
+      const percent = Math.round(((initial - latest) / initial) * 100);
+      if (percent > 0) return 'En baisse de ' + percent + '%';
+      if (percent < 0) {
+        return 'En hausse de ' + Math.abs(percent) + '%';
       }
       return 'Stable';
     }
@@ -3402,17 +3406,20 @@
         if (previous) {
           painChange.textContent = painTrendLabel(Number(previous.score), latestScore);
         } else {
-          painChange.textContent = 'Premier point enregistré';
+          painChange.textContent = 'Aucune comparaison disponible';
         }
       }
 
       if (painChartEmpty) painChartEmpty.style.display = 'none';
       if (painChartStats) {
         const firstScore = Number(entries[0].score);
+        const trendLabel = entries.length > 1
+          ? painTrendLabel(firstScore, latestScore)
+          : 'Aucune comparaison disponible';
         painChartStats.innerHTML =
           '<div class="chart-stat">Premier point<strong>' + firstScore + '/10</strong></div>' +
           '<div class="chart-stat">Dernier point<strong>' + latestScore + '/10</strong></div>' +
-          '<div class="chart-stat">Tendance<strong>' + escapeHtml(painTrendLabel(firstScore, latestScore)) + '</strong></div>';
+          '<div class="chart-stat">Tendance<strong>' + escapeHtml(trendLabel) + '</strong></div>';
       }
 
       if (!painChartWrap) return;
