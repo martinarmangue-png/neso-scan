@@ -1020,6 +1020,26 @@
       color: var(--warning);
     }
 
+    .history-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .history-delete {
+      min-height: 32px;
+      padding: 0 10px;
+      border-radius: 999px;
+      background: #fff1f2;
+      color: #b32635;
+      font-size: 12px;
+      font-weight: 800;
+      box-shadow: none;
+      white-space: nowrap;
+    }
+
     .scan-history-card {
       display: grid;
       gap: 16px;
@@ -1849,6 +1869,17 @@
         font-size: 14px;
       }
 
+      .history-row {
+        grid-template-columns: 54px minmax(0, 1fr);
+        align-items: start;
+      }
+
+      .history-actions {
+        grid-column: 2;
+        width: 100%;
+        justify-content: space-between;
+      }
+
       .pain-picker {
         gap: 4px;
       }
@@ -2252,10 +2283,11 @@
         <div class="content">
           <article class="card chart-card">
             <div class="chart-title">📈 Courbe de douleur</div>
-            <div class="empty-docs">Les comparaisons apparaîtront après plusieurs Physio Scans liés à votre compte.</div>
-            <div class="chart-stats">
-              <div class="chart-stat">Premier scan<strong>À venir</strong></div>
-              <div class="chart-stat">Aujourd'hui<strong class="pain-score-inline">0/10</strong></div>
+            <div class="chart-wrap" id="painChartWrap"></div>
+            <div class="empty-docs" id="painChartEmpty">Aucune douleur enregistrée pour le moment.</div>
+            <div class="chart-stats" id="painChartStats">
+              <div class="chart-stat">Premier point<strong>À venir</strong></div>
+              <div class="chart-stat">Dernier point<strong class="pain-score-inline">0/10</strong></div>
               <div class="chart-stat">Tendance<strong>À calculer</strong></div>
             </div>
           </article>
@@ -2524,7 +2556,12 @@
     const painPicker = document.getElementById('painPicker');
     const painScoreNodes = document.querySelectorAll('.pain-score-inline');
     const painScoreNow = document.querySelector('.pain-score-now');
+    const painChange = document.querySelector('.pain-change');
+    const painChartWrap = document.getElementById('painChartWrap');
+    const painChartEmpty = document.getElementById('painChartEmpty');
+    const painChartStats = document.getElementById('painChartStats');
     const historyList = document.getElementById('historyList');
+    const savePain = document.getElementById('savePain');
     const toast = document.getElementById('toast');
     const loginForm = document.getElementById('loginForm');
     const loginEmail = document.getElementById('loginEmail');
@@ -2563,9 +2600,8 @@
     const refreshPatientScans = document.getElementById('refreshPatientScans');
     const scanLinks = document.querySelectorAll('[data-scan-link]');
     const SCAN_PATIENT_CONTEXT_KEY = 'neso-scan-patient-context';
-    const storedPain = Number(localStorage.getItem('neso-v2-pain') || 0);
     const validTabs = ['home', 'suivi', 'exercices', 'dossier', 'explore'];
-    let currentPain = Number.isFinite(storedPain) ? storedPain : 0;
+    let currentPain = 0;
     let authMode = 'signin';
     let currentSession = null;
     let currentUser = null;
@@ -2573,9 +2609,7 @@
     let selectedDocCategory = 'irm';
     let patientScans = [];
 
-    const painHistory = [
-      { label: "Auj.", score: currentPain }
-    ];
+    let painHistory = [];
 
     const exerciseDefaults = {};
 
@@ -2970,7 +3004,8 @@
       setTab(restoreTab ? location.hash.replace('#', '') || 'home' : 'home');
       await Promise.all([
         loadDocuments(),
-        loadPatientScans()
+        loadPatientScans(),
+        loadPatientPainEntries()
       ]);
     }
 
@@ -2983,6 +3018,10 @@
       document.body.classList.remove('is-authenticated');
       renderDocuments([]);
       patientScans = [];
+      painHistory = [];
+      setPain(0);
+      renderHistory();
+      renderPainChart();
       renderPatientScans([], null);
       if (location.hash) {
         window.history.replaceState(null, '', location.pathname || 'app-v2.html');
@@ -3178,19 +3217,17 @@
     }
 
     function setPain(score) {
-      currentPain = score;
-      localStorage.setItem('neso-v2-pain', String(score));
+      const nextScore = Math.min(Math.max(Number(score), 0), 10);
+      currentPain = Number.isFinite(nextScore) ? nextScore : 0;
       document.querySelectorAll('.pain-choice').forEach(function(choice) {
-        choice.classList.toggle('active', Number(choice.dataset.score) === score);
+        choice.classList.toggle('active', Number(choice.dataset.score) === currentPain);
       });
       painScoreNodes.forEach(function(node) {
-        node.textContent = score + '/10';
+        node.textContent = currentPain + '/10';
       });
       if (painScoreNow) {
-        painScoreNow.textContent = score;
+        painScoreNow.textContent = currentPain;
       }
-      painHistory[0].score = score;
-      renderHistory();
     }
 
     function renderPainPicker() {
@@ -3208,16 +3245,227 @@
 
     function renderHistory() {
       if (!historyList) return;
+      if (!painHistory.length) {
+        historyList.innerHTML = '<div class="empty-docs">Aucune douleur enregistrée pour le moment.</div>';
+        return;
+      }
+
       historyList.innerHTML = painHistory.map(function(item) {
         const warning = item.score >= 4;
         return (
           '<div class="history-row">' +
-            '<div class="history-label">' + item.label + '</div>' +
+            '<div class="history-label">' + escapeHtml(painEntryLabel(item)) + '</div>' +
             '<div class="history-track ' + (warning ? 'warning' : '') + '" style="--value:' + (item.score * 10) + '%"><span></span></div>' +
-            '<div class="history-score ' + (warning ? 'warning' : '') + '">' + item.score + '/10</div>' +
+            '<div class="history-actions">' +
+              '<div class="history-score ' + (warning ? 'warning' : '') + '">' + item.score + '/10</div>' +
+              '<button class="history-delete" type="button" data-delete-pain-entry="' + escapeHtml(item.id || '') + '">Supprimer</button>' +
+            '</div>' +
           '</div>'
         );
       }).join('');
+    }
+
+    function renderHistoryLoading() {
+      if (!historyList) return;
+      historyList.innerHTML = '<div class="empty-docs">Chargement de votre historique douleur...</div>';
+    }
+
+    function renderHistoryError() {
+      if (!historyList) return;
+      historyList.innerHTML = '<div class="empty-docs">Impossible de charger votre historique douleur pour le moment.</div>';
+    }
+
+    function painEntryLabel(entry) {
+      const date = new Date(entry.recorded_at || entry.created_at);
+      if (Number.isNaN(date.getTime())) return 'Douleur';
+
+      const today = new Date();
+      const isToday = date.getFullYear() === today.getFullYear()
+        && date.getMonth() === today.getMonth()
+        && date.getDate() === today.getDate();
+
+      if (isToday) return 'Auj.';
+      return formatDate(date);
+    }
+
+    function painTrendLabel(firstScore, latestScore) {
+      const diff = firstScore - latestScore;
+      if (diff > 0) return 'En baisse de ' + diff + ' point' + (diff > 1 ? 's' : '');
+      if (diff < 0) {
+        const increase = Math.abs(diff);
+        return 'En hausse de ' + increase + ' point' + (increase > 1 ? 's' : '');
+      }
+      return 'Stable';
+    }
+
+    function renderPainChart() {
+      const entries = painHistory.slice().reverse();
+      const latest = painHistory[0];
+      const previous = painHistory[1];
+
+      if (!entries.length) {
+        if (painChartWrap) painChartWrap.innerHTML = '';
+        if (painChartEmpty) painChartEmpty.style.display = 'block';
+        if (painChartStats) {
+          painChartStats.innerHTML =
+            '<div class="chart-stat">Premier point<strong>À venir</strong></div>' +
+            '<div class="chart-stat">Dernier point<strong>À venir</strong></div>' +
+            '<div class="chart-stat">Tendance<strong>À calculer</strong></div>';
+        }
+        if (painChange) painChange.textContent = 'Aucune comparaison disponible';
+        return;
+      }
+
+      const latestScore = Number(latest.score);
+      if (painChange) {
+        if (previous) {
+          painChange.textContent = painTrendLabel(Number(previous.score), latestScore);
+        } else {
+          painChange.textContent = 'Premier point enregistré';
+        }
+      }
+
+      if (painChartEmpty) painChartEmpty.style.display = 'none';
+      if (painChartStats) {
+        const firstScore = Number(entries[0].score);
+        painChartStats.innerHTML =
+          '<div class="chart-stat">Premier point<strong>' + firstScore + '/10</strong></div>' +
+          '<div class="chart-stat">Dernier point<strong>' + latestScore + '/10</strong></div>' +
+          '<div class="chart-stat">Tendance<strong>' + escapeHtml(painTrendLabel(firstScore, latestScore)) + '</strong></div>';
+      }
+
+      if (!painChartWrap) return;
+
+      const width = 320;
+      const height = 170;
+      const left = 30;
+      const right = 18;
+      const top = 18;
+      const bottom = 38;
+      const chartWidth = width - left - right;
+      const chartHeight = height - top - bottom;
+      const points = entries.map(function(entry, index) {
+        const score = Math.min(Math.max(Number(entry.score), 0), 10);
+        const x = entries.length === 1
+          ? left + chartWidth
+          : left + (chartWidth * index / (entries.length - 1));
+        const y = top + ((10 - score) / 10) * chartHeight;
+        return { x, y, score, label: painEntryLabel(entry) };
+      });
+      const path = points.map(function(point, index) {
+        return (index ? 'L' : 'M') + point.x.toFixed(1) + ' ' + point.y.toFixed(1);
+      }).join(' ');
+      const labels = points.map(function(point, index) {
+        if (points.length > 6 && index !== 0 && index !== points.length - 1) return '';
+        return '<text class="chart-label" x="' + point.x.toFixed(1) + '" y="158" text-anchor="middle">' + escapeHtml(point.label) + '</text>';
+      }).join('');
+
+      painChartWrap.innerHTML =
+        '<svg class="pain-chart" viewBox="0 0 320 170" role="img" aria-label="Courbe de douleur enregistrée">' +
+          [0, 2, 4, 6, 8, 10].map(function(level) {
+            const y = top + ((10 - level) / 10) * chartHeight;
+            return '<line class="chart-grid" x1="' + left + '" y1="' + y.toFixed(1) + '" x2="' + (width - right) + '" y2="' + y.toFixed(1) + '"></line>';
+          }).join('') +
+          '<text class="chart-label" x="16" y="' + (top + 4) + '">10</text>' +
+          '<text class="chart-label" x="20" y="' + (top + chartHeight + 4) + '">0</text>' +
+          '<path class="chart-line" d="' + path + '"></path>' +
+          points.map(function(point, index) {
+            return '<circle class="chart-point ' + (index === points.length - 1 ? 'current' : '') + '" cx="' + point.x.toFixed(1) + '" cy="' + point.y.toFixed(1) + '" r="6"></circle>';
+          }).join('') +
+          labels +
+        '</svg>';
+    }
+
+    async function loadPatientPainEntries() {
+      if (!currentUser) {
+        painHistory = [];
+        setPain(0);
+        renderHistory();
+        renderPainChart();
+        return;
+      }
+
+      renderHistoryLoading();
+
+      const { data, error } = await sb
+        .from('patient_pain_entries')
+        .select('id, score, recorded_at, created_at')
+        .eq('patient_id', currentUser.id)
+        .order('recorded_at', { ascending: false })
+        .limit(30);
+
+      if (error) {
+        console.warn('Historique douleur patient indisponible', error);
+        painHistory = [];
+        renderHistoryError();
+        renderPainChart();
+        return;
+      }
+
+      painHistory = data || [];
+      const latestScore = Number(painHistory[0]?.score);
+      setPain(Number.isFinite(latestScore) ? latestScore : 0);
+      renderHistory();
+      renderPainChart();
+    }
+
+    async function savePainEntry() {
+      if (!currentUser) {
+        showToast('Connectez-vous pour enregistrer votre douleur.');
+        return;
+      }
+
+      if (savePain) savePain.disabled = true;
+
+      let error = null;
+      try {
+        const result = await sb
+          .from('patient_pain_entries')
+          .insert({
+            patient_id: currentUser.id,
+            score: currentPain,
+            recorded_at: new Date().toISOString()
+          });
+        error = result.error;
+      } catch (requestError) {
+        error = requestError;
+      } finally {
+        if (savePain) savePain.disabled = false;
+      }
+
+      if (error) {
+        console.error('Erreur enregistrement douleur patient', error);
+        showToast("Impossible d'enregistrer votre douleur.");
+        return;
+      }
+
+      showToast('Douleur enregistrée.');
+      await loadPatientPainEntries();
+    }
+
+    async function deletePainEntry(entryId) {
+      if (!currentUser || !entryId) {
+        showToast('Suppression impossible pour le moment.');
+        return;
+      }
+
+      const confirmed = confirm('Supprimer cette douleur enregistrée ? Cette action est définitive.');
+      if (!confirmed) return;
+
+      const { error } = await sb
+        .from('patient_pain_entries')
+        .delete()
+        .eq('id', entryId)
+        .eq('patient_id', currentUser.id);
+
+      if (error) {
+        console.error('Erreur suppression douleur patient', error);
+        showToast('Impossible de supprimer cette douleur.');
+        return;
+      }
+
+      showToast('Douleur supprimée.');
+      await loadPatientPainEntries();
     }
 
     function answerList(value) {
@@ -3475,11 +3723,6 @@
 
       patientScans = data || [];
       renderPatientScans(patientScans, null);
-
-      const latestPain = Number(patientScans[0]?.score_douleur);
-      if (Number.isFinite(latestPain)) {
-        setPain(latestPain);
-      }
     }
 
     function formatDate(value) {
@@ -3721,10 +3964,7 @@
       });
     });
 
-    document.getElementById('savePain')?.addEventListener('click', function() {
-      setPain(currentPain);
-      showToast('Douleur enregistrée.');
-    });
+    savePain?.addEventListener('click', savePainEntry);
 
     refreshPatientScans?.addEventListener('click', function() {
       loadPatientScans();
@@ -3736,6 +3976,13 @@
       event.preventDefault();
       event.stopPropagation();
       deletePatientScan(deleteButton.dataset.deletePatientScan);
+    });
+
+    historyList?.addEventListener('click', function(event) {
+      const deleteButton = event.target.closest('[data-delete-pain-entry]');
+      if (!deleteButton) return;
+      event.preventDefault();
+      deletePainEntry(deleteButton.dataset.deletePainEntry);
     });
 
     loginForm?.addEventListener('submit', handleLogin);
@@ -3775,6 +4022,7 @@
     setPain(currentPain);
     renderExerciseState();
     renderHistory();
+    renderPainChart();
     setAuthMode('signin');
     setDocumentCategory('irm');
     syncScanLinks();
