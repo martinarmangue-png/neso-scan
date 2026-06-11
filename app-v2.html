@@ -1246,6 +1246,18 @@
       min-width: 0;
     }
 
+    .scan-delete-action {
+      width: fit-content;
+      min-height: 42px;
+      padding: 0 14px;
+      border-radius: 14px;
+      background: #fff1f2;
+      color: #b32635;
+      font-size: 13px;
+      font-weight: 800;
+      box-shadow: none;
+    }
+
     .scan-tags {
       display: flex;
       flex-wrap: wrap;
@@ -3407,10 +3419,36 @@
               '<div class="scan-detail-row"><div class="scan-detail-label">Réponse spécifique</div>' + renderScanTags(scan.type_douleur, 'Non renseigné') + '</div>' +
               '<div class="scan-detail-row"><div class="scan-detail-label">Gêne principale</div>' + renderScanTags(scan.gene, 'Non renseigné') + '</div>' +
               '<div class="scan-detail-row"><div class="scan-detail-label">Soulagement / évolution</div>' + renderScanTags(scan.evolution, 'Non renseigné') + '</div>' +
+              '<button class="scan-delete-action" type="button" data-delete-patient-scan="' + escapeHtml(scan.id || '') + '">Supprimer</button>' +
             '</div>' +
           '</details>'
         );
       }).join('');
+    }
+
+    async function deletePatientScan(scanId) {
+      if (!currentUser || !scanId) {
+        showToast('Suppression impossible pour le moment.');
+        return;
+      }
+
+      const confirmed = confirm('Supprimer ce Physio Scan ? Cette action est définitive.');
+      if (!confirmed) return;
+
+      const { error } = await sb
+        .from('scans')
+        .delete()
+        .eq('id', scanId)
+        .eq('patient_id', currentUser.id);
+
+      if (error) {
+        console.error('Erreur suppression Physio Scan patient', error);
+        showToast("Impossible de supprimer ce scan.");
+        return;
+      }
+
+      showToast('Physio Scan supprimé.');
+      await loadPatientScans();
     }
 
     async function loadPatientScans() {
@@ -3690,6 +3728,14 @@
 
     refreshPatientScans?.addEventListener('click', function() {
       loadPatientScans();
+    });
+
+    patientScansList?.addEventListener('click', function(event) {
+      const deleteButton = event.target.closest('[data-delete-patient-scan]');
+      if (!deleteButton) return;
+      event.preventDefault();
+      event.stopPropagation();
+      deletePatientScan(deleteButton.dataset.deletePatientScan);
     });
 
     loginForm?.addEventListener('submit', handleLogin);
