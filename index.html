@@ -229,6 +229,8 @@
 
     .button {
       min-height: 56px;
+      min-width: 0;
+      max-width: 100%;
       padding: 0 22px;
       border-radius: 18px;
       display: inline-flex;
@@ -709,7 +711,9 @@
 
     @media (max-width: 560px) {
       .shell {
-        width: min(1120px, calc(100% - 32px));
+        width: calc(100% - 24px);
+        min-width: 0;
+        max-width: 100%;
       }
 
       .topbar-inner {
@@ -742,16 +746,21 @@
       }
 
       .nav-action {
-        min-height: 36px;
-        padding: 0 11px;
-        font-size: 11px;
-        border-radius: 13px;
+        display: none;
       }
 
       .hero {
+        grid-template-columns: minmax(0, 1fr);
         gap: 28px;
         padding-top: 30px;
         padding-bottom: 38px;
+      }
+
+      .hero > div,
+      .product-preview,
+      .preview-panel {
+        min-width: 0;
+        max-width: 100%;
       }
 
       .eyebrow {
@@ -761,12 +770,15 @@
       }
 
       h1 {
+        max-width: 100%;
         margin-top: 20px;
         font-size: clamp(32px, 9.6vw, 38px);
         line-height: 1.04;
+        overflow-wrap: break-word;
       }
 
       .hero-copy {
+        max-width: 100%;
         margin-top: 18px;
         font-size: 16px;
         line-height: 1.55;
@@ -774,7 +786,7 @@
 
       .hero-actions {
         display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: minmax(0, 1fr);
         gap: 9px;
         margin-top: 24px;
       }
@@ -784,7 +796,7 @@
       }
 
       .hero-actions .button.primary {
-        grid-column: 1 / -1;
+        grid-column: auto;
       }
 
       .button {
@@ -1038,10 +1050,10 @@
               <article class="preview-card">
                 <div class="preview-card-head">
                   <div>
-                    <div class="preview-card-title">Courbe de douleur</div>
-                    <div class="preview-card-meta">Semaine 4 · Lombalgie</div>
+                    <div class="preview-card-title">Évolution patient</div>
+                    <div class="preview-card-meta">Après plusieurs Physio Scans</div>
                   </div>
-                  <div class="score">3/10</div>
+                  <div class="score">À venir</div>
                 </div>
                 <svg class="chart" viewBox="0 0 320 120" role="img" aria-label="Courbe de douleur descendante">
                   <line class="chart-grid" x1="12" y1="20" x2="308" y2="20" />
@@ -1180,6 +1192,8 @@
           <a href="/scan.html">Physio Scan</a>
           <a href="/app-v2.html">Espace patient</a>
           <a href="/dashboard-v2.html">Espace praticien</a>
+          <a href="/mentions-legales.html">Mentions légales</a>
+          <a href="/confidentialite.html">Confidentialité</a>
         </div>
       </div>
     </footer>

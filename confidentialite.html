@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Confidentialité · NESO Santé</title>
+  <meta name="description" content="Politique de confidentialité de NESO Santé." />
+  <style>
+    :root {
+      --ink: #172033;
+      --muted: #66758c;
+      --blue: #1f49d8;
+      --green: #0b9b78;
+      --bg: #f3f6fb;
+      --card: #fff;
+      --line: #e5ebf4;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.6;
+    }
+
+    .page {
+      width: min(920px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 34px 0 56px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 28px;
+    }
+
+    .brand {
+      font-size: 18px;
+      font-weight: 900;
+      letter-spacing: 0.02em;
+    }
+
+    .back-link {
+      color: var(--blue);
+      font-size: 14px;
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .hero,
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      box-shadow: 0 22px 60px rgba(31, 73, 216, 0.08);
+    }
+
+    .hero {
+      padding: clamp(26px, 5vw, 44px);
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(32px, 7vw, 54px);
+      line-height: 0.98;
+      letter-spacing: -0.03em;
+    }
+
+    .lead {
+      max-width: 700px;
+      margin: 18px 0 0;
+      color: var(--muted);
+      font-size: 18px;
+    }
+
+    .card {
+      padding: clamp(22px, 4vw, 34px);
+      margin-top: 18px;
+    }
+
+    h2 {
+      margin: 0 0 12px;
+      font-size: 22px;
+    }
+
+    p {
+      margin: 0 0 12px;
+      color: var(--muted);
+    }
+
+    ul {
+      margin: 0;
+      padding-left: 20px;
+      color: var(--muted);
+    }
+
+    li + li {
+      margin-top: 8px;
+    }
+
+    strong {
+      color: var(--ink);
+    }
+
+    a {
+      color: var(--blue);
+    }
+
+    .note {
+      border-left: 4px solid var(--green);
+      padding-left: 14px;
+      color: var(--ink);
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <nav class="topbar" aria-label="Navigation">
+      <div class="brand">NESO Santé</div>
+      <a class="back-link" href="/">Retour à l'accueil</a>
+    </nav>
+
+    <section class="hero">
+      <h1>Confidentialité</h1>
+      <p class="lead">Cette page explique comment NESO Santé traite les informations utiles au Physio Scan, à l'espace patient et au dashboard praticien.</p>
+    </section>
+
+    <section class="card">
+      <h2>Données collectées</h2>
+      <ul>
+        <li>Informations de compte : e-mail, prénom, nom et données de profil renseignées par le patient.</li>
+        <li>Informations de suivi : réponses aux Physio Scans, zone évaluée, douleur, objectifs et date d'envoi.</li>
+        <li>Documents ajoutés par le patient : imageries, ordonnances ou fichiers importés dans l'espace patient.</li>
+        <li>Données techniques nécessaires au fonctionnement du service, comme la session de connexion.</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>Finalités</h2>
+      <p>Les données sont utilisées pour préparer les séances, retrouver l'historique patient, classer les documents et permettre au praticien autorisé de consulter les informations utiles.</p>
+      <p class="note">Les informations de santé doivent rester limitées à ce qui est nécessaire au suivi de rééducation.</p>
+    </section>
+
+    <section class="card">
+      <h2>Accès et sécurité</h2>
+      <ul>
+        <li>L'espace patient est protégé par authentification.</li>
+        <li>Le dashboard praticien reste protégé par le mécanisme d'accès existant.</li>
+        <li>Les règles d'accès Supabase limitent l'accès aux données selon le rôle et le compte concerné.</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>Conservation</h2>
+      <p>Les données sont conservées pendant la durée nécessaire au suivi et à la bêta, sauf demande de suppression ou obligation contraire.</p>
+      <p>Les durées définitives seront précisées avant une ouverture publique élargie.</p>
+    </section>
+
+    <section class="card">
+      <h2>Droits des utilisateurs</h2>
+      <p>Vous pouvez demander l'accès, la rectification ou la suppression de vos informations en écrivant à <a href="mailto:contact@nesosante.com">contact@nesosante.com</a>.</p>
+      <p>Une réponse sera apportée dans les meilleurs délais pendant la phase bêta.</p>
+    </section>
+  </main>
+</body>
+</html>

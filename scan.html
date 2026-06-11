@@ -1189,19 +1189,14 @@
       error = fallback.error;
     }
 
-    if (error && currentPatient?.id && isAuthInsertBlocked(error)) {
-      const fallback = await publicSb.from('scans').insert(buildPublicScanPayload(payload, shouldSerializeMultipleAnswers(error)));
-      error = fallback.error;
-    }
-
-    if (error && currentPatient?.id && shouldSerializeMultipleAnswers(error)) {
-      const fallback = await publicSb.from('scans').insert(buildPublicScanPayload(payload, true));
-      error = fallback.error;
-    }
-
-    if (error && currentPatient?.id && (isMissingOptionalScanColumn(error) || isAuthInsertBlocked(error))) {
-      const fallback = await publicSb.from('scans').insert(buildMinimalScanPayload(payload, shouldSerializeMultipleAnswers(error)));
-      error = fallback.error;
+    if (error && currentPatient?.id) {
+      const details = [error.message, error.details, error.hint, error.code].filter(Boolean).join(' | ');
+      err.textContent = "Votre scan n'a pas pu être rattaché à votre compte patient. Réessayez depuis votre espace patient ou contactez votre praticien.";
+      err.style.display = 'block';
+      btn.innerHTML = 'Envoyer à mon kiné <div class="ac"><i class="ti ti-send"></i></div>';
+      btn.className = 'btn btn-on';
+      console.error('Erreur insertion scan connecté Supabase', details, payload);
+      return;
     }
 
     if (error) {
@@ -1249,9 +1244,6 @@
     delete fallbackPayload.scan_type;
     delete fallbackPayload.scan_type_label;
     delete fallbackPayload.source;
-    delete fallbackPayload.patient_id;
-    delete fallbackPayload.patient_email;
-    delete fallbackPayload.patient_full_name;
     fallbackPayload.evolution = payloadAnswer(fallbackPayload.evolution, serializeMultipleAnswers);
     fallbackPayload.objectif = payloadAnswer(fallbackPayload.objectif, serializeMultipleAnswers);
 
@@ -1259,7 +1251,7 @@
   }
 
   function buildMinimalScanPayload(payload, serializeMultipleAnswers = false) {
-    return {
+    const minimalPayload = {
       prenom: payload.prenom || null,
       zones: payload.zones || [],
       type_douleur: payload.type_douleur || [],
@@ -1269,6 +1261,12 @@
       objectif: payloadAnswer(payload.objectif, serializeMultipleAnswers),
       consent: true
     };
+
+    if (payload.patient_id) minimalPayload.patient_id = payload.patient_id;
+    if (payload.patient_email) minimalPayload.patient_email = payload.patient_email;
+    if (payload.patient_full_name) minimalPayload.patient_full_name = payload.patient_full_name;
+
+    return minimalPayload;
   }
 
   function payloadAnswer(value, serializeMultipleAnswers) {

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mentions légales · NESO Santé</title>
+  <meta name="description" content="Mentions légales de NESO Santé." />
+  <style>
+    :root {
+      --ink: #172033;
+      --muted: #66758c;
+      --blue: #1f49d8;
+      --green: #0b9b78;
+      --bg: #f3f6fb;
+      --card: #fff;
+      --line: #e5ebf4;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.6;
+    }
+
+    .page {
+      width: min(920px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 34px 0 56px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 28px;
+    }
+
+    .brand {
+      font-size: 18px;
+      font-weight: 900;
+      letter-spacing: 0.02em;
+    }
+
+    .back-link {
+      color: var(--blue);
+      font-size: 14px;
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .hero,
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      box-shadow: 0 22px 60px rgba(31, 73, 216, 0.08);
+    }
+
+    .hero {
+      padding: clamp(26px, 5vw, 44px);
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(32px, 7vw, 54px);
+      line-height: 0.98;
+      letter-spacing: -0.03em;
+    }
+
+    .lead {
+      max-width: 680px;
+      margin: 18px 0 0;
+      color: var(--muted);
+      font-size: 18px;
+    }
+
+    .card {
+      padding: clamp(22px, 4vw, 34px);
+      margin-top: 18px;
+    }
+
+    h2 {
+      margin: 0 0 12px;
+      font-size: 22px;
+    }
+
+    p {
+      margin: 0 0 12px;
+      color: var(--muted);
+    }
+
+    ul {
+      margin: 0;
+      padding-left: 20px;
+      color: var(--muted);
+    }
+
+    li + li {
+      margin-top: 8px;
+    }
+
+    strong {
+      color: var(--ink);
+    }
+
+    a {
+      color: var(--blue);
+    }
+
+    .note {
+      border-left: 4px solid var(--green);
+      padding-left: 14px;
+      color: var(--ink);
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <nav class="topbar" aria-label="Navigation">
+      <div class="brand">NESO Santé</div>
+      <a class="back-link" href="/">Retour à l'accueil</a>
+    </nav>
+
+    <section class="hero">
+      <h1>Mentions légales</h1>
+      <p class="lead">Informations relatives à l'édition, l'hébergement et l'utilisation de NESO Santé.</p>
+    </section>
+
+    <section class="card">
+      <h2>Éditeur du service</h2>
+      <p><strong>NESO Santé</strong> est un service en préparation bêta destiné à faciliter la préparation et le suivi des séances de rééducation.</p>
+      <p>Les informations administratives complètes de l'éditeur seront ajoutées avant toute ouverture commerciale ou publique élargie.</p>
+      <p>Contact : <a href="mailto:contact@nesosante.com">contact@nesosante.com</a></p>
+    </section>
+
+    <section class="card">
+      <h2>Hébergement</h2>
+      <p>Le site et l'application sont hébergés par <strong>Vercel Inc.</strong></p>
+      <p>L'authentification, la base de données et certains fichiers applicatifs sont gérés avec <strong>Supabase</strong>.</p>
+    </section>
+
+    <section class="card">
+      <h2>Objet du service</h2>
+      <p>NESO Santé propose un Physio Scan, un espace patient et un dashboard praticien pour mieux préparer les séances et suivre l'évolution du patient.</p>
+      <p class="note">Le service ne remplace pas un avis médical, un diagnostic ou une prise en charge par un professionnel de santé.</p>
+    </section>
+
+    <section class="card">
+      <h2>Responsabilité</h2>
+      <ul>
+        <li>Les informations saisies par le patient servent à préparer l'échange avec le praticien.</li>
+        <li>Le praticien reste responsable de son évaluation clinique et de ses décisions de prise en charge.</li>
+        <li>Les fonctionnalités bêta peuvent évoluer et certaines fonctions peuvent être limitées ou indisponibles.</li>
+      </ul>
+    </section>
+  </main>
+</body>
+</html>
