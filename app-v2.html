@@ -825,7 +825,7 @@
     }
 
     .chart-card {
-      padding: 24px 18px 20px;
+      padding: 24px 18px 22px;
     }
 
     .chart-title {
@@ -839,44 +839,86 @@
 
     .chart-wrap {
       width: 100%;
+      margin: 8px 0 6px;
+      border: 1px solid #edf2f8;
+      border-radius: 18px;
+      background: linear-gradient(180deg, #fbfdff 0%, #f7faff 100%);
       overflow: hidden;
     }
 
     .pain-chart {
       width: 100%;
-      min-height: 188px;
+      min-height: 220px;
       display: block;
     }
 
     .chart-label {
-      fill: #96a5ba;
-      font-size: 12px;
+      fill: #8d9bb0;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .chart-axis-label {
+      fill: #74849b;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .chart-date-label {
+      fill: #8c9aaf;
+      font-size: 11px;
       font-weight: 700;
     }
 
     .chart-grid {
-      stroke: #e9eef7;
-      stroke-width: 2;
-      stroke-dasharray: 7 8;
+      stroke: #e8eef7;
+      stroke-width: 1;
+      stroke-dasharray: 4 9;
+    }
+
+    .chart-axis {
+      stroke: #d9e2ef;
+      stroke-width: 1.2;
     }
 
     .chart-line {
       fill: none;
-      stroke: #2f66f3;
-      stroke-width: 5;
+      stroke: #215bd6;
+      stroke-width: 4;
       stroke-linecap: round;
       stroke-linejoin: round;
     }
 
-    .chart-point {
-      fill: #2f66f3;
-      stroke: #fff;
-      stroke-width: 4;
+    .chart-area {
+      opacity: 0.9;
     }
 
-    .chart-point.current {
+    .chart-point-halo {
+      fill: rgba(33, 91, 214, 0.1);
+      stroke: none;
+    }
+
+    .chart-last-label {
+      fill: #0a9b73;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .chart-point-old {
+      fill: #fff;
+      stroke: #215bd6;
+      stroke-width: 3;
+    }
+
+    .chart-point-current {
       fill: var(--green);
-      stroke: var(--green);
+      stroke: #fff;
+      stroke-width: 3;
+    }
+
+    .chart-point-current-halo {
+      fill: rgba(8, 143, 106, 0.13);
+      stroke: none;
     }
 
     .chart-stats {
@@ -905,11 +947,11 @@
     }
 
     .chart-stat:first-child strong {
-      color: var(--danger);
+      color: #24456f;
     }
 
     .chart-stat:last-child strong {
-      color: var(--blue-bright);
+      color: #215bd6;
     }
 
     .pain-picker {
@@ -3298,6 +3340,45 @@
       return 'Stable';
     }
 
+    function chartDateLabel(entry) {
+      const date = new Date(entry.recorded_at || entry.created_at);
+      if (Number.isNaN(date.getTime())) return '';
+
+      const today = new Date();
+      const isToday = date.getFullYear() === today.getFullYear()
+        && date.getMonth() === today.getMonth()
+        && date.getDate() === today.getDate();
+
+      if (isToday) return 'Auj.';
+      return new Intl.DateTimeFormat('fr-FR', {
+        day: '2-digit',
+        month: 'short'
+      }).format(date).replace('.', '');
+    }
+
+    function smoothChartPath(points) {
+      if (!points.length) return '';
+      if (points.length === 1) {
+        return 'M' + points[0].x.toFixed(1) + ' ' + points[0].y.toFixed(1);
+      }
+
+      let path = 'M' + points[0].x.toFixed(1) + ' ' + points[0].y.toFixed(1);
+      for (let index = 0; index < points.length - 1; index += 1) {
+        const before = points[index - 1] || points[index];
+        const current = points[index];
+        const next = points[index + 1];
+        const after = points[index + 2] || next;
+        const cp1x = current.x + (next.x - before.x) / 6;
+        const cp1y = current.y + (next.y - before.y) / 6;
+        const cp2x = next.x - (after.x - current.x) / 6;
+        const cp2y = next.y - (after.y - current.y) / 6;
+        path += ' C' + cp1x.toFixed(1) + ' ' + cp1y.toFixed(1) + ' ' +
+          cp2x.toFixed(1) + ' ' + cp2y.toFixed(1) + ' ' +
+          next.x.toFixed(1) + ' ' + next.y.toFixed(1);
+      }
+      return path;
+    }
+
     function renderPainChart() {
       const entries = painHistory.slice().reverse();
       const latest = painHistory[0];
@@ -3336,42 +3417,57 @@
 
       if (!painChartWrap) return;
 
-      const width = 320;
-      const height = 170;
-      const left = 30;
-      const right = 18;
-      const top = 18;
-      const bottom = 38;
+      const width = 360;
+      const height = 220;
+      const left = 44;
+      const right = 26;
+      const top = 24;
+      const bottom = 48;
       const chartWidth = width - left - right;
       const chartHeight = height - top - bottom;
+      const baseline = top + chartHeight;
+      const levels = [0, 2, 4, 6, 8, 10];
       const points = entries.map(function(entry, index) {
         const score = Math.min(Math.max(Number(entry.score), 0), 10);
         const x = entries.length === 1
           ? left + chartWidth
           : left + (chartWidth * index / (entries.length - 1));
         const y = top + ((10 - score) / 10) * chartHeight;
-        return { x, y, score, label: painEntryLabel(entry) };
+        return { x, y, score, label: chartDateLabel(entry) };
       });
-      const path = points.map(function(point, index) {
-        return (index ? 'L' : 'M') + point.x.toFixed(1) + ' ' + point.y.toFixed(1);
-      }).join(' ');
+      const path = smoothChartPath(points);
+      const areaPath = path + ' L' + points[points.length - 1].x.toFixed(1) + ' ' + baseline.toFixed(1) +
+        ' L' + points[0].x.toFixed(1) + ' ' + baseline.toFixed(1) + ' Z';
       const labels = points.map(function(point, index) {
-        if (points.length > 6 && index !== 0 && index !== points.length - 1) return '';
-        return '<text class="chart-label" x="' + point.x.toFixed(1) + '" y="158" text-anchor="middle">' + escapeHtml(point.label) + '</text>';
+        const shouldShow = points.length <= 5 || index === 0 || index === points.length - 1;
+        if (!shouldShow) return '';
+        return '<text class="chart-date-label" x="' + point.x.toFixed(1) + '" y="203" text-anchor="middle">' + escapeHtml(point.label) + '</text>';
       }).join('');
+      const latestPoint = points[points.length - 1];
 
       painChartWrap.innerHTML =
-        '<svg class="pain-chart" viewBox="0 0 320 170" role="img" aria-label="Courbe de douleur enregistrée">' +
-          [0, 2, 4, 6, 8, 10].map(function(level) {
+        '<svg class="pain-chart" viewBox="0 0 360 220" role="img" aria-label="Courbe de douleur enregistrée">' +
+          '<defs>' +
+            '<linearGradient id="painAreaGradient" x1="0" x2="0" y1="0" y2="1">' +
+              '<stop offset="0%" stop-color="#2f66f3" stop-opacity="0.16"></stop>' +
+              '<stop offset="100%" stop-color="#2f66f3" stop-opacity="0"></stop>' +
+            '</linearGradient>' +
+          '</defs>' +
+          levels.map(function(level) {
             const y = top + ((10 - level) / 10) * chartHeight;
-            return '<line class="chart-grid" x1="' + left + '" y1="' + y.toFixed(1) + '" x2="' + (width - right) + '" y2="' + y.toFixed(1) + '"></line>';
+            return '<line class="chart-grid" x1="' + left + '" y1="' + y.toFixed(1) + '" x2="' + (width - right) + '" y2="' + y.toFixed(1) + '"></line>' +
+              '<text class="chart-axis-label" x="' + (left - 14) + '" y="' + (y + 4).toFixed(1) + '" text-anchor="end">' + level + '</text>';
           }).join('') +
-          '<text class="chart-label" x="16" y="' + (top + 4) + '">10</text>' +
-          '<text class="chart-label" x="20" y="' + (top + chartHeight + 4) + '">0</text>' +
+          '<line class="chart-axis" x1="' + left + '" y1="' + top + '" x2="' + left + '" y2="' + baseline + '"></line>' +
+          '<line class="chart-axis" x1="' + left + '" y1="' + baseline + '" x2="' + (width - right) + '" y2="' + baseline + '"></line>' +
+          '<path class="chart-area" fill="url(#painAreaGradient)" d="' + areaPath + '"></path>' +
           '<path class="chart-line" d="' + path + '"></path>' +
           points.map(function(point, index) {
-            return '<circle class="chart-point ' + (index === points.length - 1 ? 'current' : '') + '" cx="' + point.x.toFixed(1) + '" cy="' + point.y.toFixed(1) + '" r="6"></circle>';
+            const current = index === points.length - 1;
+            return '<circle class="' + (current ? 'chart-point-current-halo' : 'chart-point-halo') + '" cx="' + point.x.toFixed(1) + '" cy="' + point.y.toFixed(1) + '" r="' + (current ? '10' : '8') + '"></circle>' +
+              '<circle class="' + (current ? 'chart-point-current' : 'chart-point-old') + '" cx="' + point.x.toFixed(1) + '" cy="' + point.y.toFixed(1) + '" r="' + (current ? '5.8' : '4.6') + '"></circle>';
           }).join('') +
+          '<text class="chart-last-label" x="' + Math.max(left + 28, latestPoint.x - 10).toFixed(1) + '" y="' + Math.max(top + 14, latestPoint.y - 14).toFixed(1) + '" text-anchor="middle">' + latestPoint.score + '/10</text>' +
           labels +
         '</svg>';
     }
