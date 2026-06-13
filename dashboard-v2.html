@@ -94,6 +94,119 @@
       font-size: 14px;
     }
 
+    button.top-pill {
+      font: inherit;
+      cursor: pointer;
+    }
+
+    body.practitioner-auth-pending .topbar,
+    body.practitioner-auth-pending .page,
+    body.practitioner-auth-login .topbar,
+    body.practitioner-auth-login .page,
+    body.practitioner-authenticated .practitioner-auth {
+      display: none;
+    }
+
+    .practitioner-auth {
+      min-height: 100vh;
+      padding: 34px;
+      display: grid;
+      place-items: center;
+      background:
+        linear-gradient(135deg, rgba(36, 85, 217, 0.14), rgba(7, 150, 111, 0.12)),
+        var(--cream);
+    }
+
+    .practitioner-auth-card {
+      width: min(100%, 430px);
+      padding: 30px;
+      border-radius: 22px;
+      background: white;
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+    }
+
+    .practitioner-auth-kicker {
+      color: var(--green);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .practitioner-auth-title {
+      font-size: 30px;
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1.08;
+      margin-bottom: 10px;
+    }
+
+    .practitioner-auth-copy {
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.55;
+      margin-bottom: 22px;
+    }
+
+    .practitioner-auth-form {
+      display: grid;
+      gap: 12px;
+    }
+
+    .practitioner-auth-input {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: var(--soft);
+      border-radius: 14px;
+      padding: 14px 15px;
+      color: var(--text);
+      font-size: 15px;
+      outline: none;
+    }
+
+    .practitioner-auth-input:focus {
+      border-color: rgba(36, 85, 217, 0.54);
+      box-shadow: 0 0 0 4px rgba(36, 85, 217, 0.08);
+    }
+
+    .practitioner-auth-submit {
+      border: 0;
+      border-radius: 16px;
+      padding: 15px 18px;
+      background: linear-gradient(135deg, var(--blue-dark), var(--green));
+      color: white;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .practitioner-auth-submit:disabled {
+      opacity: 0.62;
+      cursor: default;
+    }
+
+    .practitioner-auth-message {
+      display: none;
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: var(--orange-soft);
+      color: #9D3D31;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .practitioner-auth-message.show {
+      display: block;
+    }
+
+    .practitioner-auth-message.success {
+      background: var(--green-soft);
+      color: var(--green);
+    }
+
     .mobile-back {
       display: none;
     }
@@ -847,6 +960,18 @@
         padding: 18px;
       }
 
+      .practitioner-auth {
+        padding: 18px;
+      }
+
+      .practitioner-auth-card {
+        padding: 24px;
+      }
+
+      .practitioner-auth-title {
+        font-size: 27px;
+      }
+
       /* Premium mobile UI refinements */
       .kpi {
         min-height: auto;
@@ -995,7 +1120,23 @@
     }
   </style>
 </head>
-<body>
+<body class="practitioner-auth-pending">
+  <section class="practitioner-auth" id="practitionerAuth" aria-label="Connexion praticien">
+    <div class="practitioner-auth-card">
+      <div class="practitioner-auth-kicker">Espace praticien</div>
+      <h1 class="practitioner-auth-title">Connexion sécurisée</h1>
+      <p class="practitioner-auth-copy">
+        Connectez-vous avec votre compte praticien NESO Santé pour consulter les Physio Scans patients.
+      </p>
+      <form class="practitioner-auth-form" id="practitionerLoginForm">
+        <input class="practitioner-auth-input" id="practitionerEmail" type="email" autocomplete="email" placeholder="E-mail praticien" required />
+        <input class="practitioner-auth-input" id="practitionerPassword" type="password" autocomplete="current-password" placeholder="Mot de passe" minlength="6" required />
+        <button class="practitioner-auth-submit" id="practitionerLoginSubmit" type="submit">Se connecter</button>
+      </form>
+      <div class="practitioner-auth-message show" id="practitionerAuthMessage">Vérification de la session praticien...</div>
+    </div>
+  </section>
+
   <header class="topbar">
     <div class="brand">
       <div class="brand-title">Neso Santé · Dashboard</div>
@@ -1007,8 +1148,8 @@
       <a href="app-v2.html" class="top-pill" style="text-decoration: none;">Espace patient</a>
       <a href="scan.html" class="top-pill" style="text-decoration: none;">Physio Scan</a>
       <div class="top-pill">14/05/2026</div>
-      <div class="top-pill">Martin Armangué</div>
-      <button class="top-pill" type="button" onclick="clearAdminPassword(); location.reload();" style="cursor:pointer;">Se déconnecter</button>
+      <div class="top-pill" id="practitionerIdentity">Praticien</div>
+      <button class="top-pill" id="practitionerLogout" type="button">Se déconnecter</button>
     </div>
   </header>
 
@@ -1307,30 +1448,23 @@
   </main>
 
   <script>
+    const SUPABASE_URL = "https://infjgfupfbylzzuvywpg.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_1aS8qPPmGm76n0zN_L2uIQ_ArUVtHsF";
     const ADMIN_API_BASE = '/api/admin';
-    const ADMIN_PASSWORD_STORAGE_KEY = 'physio_scan_admin_password';
-    const LEGACY_ADMIN_PASSWORD_STORAGE_KEY = 'neso_admin_password';
-
-    function getAdminPassword() {
-      let password = sessionStorage.getItem(ADMIN_PASSWORD_STORAGE_KEY)
-        || sessionStorage.getItem(LEGACY_ADMIN_PASSWORD_STORAGE_KEY);
-
-      if (!password) {
-        password = prompt('Mot de passe dashboard Neso Santé');
-
-        if (password) {
-          sessionStorage.setItem(ADMIN_PASSWORD_STORAGE_KEY, password);
-          sessionStorage.removeItem(LEGACY_ADMIN_PASSWORD_STORAGE_KEY);
-        }
+    const PRACTITIONER_AUTH_STORAGE_KEY = 'neso_practitioner_auth';
+    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+      auth: {
+        storageKey: PRACTITIONER_AUTH_STORAGE_KEY
       }
+    });
 
-      return password || '';
-    }
-
-    function clearAdminPassword() {
-      sessionStorage.removeItem(ADMIN_PASSWORD_STORAGE_KEY);
-      sessionStorage.removeItem(LEGACY_ADMIN_PASSWORD_STORAGE_KEY);
-    }
+    const practitionerLoginForm = document.getElementById('practitionerLoginForm');
+    const practitionerEmail = document.getElementById('practitionerEmail');
+    const practitionerPassword = document.getElementById('practitionerPassword');
+    const practitionerLoginSubmit = document.getElementById('practitionerLoginSubmit');
+    const practitionerAuthMessage = document.getElementById('practitionerAuthMessage');
+    const practitionerIdentity = document.getElementById('practitionerIdentity');
+    const practitionerLogout = document.getElementById('practitionerLogout');
 
     let scans = [];
     let scanEvents = [];
@@ -1338,6 +1472,146 @@
     let patientDocuments = [];
     let activeFilter = 'all';
     let activeScanIndex = 0;
+    let practitionerSession = null;
+    let currentPractitioner = null;
+
+    function setPractitionerAuthState(state) {
+      document.body.classList.remove('practitioner-auth-pending', 'practitioner-auth-login', 'practitioner-authenticated');
+      document.body.classList.add('practitioner-auth-' + state);
+    }
+
+    function setPractitionerAuthMessage(message, type) {
+      if (!practitionerAuthMessage) return;
+      practitionerAuthMessage.textContent = message || '';
+      practitionerAuthMessage.classList.toggle('show', Boolean(message));
+      practitionerAuthMessage.classList.toggle('success', type === 'success');
+    }
+
+    function practitionerDisplayName(profile, user) {
+      return profile?.full_name || user?.email || profile?.email || 'Praticien';
+    }
+
+    function applyPractitionerSession(profile, user) {
+      if (practitionerIdentity) {
+        practitionerIdentity.textContent = practitionerDisplayName(profile, user);
+      }
+    }
+
+    async function loadPractitionerProfile(user) {
+      if (!user?.id) {
+        throw new Error('Session praticien invalide.');
+      }
+
+      const { data, error } = await sb
+        .from('practitioner_profiles')
+        .select('id, email, full_name, is_active')
+        .eq('id', user.id)
+        .eq('is_active', true)
+        .maybeSingle();
+
+      if (error) {
+        throw error;
+      }
+
+      if (!data) {
+        throw new Error("Ce compte n'est pas activé comme praticien NESO Santé.");
+      }
+
+      return data;
+    }
+
+    async function openPractitionerDashboard(session) {
+      try {
+        practitionerSession = session;
+        currentPractitioner = await loadPractitionerProfile(session?.user);
+        applyPractitionerSession(currentPractitioner, session?.user);
+        setPractitionerAuthState('authenticated');
+        setPractitionerAuthMessage('');
+        await loadScans();
+      } catch (error) {
+        console.error('Accès praticien refusé', error);
+        practitionerSession = null;
+        currentPractitioner = null;
+        await sb.auth.signOut({ scope: 'local' }).catch(function() {});
+        showPractitionerLogin(error.message || "Accès praticien impossible.");
+      }
+    }
+
+    function showPractitionerLogin(message, type) {
+      practitionerSession = null;
+      currentPractitioner = null;
+      setPractitionerAuthState('login');
+      setPractitionerAuthMessage(message || '', type);
+      if (practitionerLoginSubmit) {
+        practitionerLoginSubmit.disabled = false;
+        practitionerLoginSubmit.textContent = 'Se connecter';
+      }
+      setTimeout(function() {
+        practitionerEmail?.focus();
+      }, 80);
+    }
+
+    async function handlePractitionerLogin(event) {
+      event.preventDefault();
+      setPractitionerAuthMessage('');
+
+      const email = practitionerEmail.value.trim().toLowerCase();
+      const password = practitionerPassword.value.trim();
+
+      if (!email || !email.includes('@') || password.length < 6) {
+        setPractitionerAuthMessage('Entrez un e-mail valide et un mot de passe de 6 caractères minimum.');
+        return;
+      }
+
+      practitionerLoginSubmit.disabled = true;
+      practitionerLoginSubmit.textContent = 'Connexion...';
+
+      try {
+        const { data, error } = await sb.auth.signInWithPassword({ email, password });
+        if (error) throw error;
+        await openPractitionerDashboard(data.session);
+        if (practitionerPassword) practitionerPassword.value = '';
+      } catch (error) {
+        console.error('Erreur Auth praticien Supabase', error);
+        showPractitionerLogin(error.message || 'Connexion praticien impossible.');
+      } finally {
+        practitionerLoginSubmit.disabled = false;
+        practitionerLoginSubmit.textContent = 'Se connecter';
+      }
+    }
+
+    async function logoutPractitioner() {
+      await sb.auth.signOut({ scope: 'local' });
+      showPractitionerLogin('Vous êtes déconnecté.', 'success');
+    }
+
+    async function getPractitionerAccessToken() {
+      const { data } = await sb.auth.getSession();
+      practitionerSession = data?.session || null;
+      return practitionerSession?.access_token || '';
+    }
+
+    async function adminHeaders(extraHeaders) {
+      const token = await getPractitionerAccessToken();
+      return {
+        ...extraHeaders,
+        ...(token ? { Authorization: 'Bearer ' + token } : {})
+      };
+    }
+
+    async function handleAdminAccessFailure(response) {
+      if (response.status !== 401 && response.status !== 403) {
+        return false;
+      }
+
+      await sb.auth.signOut({ scope: 'local' }).catch(function() {});
+      showPractitionerLogin(
+        response.status === 403
+          ? "Votre compte praticien n'est pas actif."
+          : 'Session praticien expirée. Reconnectez-vous.'
+      );
+      return true;
+    }
 
     const RESPONSE_LABELS_BY_SCAN_TYPE = {
       lombaires_sciatique: {
@@ -1411,21 +1685,16 @@
       try {
         const response = await fetch(`${ADMIN_API_BASE}/scans`, {
           method: 'GET',
-          headers: {
-            'Accept': 'application/json',
-            'x-admin-password': getAdminPassword()
-          },
+          headers: await adminHeaders({
+            'Accept': 'application/json'
+          }),
           credentials: 'same-origin'
         });
 
         if (!response.ok) {
-          if (response.status === 401) {
-            clearAdminPassword();
-          }
+          if (await handleAdminAccessFailure(response)) return;
 
-          const message = response.status === 401
-            ? 'Mot de passe dashboard incorrect. Recharge la page pour réessayer.'
-            : 'Impossible de charger les scans depuis l’API sécurisée.';
+          const message = 'Impossible de charger les scans depuis l’API sécurisée.';
 
           document.getElementById('scanList').innerHTML = `
             <div style="padding:24px;color:#9D3D31;font-size:14px;line-height:1.6;">
@@ -2072,11 +2341,10 @@
       try {
         const response = await fetch(`${ADMIN_API_BASE}/scans/${encodeURIComponent(scanId)}`, {
           method: 'PATCH',
-          headers: {
+          headers: await adminHeaders({
             'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'x-admin-password': getAdminPassword()
-          },
+            'Content-Type': 'application/json'
+          }),
           credentials: 'same-origin',
           body: JSON.stringify({
             practitioner_status: status
@@ -2088,6 +2356,7 @@
         });
 
         if (!response.ok) {
+          if (await handleAdminAccessFailure(response)) return;
           throw new Error(payload.error || payload.details?.message || 'Statut non mis à jour.');
         }
 
@@ -2133,14 +2402,14 @@
       try {
         const response = await fetch(`${ADMIN_API_BASE}/scans/${encodeURIComponent(scanId)}`, {
           method: 'DELETE',
-          headers: {
-            'Accept': 'application/json',
-            'x-admin-password': getAdminPassword()
-          },
+          headers: await adminHeaders({
+            'Accept': 'application/json'
+          }),
           credentials: 'same-origin'
         });
 
         if (!response.ok) {
+          if (await handleAdminAccessFailure(response)) return;
           alert('Erreur lors de la suppression : accès refusé ou API indisponible.');
           return;
         }
@@ -2459,6 +2728,37 @@
       });
     }
 
+    async function initPractitionerAuth() {
+      setPractitionerAuthState('pending');
+      setPractitionerAuthMessage('Vérification de la session praticien...');
+
+      try {
+        const { data } = await sb.auth.getSession();
+        if (data?.session) {
+          await openPractitionerDashboard(data.session);
+        } else {
+          showPractitionerLogin('');
+        }
+      } catch (error) {
+        console.error('Initialisation Auth praticien impossible', error);
+        showPractitionerLogin('Impossible de vérifier la session praticien.');
+      }
+    }
+
+    practitionerLoginForm?.addEventListener('submit', handlePractitionerLogin);
+    practitionerLogout?.addEventListener('click', logoutPractitioner);
+
+    sb.auth.onAuthStateChange(function(event, session) {
+      if (event === 'TOKEN_REFRESHED') {
+        practitionerSession = session;
+      }
+
+      if (event === 'SIGNED_OUT') {
+        practitionerSession = null;
+        currentPractitioner = null;
+      }
+    });
+
     window.addEventListener('resize', function() {
       if (!window.matchMedia('(max-width: 720px)').matches) {
         document.body.classList.remove('mobile-detail-open');
@@ -2471,7 +2771,7 @@
       });
     }
 
-    loadScans();
+    initPractitionerAuth();
   </script>
 </body>
 </html>
