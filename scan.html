@@ -1167,48 +1167,32 @@
       ...currentPatientPayload()
     };
 
-    let { error } = await sb.from('scans').insert(payload);
-
-    if (error && isMissingOptionalScanColumn(error)) {
-      const fallback = await sb.from('scans').insert(buildCompatibleScanPayload(payload));
-      error = fallback.error;
-    }
-
-    if (error && shouldSerializeMultipleAnswers(error)) {
-      const fallback = await sb.from('scans').insert(buildCompatibleScanPayload(payload, true));
-      error = fallback.error;
-    }
-
-    if (error && isMissingOptionalScanColumn(error)) {
-      const fallback = await sb.from('scans').insert(buildMinimalScanPayload(payload, shouldSerializeMultipleAnswers(error)));
-      error = fallback.error;
-    }
-
-    if (error && shouldSerializeMultipleAnswers(error)) {
-      const fallback = await sb.from('scans').insert(buildMinimalScanPayload(payload, true));
-      error = fallback.error;
-    }
-
-    if (error && currentPatient?.id) {
-      const details = [error.message, error.details, error.hint, error.code].filter(Boolean).join(' | ');
-      err.textContent = "Votre scan n'a pas pu être rattaché à votre compte patient. Réessayez depuis votre espace patient ou contactez votre praticien.";
+    let response, data;
+    try {
+      response = await fetch('/api/scans', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      data = await response.json();
+    } catch (fetchError) {
+      err.textContent = 'Erreur réseau. Vérifiez votre connexion et réessayez.';
       err.style.display = 'block';
       btn.innerHTML = 'Envoyer à mon kiné <div class="ac"><i class="ti ti-send"></i></div>';
       btn.className = 'btn btn-on';
-      console.error('Erreur insertion scan connecté Supabase', details, payload);
+      console.error('Erreur réseau envoi scan', fetchError);
       return;
     }
 
-    if (error) {
-      const details = [error.message, error.details, error.hint, error.code].filter(Boolean).join(' | ');
-      err.textContent = "Erreur Supabase : " + details;
+    if (!response.ok) {
+      const detail = data?.error || `Erreur ${response.status}`;
+      err.textContent = 'Impossible d\'envoyer le scan : ' + detail;
       err.style.display = 'block';
       btn.innerHTML = 'Envoyer à mon kiné <div class="ac"><i class="ti ti-send"></i></div>';
       btn.className = 'btn btn-on';
-      console.error('Erreur insertion scans Supabase', error, payload);
+      console.error('Erreur API /api/scans', response.status, data);
       return;
     }
-
 
     await trackEvent('scan_completed', {
       page_id: 'p10',
@@ -1224,87 +1208,6 @@
     console.log('Physio Scan terminé en', Math.round(completedDurationMs / 1000), 'secondes');
 
     go('p10');
-  }
-
-  function buildPublicScanPayload(payload, serializeMultipleAnswers = false) {
-    const publicPayload = { ...payload };
-
-    delete publicPayload.patient_id;
-    delete publicPayload.patient_email;
-    delete publicPayload.patient_full_name;
-    publicPayload.evolution = payloadAnswer(publicPayload.evolution, serializeMultipleAnswers);
-    publicPayload.objectif = payloadAnswer(publicPayload.objectif, serializeMultipleAnswers);
-
-    return publicPayload;
-  }
-
-  function buildCompatibleScanPayload(payload, serializeMultipleAnswers = false) {
-    const fallbackPayload = { ...payload };
-
-    delete fallbackPayload.scan_type;
-    delete fallbackPayload.scan_type_label;
-    delete fallbackPayload.source;
-    fallbackPayload.evolution = payloadAnswer(fallbackPayload.evolution, serializeMultipleAnswers);
-    fallbackPayload.objectif = payloadAnswer(fallbackPayload.objectif, serializeMultipleAnswers);
-
-    return fallbackPayload;
-  }
-
-  function buildMinimalScanPayload(payload, serializeMultipleAnswers = false) {
-    const minimalPayload = {
-      prenom: payload.prenom || null,
-      zones: payload.zones || [],
-      type_douleur: payload.type_douleur || [],
-      score_douleur: payload.score_douleur,
-      gene: payload.gene || [],
-      evolution: payloadAnswer(payload.evolution, serializeMultipleAnswers),
-      objectif: payloadAnswer(payload.objectif, serializeMultipleAnswers),
-      consent: true
-    };
-
-    if (payload.patient_id) minimalPayload.patient_id = payload.patient_id;
-    if (payload.patient_email) minimalPayload.patient_email = payload.patient_email;
-    if (payload.patient_full_name) minimalPayload.patient_full_name = payload.patient_full_name;
-
-    return minimalPayload;
-  }
-
-  function payloadAnswer(value, serializeMultipleAnswers) {
-    return serializeMultipleAnswers ? textAnswer(value) : value;
-  }
-
-  function scanErrorText(error) {
-    return [error.message, error.details, error.hint, error.code].filter(Boolean).join(' ').toLowerCase();
-  }
-
-  function isMissingOptionalScanColumn(error) {
-    const text = scanErrorText(error);
-    return text.includes('schema cache')
-      || text.includes('does not exist')
-      || text.includes('scan_type')
-      || text.includes('scan_type_label')
-      || text.includes('douleur_depuis')
-      || text.includes('duration_ms')
-      || text.includes('source')
-      || text.includes('patient_id')
-      || text.includes('patient_email')
-      || text.includes('patient_full_name');
-  }
-
-  function shouldSerializeMultipleAnswers(error) {
-    const text = scanErrorText(error);
-    return text.includes('invalid input syntax')
-      || text.includes('malformed')
-      || text.includes('array literal')
-      || text.includes('text[]');
-  }
-
-  function isAuthInsertBlocked(error) {
-    const text = scanErrorText(error);
-    return error?.code === '42501'
-      || text.includes('row-level security')
-      || text.includes('violates row-level security')
-      || text.includes('permission denied');
   }
 
   function trackPageEnter(pageId) {
